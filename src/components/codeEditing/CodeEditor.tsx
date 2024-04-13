@@ -1,5 +1,5 @@
+import { cn } from "@/shadcnutils";
 import useCodeEditingStore from "@/store/codeEditing";
-import clsxm from "@/utils/clsxm";
 import { Editor } from "@monaco-editor/react";
 import { FC, useCallback, useRef, useState } from "react";
 
@@ -35,8 +35,7 @@ const CodeEditor: FC<{
 
   const handleEditorChange = useCallback(
     (value: string | undefined) => {
-      if(value)
-      setValue("code", value);
+      if (value) setValue("code", value);
     },
     [setValue]
   );
@@ -67,7 +66,7 @@ const CodeEditor: FC<{
         </div>
       </div>
       <div
-        className={clsxm(
+        className={cn(
           "h-[500px] w-[800px] overflow-hidden rounded-lg bg-[#1e1e1e] py-2",
           className
         )}

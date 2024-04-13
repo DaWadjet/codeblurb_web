@@ -1,4 +1,4 @@
-import clsxm from "@/utils/clsxm";
+import { cn } from "@/shadcnutils";
 import { FC, Fragment, memo, useCallback } from "react";
 import { useImmer } from "use-immer";
 
@@ -28,7 +28,7 @@ const FillInTheGapsTask: FC<{ textParts: string[]; solutions: string[] }> =
           }
         }
       });
-    }, [answers, setAnswers, solutions]);
+    }, [answers, solutions, setAnswers]);
 
     console.log(answers);
 
@@ -53,7 +53,7 @@ const FillInTheGapsTask: FC<{ textParts: string[]; solutions: string[] }> =
               {index !== textParts.length - 1 && (
                 <input
                   value={answers[index].answer}
-                  className={clsxm(
+                  className={cn(
                     "inline-block h-7 w-24 rounded-md border-2 p-2 focus:border-blue-500",
                     answers[index].status === "incorrect"
                       ? "border-red-600 bg-red-200"

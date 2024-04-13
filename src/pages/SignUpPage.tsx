@@ -1,7 +1,7 @@
 import Loader from "@/components/common/Loader";
 import { useRegistrationMutation } from "@/network/auth";
 import { RegisterRequest } from "@/network/models/registerRequest";
-import clsxm from "@/utils/clsxm";
+import { cn } from "@/shadcnutils";
 import { FC } from "react";
 
 import { useForm } from "react-hook-form";
@@ -14,9 +14,9 @@ const SignUpPage: FC = () => {
     formState: { errors },
   } = useForm<RegisterRequest & { confirmPassword: string }>();
 
-  const onSubmit = handleSubmit(() => login(getValues()));
+  const onSubmit = handleSubmit(() => signUp(getValues()));
 
-  const { mutate: login, isPending } = useRegistrationMutation();
+  const { mutate: signUp, isPending } = useRegistrationMutation();
 
   return (
     <form
@@ -33,7 +33,7 @@ const SignUpPage: FC = () => {
         </label>
         <input
           {...register("username", { required: "This field is required" })}
-          className={clsxm(
+          className={cn(
             "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
             errors.username
               ? "border-red-500 bg-red-100/30 focus:border-red-600"
@@ -58,7 +58,7 @@ const SignUpPage: FC = () => {
         </label>
         <input
           {...register("password", { required: "This field is required" })}
-          className={clsxm(
+          className={cn(
             "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
             errors.password
               ? "border-red-500 bg-red-100/30 focus:border-red-600"
@@ -87,7 +87,7 @@ const SignUpPage: FC = () => {
             validate: (value) =>
               value === getValues().password || "Passwords need to match!",
           })}
-          className={clsxm(
+          className={cn(
             "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
             errors.confirmPassword
               ? "border-red-500 bg-red-100/30 focus:border-red-600"

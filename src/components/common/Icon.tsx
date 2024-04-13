@@ -1,4 +1,4 @@
-import clsxm from "@/utils/clsxm";
+import { cn } from "@/shadcnutils";
 import { FC, memo } from "react";
 
 const Icon: FC<{
@@ -12,7 +12,7 @@ const Icon: FC<{
       onClick={onClick}
       src={src}
       alt={alt ?? "icon"}
-      className={clsxm("object-contain", className)}
+      className={cn("object-contain", className)}
     />
   );
 });

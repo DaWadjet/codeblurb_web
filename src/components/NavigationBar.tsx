@@ -1,14 +1,13 @@
-import useAuth from "@/hooks/useAuth";
-import { isLoggedInAtom } from "@/store/jotaiAtoms";
-import clsxm from "@/utils/clsxm";
-import { useAtomValue } from "jotai";
-import { FC } from "react";
+import Logo from "@/components/common/Logo";
+import { useLogoutMutation } from "@/network/auth";
+import { cn } from "@/shadcnutils";
+import useTokenStore from "@/store/tokenStore";
+import { FC, useCallback } from "react";
 import { NavLink } from "react-router-dom";
-import Logo from "./common/Logo";
 
 const NavigationBar: FC = () => {
-  const { logout } = useAuth();
-  const isLoggedIn = useAtomValue(isLoggedInAtom);
+  const { mutate: logout } = useLogoutMutation();
+  const isLoggedIn = useTokenStore(useCallback((state) => !!state.userId, []));
 
   return (
     <nav
@@ -21,7 +20,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/home"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -34,7 +33,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/explore"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -47,7 +46,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/my-courses"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -60,7 +59,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/shopping-cart"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -73,7 +72,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/profile"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -84,8 +83,8 @@ const NavigationBar: FC = () => {
             Profile Icon
           </NavLink>
           <button
-            onClick={logout}
-            className={clsxm(
+            onClick={() => logout()}
+            className={cn(
               "flex items-center justify-center text-black transition-all duration-100 hover:scale-105"
             )}
           >
@@ -97,7 +96,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/login"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"
@@ -110,7 +109,7 @@ const NavigationBar: FC = () => {
           <NavLink
             to="/register"
             className={({ isActive }) =>
-              clsxm(
+              cn(
                 "flex items-center justify-center ",
                 isActive
                   ? "text-blue-500"

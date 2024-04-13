@@ -1,45 +1,59 @@
-import { refresh } from "@/network/auth";
-import axios from "axios";
+import useTokenStore from "@/store/tokenStore";
+import { TTokens } from "@/utils/types";
+import axios, { AxiosRequestHeaders } from "axios";
+
+import createAuthRefreshInterceptor, {
+  AxiosAuthRefreshRequestConfig,
+} from "axios-auth-refresh";
 
 const baseUrl = "https://api.bence.kovacs.host/";
-const client = axios.create({
+
+const setTokens = (tokens: TTokens) => {
+  useTokenStore.getState().setAccessToken(tokens.accessToken);
+  useTokenStore.getState().setAccessToken(tokens.refreshToken);
+};
+
+const AxiosInstance = axios.create({
   baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-client.interceptors.request.use(async (req) => {
-  const accessToken = localStorage.getItem("accessToken");
-  if (accessToken) {
-    req.headers.Authorization = `Bearer ${accessToken}`;
+AxiosInstance.interceptors.request.use((request) => {
+  const accessToken = useTokenStore.getState().access;
+  if (!accessToken) return request;
+  if (request.headers) {
+    request.headers["Authorization"] = `Bearer ${accessToken}`;
+  } else {
+    request.headers = {
+      Authorization: `Bearer ${accessToken}`,
+    } as AxiosRequestHeaders;
   }
-  return req;
+  return request;
 });
 
-client.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  async (error) => {
-    const originalConfig = error.config;
-    if (error.response?.status === 401 && !originalConfig._retry) {
-      originalConfig._retry = true;
-      const refreshToken = localStorage.getItem("refreshToken");
-
-      if (!refreshToken) {
-        return Promise.reject(error);
+createAuthRefreshInterceptor(AxiosInstance, () => {
+  return axios
+    .post<TTokens>(
+      "/auth/refresh",
+      {
+        refreshToken: useTokenStore.getState().refresh,
+      },
+      {
+        skipAuthRefresh: true,
+      } as AxiosAuthRefreshRequestConfig
+    )
+    .then((response) => {
+      if (response.status === 401) {
+        useTokenStore.getState().logout();
+        return;
       }
 
-      const tokens = await refresh(refreshToken);
-      localStorage.setItem("accessToken", tokens.accessToken ?? "");
-      localStorage.setItem("refreshToken", tokens.refreshToken ?? "");
+      const data = response.data;
+      setTokens(data);
+    })
+    .catch(() => useTokenStore.getState().logout());
+});
 
-      return client(originalConfig);
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-export default client;
+export default AxiosInstance;
