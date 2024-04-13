@@ -25,45 +25,43 @@ const initialState = {
 } as Pick<TState, TNonFunctionKeys<TState>>;
 
 const useCodeEditingStore = create<TState>()(
-  immer(
-    devtools(
-      (set, get) => ({
-        ...initialState,
-        setValue: (key, value) =>
-          set(
-            (state) => {
-              state[key] = value;
-            },
-            false,
-            "useCodeEditingStore/setValue"
-          ),
-        getProperties: (keys) => {
-          const result = {} as Pick<TState, TNonFunctionKeys<TState>>;
+  devtools(
+    immer((set, get) => ({
+      ...initialState,
+      setValue: (key, value) =>
+        set(
+          (state) => {
+            state[key] = value;
+          },
+          false,
+          "useCodeEditingStore/setValue"
+        ),
+      getProperties: (keys) => {
+        const result = {} as Pick<TState, TNonFunctionKeys<TState>>;
 
-          keys.forEach((key) => {
-            result[key] = get()[key];
+        keys.forEach((key) => {
+          result[key] = get()[key];
+        });
+
+        return result;
+      },
+      run: () => {
+        //TODO send code to the server
+        console.log(get().code);
+      },
+      getHint: () => {
+        if (get().canGetMoreHints) {
+          set((state) => {
+            state.hints.push({ type: "danger", message: "And another one" });
+            if (state.hints.length >= 2) state.canGetMoreHints = false;
           });
-
-          return result;
-        },
-        run: () => {
-          //TODO send code to the server
-          console.log(get().code);
-        },
-        getHint: () => {
-          if (get().canGetMoreHints) {
-            set((state) => {
-              state.hints.push({ type: "danger", message: "And another one" });
-              if (state.hints.length >= 2) state.canGetMoreHints = false;
-            });
-          }
-        },
-        clear: () => {
-          set((state) => ({ ...state, ...initialState }));
-        },
-      }),
-      { name: "codeEditingStore" }
-    )
+        }
+      },
+      clear: () => {
+        set(() => initialState, false, "useCodeEditingStore/clear");
+      },
+    })),
+    { name: "Code Editing Store" }
   )
 );
 
