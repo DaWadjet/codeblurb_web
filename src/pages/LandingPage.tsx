@@ -1,24 +1,16 @@
 import CodeEditor from "@/components/codeEditing/CodeEditor";
 import DragAndDropTask from "@/components/dragAndDrop/DragAndDropTask";
 import FillInTheGapsTask from "@/components/fillInTheGaps/FillInTheGapsTask";
-import client from "@/network/axiosClient";
-import { useMutation } from "@tanstack/react-query";
+import { useAvailableShoppingItemsQuery } from "@/network/shopping";
 import { FC } from "react";
 
 const LandingPage: FC = () => {
-  const { mutate } = useMutation({
-    mutationKey: [`cart`],
-    mutationFn: async () => {
-      const response = await client.get("shopping/available-shopping-items");
-      console.log(response.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  const { data } = useAvailableShoppingItemsQuery();
+  if (data) {
+    console.log(data);
+  }
   return (
     <div className="flex flex-col items-center justify-center gap-5">
-      <p onClick={() => mutate()}>LandingPage</p>
       <CodeEditor />
       <DragAndDropTask />
       <FillInTheGapsTask

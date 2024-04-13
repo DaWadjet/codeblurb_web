@@ -1,4 +1,4 @@
-import { RefreshTokenResponse } from "@/network/models/refreshTokenResponse";
+import { refresh } from "@/network/auth";
 import axios from "axios";
 
 const baseUrl = "https://api.bence.kovacs.host/";
@@ -27,14 +27,13 @@ client.interceptors.response.use(
       originalConfig._retry = true;
       const refreshToken = localStorage.getItem("refreshToken");
 
-      const response = await axios.post<RefreshTokenResponse>(
-        `${baseUrl}token/refresh`,
-        {
-          refreshToken,
-        }
-      );
-      localStorage.setItem("accessToken", response.data.accessToken ?? "");
-      localStorage.setItem("refreshToken", response.data.refreshToken ?? "");
+      if (!refreshToken) {
+        return Promise.reject(error);
+      }
+
+      const tokens = await refresh(refreshToken);
+      localStorage.setItem("accessToken", tokens.accessToken ?? "");
+      localStorage.setItem("refreshToken", tokens.refreshToken ?? "");
 
       return client(originalConfig);
     }

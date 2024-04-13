@@ -1,46 +1,29 @@
 import Loader from "@/components/common/Loader";
-import useAuth from "@/hooks/useAuth";
-import client from "@/network/axiosClient";
-import { LoginResponse } from "@/network/models/loginResponse";
-import { RegisterRequest } from "@/network/models/registerRequest";
+import { useLoginMutation } from "@/network/auth";
+import { LoginRequest } from "@/network/models/loginRequest";
 import clsxm from "@/utils/clsxm";
-import { useMutation } from "@tanstack/react-query";
 import { FC } from "react";
 
 import { useForm } from "react-hook-form";
 
-const SignUpPage: FC = () => {
+const LoginPage: FC = () => {
   const {
     register,
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterRequest & { confirmPassword: string }>();
+  } = useForm<LoginRequest>();
 
-  const onSubmit = handleSubmit(() => login());
+  const onSubmit = handleSubmit(() => login(getValues()));
 
-  const { login: saveTokens } = useAuth();
-  const { mutate: login, isLoading } = useMutation({
-    mutationKey: [`register`],
-    mutationFn: async () => {
-      await client.post("auth/register", getValues());
-      const loginResponse = await client.post<LoginResponse>(
-        "auth/login",
-        getValues()
-      );
-      saveTokens(loginResponse.data);
-    },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  const { mutate: login, isPending } = useLoginMutation();
 
   return (
     <form
       className="mx-40 mt-40 flex flex-grow flex-col items-start justify-center gap-6 rounded-lg border border-gray-200 p-5 shadow-md"
       onSubmit={onSubmit}
     >
-      <h1 className="text-2xl font-semibold ">Register</h1>
+      <h1 className="text-2xl font-semibold ">Log In</h1>
       <div className="flex w-full flex-col gap-2">
         <label
           className="block text-sm font-bold text-gray-700"
@@ -91,45 +74,16 @@ const SignUpPage: FC = () => {
           </p>
         )}
       </div>
-      <div className="flex w-full flex-col gap-2">
-        <label
-          className="block text-sm font-bold text-gray-700"
-          htmlFor="confirmPassword"
-        >
-          Confirm Password
-        </label>
-        <input
-          {...register("confirmPassword", {
-            required: "This field is required",
-            validate: (value) =>
-              value === getValues().password || "Passwords need to match!",
-          })}
-          className={clsxm(
-            "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
-            errors.confirmPassword
-              ? "border-red-500 bg-red-100/30 focus:border-red-600"
-              : ""
-          )}
-          id="confirmPassword"
-          type="password"
-          placeholder="password again"
-        />
-        {errors?.confirmPassword && (
-          <p className="text-sm font-medium text-red-500">
-            {errors.confirmPassword?.message}
-          </p>
-        )}
-      </div>
 
       <button
         type="button"
         className="flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 leading-tight text-white"
         onClick={onSubmit}
       >
-        {isLoading ? <Loader /> : <p>Register</p>}
+        {isPending ? <Loader /> : <p>Log In</p>}
       </button>
     </form>
   );
 };
 
-export default SignUpPage;
+export default LoginPage;

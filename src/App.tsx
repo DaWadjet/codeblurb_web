@@ -1,8 +1,8 @@
-import LandingPage from "@/components/landing/LandingPage";
-import SignUpPage from "@/components/signUp/SignUpPage";
+import LandingPage from "@/pages/LandingPage";
+import SignUpPage from "@/pages/SignUpPage";
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
-import LoginPage from "./components/login/LoginPage";
+import LoginPage from "./pages/LoginPage";
 import Layout from "./routing/Layout";
 import RedirectIfLoggedIn from "./routing/RedirectIfLoggedIn";
 import RequireAuth from "./routing/RequireAuth";
