@@ -1,16 +1,15 @@
+import { refresh } from "@/network/auth";
 import useTokenStore from "@/store/tokenStore";
-import { TTokens } from "@/utils/types";
+import { RefreshTokenResponse } from "@/types/ApiTypes";
 import axios, { AxiosRequestHeaders } from "axios";
 
-import createAuthRefreshInterceptor, {
-  AxiosAuthRefreshRequestConfig,
-} from "axios-auth-refresh";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 const baseUrl = "https://api.bence.kovacs.host/";
 
-const setTokens = (tokens: TTokens) => {
-  useTokenStore.getState().setAccessToken(tokens.accessToken);
-  useTokenStore.getState().setAccessToken(tokens.refreshToken);
+const setTokens = (tokens: RefreshTokenResponse) => {
+  useTokenStore.getState().setAccessToken(tokens.accessToken!);
+  useTokenStore.getState().setAccessToken(tokens.refreshToken!);
 };
 
 const AxiosInstance = axios.create({
@@ -33,27 +32,20 @@ AxiosInstance.interceptors.request.use((request) => {
   return request;
 });
 
-createAuthRefreshInterceptor(AxiosInstance, () => {
-  return axios
-    .post<TTokens>(
-      "/auth/refresh",
-      {
-        refreshToken: useTokenStore.getState().refresh,
-      },
-      {
-        skipAuthRefresh: true,
-      } as AxiosAuthRefreshRequestConfig
-    )
-    .then((response) => {
-      if (response.status === 401) {
-        useTokenStore.getState().logout();
-        return;
-      }
+createAuthRefreshInterceptor(AxiosInstance, async () => {
+  try {
+    const response = await refresh(useTokenStore.getState().refresh!);
 
-      const data = response.data;
-      setTokens(data);
-    })
-    .catch(() => useTokenStore.getState().logout());
+    if (response.status === 401) {
+      useTokenStore.getState().logout();
+      return;
+    }
+
+    const data = response.data;
+    setTokens(data);
+  } catch (error) {
+    useTokenStore.getState().logout();
+  }
 });
 
 export default AxiosInstance;

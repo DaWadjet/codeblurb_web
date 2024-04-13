@@ -1,11 +1,13 @@
 import client from "@/network/axiosClient";
-import { CodeQuizSolutionRequest } from "@/network/models/codeQuizSolutionRequest";
-import { CodeQuizSolutionResponse } from "@/network/models/codeQuizSolutionResponse";
-import { CodeSolutionRequest } from "@/network/models/codeSolutionRequest";
-import { MyContentBundlesResponse } from "@/network/models/myContentBundlesResponse";
-import { MyContentBundlesSeparatedResponse } from "@/network/models/myContentBundlesSeparatedResponse";
-import { QuizSolutionRequest } from "@/network/models/quizSolutionRequest";
-import { QuizSolutionResponse } from "@/network/models/quizSolutionResponse";
+import {
+  CodeQuizSolutionRequest,
+  CodeQuizSolutionResponse,
+  CodeSolutionRequest,
+  MyContentBundlesResponse,
+  MyContentBundlesSeparatedResponse,
+  QuizSolutionRequest,
+  QuizSolutionResponse,
+} from "@/types/ApiTypes";
 import { useQuery } from "@tanstack/react-query";
 
 export const ContentKeys = {
@@ -70,7 +72,7 @@ export async function codeSolutionMutationFn({
   codeSolution: CodeSolutionRequest;
 }) {
   const response = await client.post(
-    `/content/code/solution/${contentId}`,
+    `/content/scratch-solution/${contentId}`,
     codeSolution
   );
   return response.data;
@@ -84,7 +86,7 @@ export async function codeQuizSolutionMutationFn({
   codeSolution: CodeQuizSolutionRequest;
 }) {
   const response = await client.post<CodeQuizSolutionResponse>(
-    `/content/code-quiz/solution/${contentId}`,
+    `/content/code-quiz-solution/${contentId}`,
     codeSolution
   );
   return response.data;

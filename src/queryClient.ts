@@ -1,7 +1,7 @@
-import { toast } from "@/shadcn/ui/use-toast";
 import "@tanstack/react-query";
 import { MutationCache, QueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { toast } from "sonner";
 
 declare module "@tanstack/react-query" {
   interface Register {
@@ -32,10 +32,10 @@ const mutationCache = new MutationCache({
       mutation.options.meta?.showErrorToast === false
     )
       return;
-    toast({
-      variant: "destructive",
-      title: mutation.options.meta?.errorMessage ?? "Something went wrong!",
-    });
+    toast.error(
+      mutation.options.meta?.errorMessage ?? "Something went wrong!",
+      {}
+    );
 
     console.log("Error", props[0]);
   },
@@ -47,9 +47,7 @@ const mutationCache = new MutationCache({
     )
       return;
 
-    toast({
-      title: mutation.options.meta?.successMessage ?? "Success",
-    });
+    toast.info(mutation.options.meta?.successMessage ?? "Success");
   },
 });
 
