@@ -1,5 +1,5 @@
 import NavigationBar from "@/components/NavigationBar";
-import { Toaster } from "@/shadcn/ui/toaster";
+import { Toaster } from "@/shadcn/ui/sonner";
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";

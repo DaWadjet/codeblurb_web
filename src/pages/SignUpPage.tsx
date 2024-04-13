@@ -1,7 +1,7 @@
 import Loader from "@/components/common/Loader";
 import { useRegistrationMutation } from "@/network/auth";
-import { RegisterRequest } from "@/network/models/registerRequest";
 import { cn } from "@/shadcnutils";
+import { RegisterRequest } from "@/types/ApiTypes";
 import { FC } from "react";
 
 import { useForm } from "react-hook-form";

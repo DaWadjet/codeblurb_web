@@ -12,11 +12,6 @@ export type THelp = {
 
 export type TDraggableCategory = "all" | "solution";
 
-export type TTokens = {
-  accessToken: string;
-  refreshToken: string;
-};
-
 export type TCourseSection = {
   id: number;
   title: string;

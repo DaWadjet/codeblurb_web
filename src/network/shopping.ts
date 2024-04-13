@@ -1,6 +1,8 @@
 import client from "@/network/axiosClient";
-import { GetAvailableShoppingItemsResponse } from "@/network/models/getAvailableShoppingItemsResponse";
-import { ShoppingCartResponse } from "@/network/models/shoppingCartResponse";
+import {
+  GetAvailableShoppingItemsResponse,
+  ShoppingCartResponse,
+} from "@/types/ApiTypes";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const ShoppingKeys = {
@@ -27,7 +29,7 @@ function availableShoppingItemsOptions() {
     queryKey: ShoppingKeys.availableShoppingItemsQuery,
     queryFn: async () => {
       const response = await client.get<GetAvailableShoppingItemsResponse>(
-        "/shopping/available-items"
+        "/shopping/available-shopping-items"
       );
       return response.data;
     },

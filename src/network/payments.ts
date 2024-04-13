@@ -1,5 +1,5 @@
 import client from "@/network/axiosClient";
-import { PreviousPaymentsResponse } from "@/network/models/previousPaymentsResponse";
+import { PreviousPaymentsResponse } from "@/types/ApiTypes";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const PaymentKeys = {

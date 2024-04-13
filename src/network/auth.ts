@@ -1,11 +1,12 @@
 import client from "@/network/axiosClient";
-import { LoginRequest } from "@/network/models/loginRequest";
 import {
   LoginResponse,
   RefreshTokenResponse,
   RegisterRequest,
-} from "@/network/models/models";
+} from "@/types/ApiTypes";
+
 import useTokenStore from "@/store/tokenStore";
+import { LoginRequest } from "@/types/ApiTypes";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosAuthRefreshRequestConfig } from "axios-auth-refresh";
 import { useCallback } from "react";
@@ -55,6 +56,8 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationFn: async (data: LoginRequest) => loginMutationFn(data),
     onSuccess: (data) => {
+      if (!data.accessToken || !data.refreshToken)
+        return console.error("No access or refresh token received");
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
     },
@@ -65,15 +68,16 @@ export const useLoginMutation = () => {
   });
 };
 
-export const refresh = async (refreshToken: string) => {
-  const response = await client.post<RefreshTokenResponse>(
+export const refresh = async (refreshToken: string) =>
+  client.post<RefreshTokenResponse>(
     "/auth/refresh-token",
     {
       refreshToken,
-    }
+    },
+    {
+      skipAuthRefresh: true,
+    } as AxiosAuthRefreshRequestConfig
   );
-  return response.data;
-};
 
 export const useLogoutMutation = () => {
   const logout = useTokenStore(useCallback((state) => state.logout, []));

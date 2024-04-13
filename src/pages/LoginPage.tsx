@@ -1,7 +1,7 @@
 import Loader from "@/components/common/Loader";
 import { useLoginMutation } from "@/network/auth";
-import { LoginRequest } from "@/network/models/loginRequest";
 import { cn } from "@/shadcnutils";
+import { LoginRequest } from "@/types/ApiTypes";
 import { FC } from "react";
 
 import { useForm } from "react-hook-form";
