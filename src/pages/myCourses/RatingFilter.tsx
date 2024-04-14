@@ -1,6 +1,6 @@
 import FilterButton from "@/components/common/FilterButton";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faStar } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 
 const min = 1;
@@ -16,8 +16,8 @@ const RatingStart = () => {
         setMinRating(min);
       }}
       isDeleteIconActive={minRating !== min}
-      ClosedIconComponent={<FontAwesomeIcon icon={faStar} />}
-      OpenedIconComponent={<FontAwesomeIcon icon={faStar} />}
+      // ClosedIconComponent={<FontAwesomeIcon icon={faStar} />}
+      // OpenedIconComponent={<FontAwesomeIcon icon={faStar} />}
     >
       <div className="-mt-[6px] mb-4 flex w-60 px-4">
         {/*  <Slider

@@ -10,7 +10,7 @@ const NavigationBar: FC = () => {
   return (
     <nav
       role="navigation"
-      className="sticky top-0 z-[1] flex h-16 items-center justify-between px-8 shadow-md"
+      className="sticky top-0 z-10 flex h-16 items-center justify-between px-8 border-b bg-background"
     >
       <Logo />
       {isLoggedIn ? <NavbarLoggedIn /> : <NavbarLoggedOut />}
