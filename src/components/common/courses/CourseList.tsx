@@ -1,70 +1,62 @@
-import { TCourseInfo } from "@/utils/types";
-import { FC } from "react";
-
-import { cn } from "@/shadcnutils";
+import {
+  Carousel,
+  CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/shadcn/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { FC, ReactNode, useEffect, useState } from "react";
 
 const CourseList: FC<{
-  slideCount?: number;
+  items: ReactNode[];
   autoplay?: boolean;
-  courses: TCourseInfo[] & { progress?: number };
-  title: string;
-  className?: string;
-}> = ({ courses, title, className, slideCount = 3, autoplay }) => {
+}> = ({ items, autoplay = false }) => {
+  const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+    api.on("select", () => {
+      (api.plugins() as any).autoplay.stop();
+    });
+  }, [api]);
+
   return (
-    <div
-      className={cn(
-        "flex w-full flex-col gap-4 border-b border-gray-200 pb-2 last:border-none",
-        className
-      )}
+    <Carousel
+      setApi={setApi}
+      plugins={
+        autoplay
+          ? [
+              Autoplay({
+                delay: 5000,
+              }),
+            ]
+          : undefined
+      }
+      opts={{
+        align: "start",
+        dragFree: true,
+        loop: true,
+      }}
+      className="w-full"
     >
-      <h2 className="text-2xl font-bold">{title}</h2>
-      {/*   <Swiper
-        key={title}
-        slidesPerView={slideCount}
-        modules={[Autoplay]}
-        spaceBetween={10}
-        loop
-        autoplay={
-          autoplay ? { disableOnInteraction: true, delay: 5000 } : undefined
-        }
-        className="relative max-h-full min-h-0 w-full min-w-0 max-w-full  pb-1"
+      <CarouselContent
+        onMouseEnter={() => api && (api.plugins() as any).autoplay.stop()}
+        onMouseLeave={() => api && (api.plugins() as any).autoplay.play()}
       >
-        <CourseListStepper step={3} direction="next" />
-        {courses.map((course) => (
-          <SwiperSlide key={course.id + title}>
-            <CourseGridItem course={course} />
-          </SwiperSlide>
+        {items.map((item, index) => (
+          <CarouselItem key={index} className="basis-1/3">
+            <div className="p-1 h-full">{item}</div>
+          </CarouselItem>
         ))}
-      </Swiper> */}
-    </div>
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
   );
 };
 
 export default CourseList;
-
-const CourseListStepper: FC<{
-  step: number;
-  direction: "next" | "prev";
-}> = ({ step, direction }) => {
-  /* const swiper = useSwiper();
-  const handleStep = useCallback(() => {
-    if (direction === "next") {
-      for (let i = 0; i < step; i++) {
-        swiper.slideNext();
-      }
-    } else {
-      for (let i = 0; i < step; i++) {
-        swiper.slidePrev();
-      }
-    }
-  }, [direction, step, swiper]); */
-
-  return (
-    <button
-      className="absolute -right-4 bottom-0 z-10 h-10 w-10 transform rounded-full bg-gray-400 "
-      onClick={() => {}}
-    >
-      {direction === "next" ? ">" : "<"}
-    </button>
-  );
-};
