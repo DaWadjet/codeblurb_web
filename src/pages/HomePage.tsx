@@ -1,9 +1,14 @@
 import CourseList from "@/components/common/courses/CourseList";
+import { useDummyData } from "@/hooks/useDummyData";
 import { dummyCourses } from "@/utils/dummyData";
 import shuffle from "lodash/shuffle";
 import { FC } from "react";
 
 const HomePage: FC = () => {
+  const items = useDummyData();
+
+
+
   return (
     <div className="flex flex-col gap-4">
       <CourseList

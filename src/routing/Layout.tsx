@@ -10,7 +10,7 @@ const Layout: FC = () => {
     <>
       <div className="h-screen font-inter bg-background">
         <NavigationBar />
-        <main className="container mx-auto my-8 max-w-5xl grow px-4">
+        <main className="container mx-auto my-8 max-w-5xl grow px-4 pb-10">
           <Outlet />
         </main>
       </div>

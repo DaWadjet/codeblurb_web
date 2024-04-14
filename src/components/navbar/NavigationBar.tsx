@@ -11,7 +11,7 @@ const NavigationBar: FC = () => {
   return (
     <nav
       role="navigation"
-      className="sticky top-0 z-10 flex h-16 gap-6 items-center px-8 border-b bg-background"
+      className="sticky top-0 z-20 flex h-16 gap-6 items-center px-8 border-b bg-background"
     >
       <Logo />
       <div className="grow" />
