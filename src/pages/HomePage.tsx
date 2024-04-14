@@ -1,34 +1,18 @@
+import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
 import { useDummyData } from "@/hooks/useDummyData";
-import { dummyCourses } from "@/utils/dummyData";
-import shuffle from "lodash/shuffle";
 import { FC } from "react";
 
 const HomePage: FC = () => {
   const items = useDummyData();
 
-
-
   return (
-    <div className="flex flex-col gap-4">
-      <CourseList
-        courses={dummyCourses.map((c) => ({ ...c, progress: 0.5 }))}
-        title="Continue Where You Left Off"
-        className="pb-6"
-      />
-      <CourseList
-        courses={shuffle(dummyCourses)}
-        title="Top Rated Courses"
-        slideCount={4}
-      />
-
-      <CourseList
-        courses={shuffle(dummyCourses)}
-        title="Most Popular"
-        slideCount={4}
-        autoplay
-      />
-    </div>
+    <CourseList
+      items={items.map((item, index) => (
+        <CourseItem course={item} key={item.id! + "_" + index} />
+      ))}
+      autoplay
+    />
   );
 };
 

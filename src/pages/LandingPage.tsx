@@ -21,7 +21,7 @@ const LandingPage: FC = () => {
       text: "with",
     },
     {
-      text: "Aceternity.",
+      text: "CodeBlurb.",
       className: "text-blue-500 dark:text-blue-500",
     },
   ];

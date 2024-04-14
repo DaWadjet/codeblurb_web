@@ -1,13 +1,17 @@
+import { TerminalIcon } from "lucide-react";
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import Icon from "./Icon";
-
-import LogoSrc from "@/assets/loader.svg";
 
 const Logo: FC = () => {
   return (
-    <Link to="/">
-      <Icon src={LogoSrc} />
+    <Link
+      to="/"
+      className="flex gap-1 items-center hover:text-muted-foreground transition-colors duration-200"
+    >
+      <TerminalIcon className="w-8 h-8" />
+      <h1 className="font-semibold tracking-tight leading-none text-xl">
+        CodeBlurb
+      </h1>
     </Link>
   );
 };

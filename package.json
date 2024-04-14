@@ -31,6 +31,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dayjs": "^1.11.10",
+    "embla-carousel-autoplay": "^8.0.2",
+    "embla-carousel-react": "^8.0.2",
     "firebase": "^10.11.0",
     "framer-motion": "^11.0.28",
     "i18next-browser-languagedetector": "^7.2.1",
