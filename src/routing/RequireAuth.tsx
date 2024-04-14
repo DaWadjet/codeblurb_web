@@ -1,9 +1,9 @@
-import useTokenStore from "@/store/tokenStore";
-import { FC, useCallback } from "react";
+import useLoggedIn from "@/hooks/useLoggedIn";
+import { FC } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const RequireAuth: FC = () => {
-  const isLoggedIn = useTokenStore(useCallback((state) => !!state.userId, []));
+  const isLoggedIn = useLoggedIn();
   const location = useLocation();
 
   if (!isLoggedIn) {

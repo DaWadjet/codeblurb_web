@@ -1,19 +1,20 @@
-import NavigationBar from "@/components/NavigationBar";
+import NavigationBar from "@/components/navbar/NavigationBar";
 import { Toaster } from "@/shadcn/ui/sonner";
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
-import Footer from "./Footer";
 
 const Layout: FC = () => {
   return (
     <>
-      <div style={{ minHeight: "calc(100vh - 56px)" }}>
+      <div
+        style={{ minHeight: "calc(100vh - 56px)" }}
+        className="font-inter dark bg-background"
+      >
         <NavigationBar />
-        <div className="font-roboto container mx-auto my-8 max-w-5xl grow px-4">
+        <div className="container mx-auto my-8 max-w-5xl grow px-4">
           <Outlet />
         </div>
       </div>
-      <Footer />
       <Toaster />
     </>
   );

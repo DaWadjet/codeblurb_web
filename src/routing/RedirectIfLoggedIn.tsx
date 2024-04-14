@@ -1,9 +1,9 @@
-import useTokenStore from "@/store/tokenStore";
-import { FC, useCallback, useMemo } from "react";
+import useLoggedIn from "@/hooks/useLoggedIn";
+import { FC, useMemo } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 const RedirectIfLoggedIn: FC = () => {
-  const isLoggedIn = useTokenStore(useCallback((state) => !!state.userId, []));
+  const isLoggedIn = useLoggedIn();
   const location = useLocation();
   const {
     from: { pathname },
