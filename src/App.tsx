@@ -13,33 +13,36 @@ import MyCoursesPage from "@/pages/myCourses/MyCoursesPage";
 import Layout from "@/routing/Layout";
 import RedirectIfLoggedIn from "@/routing/RedirectIfLoggedIn";
 import RequireAuth from "@/routing/RequireAuth";
+import { ThemeProvider } from "@/shadcn/ui/theme-provider";
 import { FC } from "react";
 import { Route, Routes } from "react-router-dom";
 
 const App: FC = () => {
   return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="/" element={<LandingPage />} />
-        <Route element={<RedirectIfLoggedIn />}>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<SignUpPage />} />
-        </Route>
+    <ThemeProvider defaultTheme="dark">
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route element={<RedirectIfLoggedIn />}>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<SignUpPage />} />
+          </Route>
 
-        <Route element={<RequireAuth />}>
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/my-courses" element={<MyCoursesPage />} />
-          <Route path="/shopping-cart" element={<ShoppingCartPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/course/:courseId" element={<CourseDetailsPage />} />
-          <Route
-            path="/course/:courseId/task/:taskId"
-            element={<CourseTaskPage />}
-          />
+          <Route element={<RequireAuth />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/my-courses" element={<MyCoursesPage />} />
+            <Route path="/shopping-cart" element={<ShoppingCartPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+            <Route
+              path="/course/:courseId/task/:taskId"
+              element={<CourseTaskPage />}
+            />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </ThemeProvider>
   );
 };
 
