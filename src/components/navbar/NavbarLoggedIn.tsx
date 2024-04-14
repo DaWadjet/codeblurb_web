@@ -52,7 +52,7 @@ const NavbarLoggedIn: FC = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-40 dark"
+          className="w-40"
           align="end"
           sideOffset={20}
           forceMount
