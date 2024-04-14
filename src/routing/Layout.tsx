@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 const Layout: FC = () => {
   return (
     <div className="font-inter dark bg-background">
-      <div className="min-h-[100vh]">
+      <div className="h-screen">
         <NavigationBar />
         <main className="container mx-auto my-8 max-w-5xl grow px-4">
           <Outlet />
