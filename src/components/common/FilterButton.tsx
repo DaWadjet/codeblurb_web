@@ -1,7 +1,7 @@
 import { cn } from "@/shadcnutils";
 import { TOverflow } from "@/utils/types";
-import { faChevronDown, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faChevronDown, faTimes } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Tooltip,
   TooltipContent,
@@ -112,14 +112,14 @@ const FilterButton: FC<
                   clear!();
                 }}
               >
-                <FontAwesomeIcon icon={faTimes} className="ml-2" />
+                {/* <FontAwesomeIcon icon={faTimes} className="ml-2" /> */}
               </button>
             </div>
           ) : (
             <span className="pl-2 text-base font-bold">{value}</span>
           )}
         </div>
-        <FontAwesomeIcon icon={faChevronDown} />
+        {/* <FontAwesomeIcon icon={faChevronDown} /> */}
       </div>
 
       {(isOpen || shouldRepositionOnOverflow) && (
@@ -167,12 +167,12 @@ const FilterButton: FC<
                       clear!();
                     }}
                   >
-                    <FontAwesomeIcon icon={faTimes} className="ml-2" />
+                    {/* <FontAwesomeIcon icon={faTimes} className="ml-2" /> */}
                   </button>
                 )}
               </div>
             </div>
-            <FontAwesomeIcon icon={faChevronDown} />
+            {/* <FontAwesomeIcon icon={faChevronDown} /> */}
           </div>
           {subTitle && (
             <span className="text-xl font-semibold">{subTitle}</span>

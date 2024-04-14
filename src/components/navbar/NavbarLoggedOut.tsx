@@ -5,16 +5,11 @@ import { useNavigate } from "react-router-dom";
 const NavbarLoggedOut: FC = () => {
   const navigate = useNavigate();
   return (
-    <div className="flex h-full gap-10">
-      <Button
-        variant="link"
-        size="lg"
-        onClick={() => navigate("/login")}
-        className=""
-      >
+    <div className="flex gap-6 items-center">
+      <Button variant="link" onClick={() => navigate("/login")}>
         Log In
       </Button>
-      <Button variant="link" size="lg" onClick={() => navigate("/register")}>
+      <Button variant="link" onClick={() => navigate("/register")}>
         Sign Up
       </Button>
     </div>

@@ -1,6 +1,4 @@
 import { TCourseInfo } from "@/utils/types";
-import { faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import ProgressBar from "../ProgressBar";
@@ -52,12 +50,12 @@ const CourseGridItem: FC<{
               alt={course.title}
               className="h-full w-full rounded-md object-cover drop-shadow-lg"
             />
-            {!("progress" in course) && (
+            {/* {!("progress" in course) && (
               <FontAwesomeIcon
                 icon={faShoppingBasket}
                 className="absolute bottom-2 right-2 h-6 w-6 cursor-pointer rounded-sm border border-black bg-white p-1 shadow-lg transition-all duration-200 hover:bg-gray-200"
               />
-            )}
+            )} */}
           </div>
 
           <h3 className="mt-2 line-clamp-2 h-12 text-base font-bold">

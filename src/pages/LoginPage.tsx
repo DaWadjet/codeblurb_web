@@ -1,88 +1,127 @@
-import Loader from "@/components/common/Loader";
 import { useLoginMutation } from "@/network/auth";
-import { cn } from "@/shadcnutils";
-import { LoginRequest } from "@/types/ApiTypes";
-import { FC } from "react";
-
+import { Button } from "@/shadcn/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shadcn/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/shadcn/ui/form";
+import { Input } from "@/shadcn/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2Icon } from "lucide-react";
+import { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  username: z.string().min(1, {
+    message: "Username is required",
+  }),
+  password: z.string().min(1, {
+    message: "Password is required",
+  }),
+});
 
 const LoginPage: FC = () => {
-  const {
-    register,
-    getValues,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginRequest>();
+  const navigate = useNavigate();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
 
   const { mutate: login, isPending } = useLoginMutation();
 
-  const onSubmit = handleSubmit(() => login(getValues()));
+  const onSubmit = useCallback(
+    (values: z.infer<typeof loginSchema>) => {
+      login(values);
+    },
+    [login]
+  );
 
   return (
-    <form
-      className="mx-40 mt-40 flex flex-grow flex-col items-start justify-center gap-6 rounded-lg border border-gray-200 p-5 shadow-md"
-      onSubmit={onSubmit}
-    >
-      <h1 className="text-2xl font-semibold ">Log In</h1>
-      <div className="flex w-full flex-col gap-2">
-        <label
-          className="block text-sm font-bold text-gray-700"
-          htmlFor="username"
-        >
-          Username
-        </label>
-        <input
-          {...register("username", { required: "This field is required" })}
-          className={cn(
-            "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
-            errors.username
-              ? "border-red-500 bg-red-100/30 focus:border-red-600"
-              : ""
-          )}
-          id="username"
-          type="text"
-          placeholder="john_doe"
-        />
-        {errors?.username && (
-          <p className="text-sm font-medium text-red-500">
-            {errors.username.message}
-          </p>
-        )}
-      </div>
-      <div className="flex w-full flex-col gap-2">
-        <label
-          className="block text-sm font-bold text-gray-700"
-          htmlFor="password"
-        >
-          Password
-        </label>
-        <input
-          {...register("password", { required: "This field is required" })}
-          className={cn(
-            "w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 outline-none transition-all duration-200 focus:border-blue-500",
-            errors.password
-              ? "border-red-500 bg-red-100/30 focus:border-red-600"
-              : ""
-          )}
-          id="password"
-          type="password"
-          placeholder="password"
-        />
-        {errors?.password && (
-          <p className="text-sm font-medium text-red-500">
-            {errors.password?.message}
-          </p>
-        )}
-      </div>
+    <div className="mx-52 my-32 flex flex-col gap-2 items-center">
+      <Card className="self-stretch">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardHeader>
+              <CardTitle>Welcome back to CodeBlurb!</CardTitle>
+              <CardDescription>
+                Continue your journey by logging in.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="john_doe" {...field} />
+                    </FormControl>
 
-      <button
-        type="button"
-        className="flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2.5 leading-tight text-white"
-        onClick={onSubmit}
-      >
-        {isPending ? <Loader /> : <p>Log In</p>}
-      </button>
-    </form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="password" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => navigate(-1)}
+              >
+                Back
+              </Button>
+              <Button type="submit">
+                {isPending && (
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Log In
+              </Button>
+            </CardFooter>
+          </form>
+        </Form>
+      </Card>
+      <p className="text-muted-foreground">
+        Don't have an account?{" "}
+        <Button
+          disabled={isPending}
+          variant="link"
+          className="text-muted-foreground hover:text-primary"
+          onClick={() => navigate("/register")}
+        >
+          Register
+        </Button>
+      </p>
+    </div>
   );
 };
 

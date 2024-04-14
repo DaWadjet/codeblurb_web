@@ -5,18 +5,15 @@ import { Outlet } from "react-router-dom";
 
 const Layout: FC = () => {
   return (
-    <>
-      <div
-        style={{ minHeight: "calc(100vh - 56px)" }}
-        className="font-inter dark bg-background"
-      >
+    <div className="font-inter dark bg-background">
+      <div className="min-h-[100vh]">
         <NavigationBar />
-        <div className="container mx-auto my-8 max-w-5xl grow px-4">
+        <main className="container mx-auto my-8 max-w-5xl grow px-4">
           <Outlet />
-        </div>
+        </main>
       </div>
-      <Toaster />
-    </>
+      <Toaster theme="dark" />
+    </div>
   );
 };
 
