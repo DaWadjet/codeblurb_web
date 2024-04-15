@@ -72,4 +72,4 @@ const Ratings = ({ ...props }: RatingsProps) => {
     </div>
   );
 };
-export { Ratings };
+export { Ratings as Rating };

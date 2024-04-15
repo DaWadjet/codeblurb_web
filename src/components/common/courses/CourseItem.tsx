@@ -5,7 +5,7 @@ import PriceTag from "@/components/Discount";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
-import { Ratings } from "@/shadcn/ui/rating";
+import { Rating } from "@/shadcn/ui/rating";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
 import { useNavigate } from "react-router-dom";
 
@@ -57,7 +57,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
         </p>
         <div className="text-sm text-muted-foreground flex justify-between items-center">
           <div className="flex items-center">
-            <Ratings rating={4.3} size={12} filledClassName="text-amber-500" />
+            <Rating rating={4.3} size={12} filledClassName="text-amber-500" />
             <p className="text-muted-foreground">(5)</p>
           </div>
 

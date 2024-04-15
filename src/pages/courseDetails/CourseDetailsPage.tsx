@@ -59,7 +59,7 @@ const CourseDetailsPage: FC = () => {
           </button>
         </div>
       </div>
-      <div className="flex gap-16">
+      <div className="flex gap-6">
         <CourseDetailsTabs />
         <CourseDetailsAside />
       </div>

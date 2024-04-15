@@ -1,10 +1,11 @@
-import Rating from "@/components/common/Rating";
-import { cn } from "@/shadcnutils";
 import useCourseDetailsStore from "@/store/courseDetailsStore";
-import { dummyReviews, dummySections } from "@/utils/dummyData";
 import qs from "qs";
 import { FC, useCallback, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+import CourseReviewsTab from "@/pages/courseDetails/CourseRatingsTab";
+import CourseSummaryTab from "@/pages/courseDetails/CourseSummaryTab";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shadcn/ui/tabs";
 
 const CourseDetailsTabs: FC = () => {
   const location = useLocation();
@@ -19,41 +20,33 @@ const CourseDetailsTabs: FC = () => {
 
   useEffect(() => {
     if (tab) {
-      if (tab === "summary") {
-        setValue("selectedTab", 0);
-      } else if (tab === "reviews") {
-        setValue("selectedTab", 1);
-      }
+      setValue("selectedTab", tab !== "reviews" ? "summary" : "reviews");
     }
   }, [tab, setValue]);
 
   return (
-    <div className="flex flex-1 flex-col gap-5">
-      <div className="flex justify-around">
-        <Link
-          to={`?tab=summary`}
-          className={cn(
-            "flex-grow-0 border-b-2 px-2 text-lg font-medium transition-all duration-200 hover:border-blue-400 hover:text-blue-400",
-            selectedTab === 0
-              ? "border-blue-500 font-semibold text-blue-500"
-              : "border-gray-500 text-gray-500"
-          )}
-        >
-          Course Summary
-        </Link>
-        <Link
-          to={`?tab=reviews`}
-          className={cn(
-            "flex-grow-0 border-b-2 px-2 text-lg font-medium transition-all duration-200 hover:border-blue-400 hover:text-blue-400",
-            selectedTab === 1
-              ? "border-blue-500 font-semibold text-blue-500"
-              : "border-gray-500 text-gray-500"
-          )}
-        >
-          Reviews
-        </Link>
-      </div>
-      {selectedTab === 0 && (
+    <Tabs
+      value={selectedTab}
+      onValueChange={(value) =>
+        setValue("selectedTab", value as typeof selectedTab)
+      }
+      defaultValue="summary"
+      className="w-full flex-[7]"
+    >
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="summary">Course Summary</TabsTrigger>
+        <TabsTrigger value="reviews">Reviews</TabsTrigger>
+      </TabsList>
+      <TabsContent value="summary">
+        <CourseSummaryTab />
+      </TabsContent>
+      <TabsContent value="reviews">
+        <CourseReviewsTab />
+      </TabsContent>
+    </Tabs>
+  );
+  {
+    /* {selectedTab === 0 && (
         <div className="flex flex-col">
           <div className="flex flex-col gap-2 rounded-md border border-gray-300 p-5 ">
             <h2 className="text-xl font-semibold">What you'll learn</h2>
@@ -115,9 +108,8 @@ const CourseDetailsTabs: FC = () => {
             </div>
           ))}
         </div>
-      )}
-    </div>
-  );
+      )} */
+  }
 };
 
 export default CourseDetailsTabs;

@@ -3,7 +3,7 @@ import { FC } from "react";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import { Card, CardFooter, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Progress } from "@/shadcn/ui/progress";
-import { Ratings } from "@/shadcn/ui/rating";
+import { Rating } from "@/shadcn/ui/rating";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
 import { useNavigate } from "react-router-dom";
 
@@ -44,7 +44,7 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
           </p>
           <div className="text-xs text-muted-foreground flex flex-col items-center">
             <p>Leave your rating</p>
-            <Ratings
+            <Rating
               rating={0}
               size={10}
               filledClassName="text-amber-500"

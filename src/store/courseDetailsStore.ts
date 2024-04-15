@@ -4,17 +4,15 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
 type TState = {
-  selectedTab: number;
+  selectedTab: "summary" | "reviews";
   isPurchased: boolean;
   setValue<K extends TNonFunctionKeys<TState>>(key: K, value: TState[K]): void;
-  getProperties<K extends TNonFunctionKeys<TState>>(
-    keys: K[]
-  ): Pick<TState, TNonFunctionKeys<TState>>;
+
   reset: () => void;
 };
 
 const initialState = {
-  selectedTab: 0,
+  selectedTab: "summary",
   isPurchased: false,
 } as Pick<TState, TNonFunctionKeys<TState>>;
 
@@ -30,15 +28,6 @@ const useCourseDetailsStore = create<TState>()(
           false,
           "useCourseDetailsStore/setValue"
         ),
-      getProperties: (keys) => {
-        const result = {} as Pick<TState, TNonFunctionKeys<TState>>;
-
-        keys.forEach((key) => {
-          result[key] = get()[key];
-        });
-
-        return result;
-      },
       reset: () => {
         set(() => initialState, false, "useCourseDetailsStore/reset");
       },
