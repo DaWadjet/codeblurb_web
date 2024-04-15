@@ -67,7 +67,7 @@ const ExplorePage: FC = () => {
                 value={filterOptions.sort}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.sort = value as any;
+                    draft.sort = value as (typeof sortPossibilities)[number];
                   })
                 }
               >
@@ -92,7 +92,8 @@ const ExplorePage: FC = () => {
                 value={filterOptions.filter}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.filter = value as any;
+                    draft.filter =
+                      value as (typeof filterPossibilities)[number];
                   })
                 }
               >

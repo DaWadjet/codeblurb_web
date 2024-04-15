@@ -20,6 +20,7 @@ const CourseList: FC<{
       return;
     }
     api.on("select", () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (api.plugins() as any).autoplay.stop();
     });
   }, [api]);
@@ -44,7 +45,9 @@ const CourseList: FC<{
       className="w-full"
     >
       <CarouselContent
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onMouseEnter={() => api && (api.plugins() as any).autoplay.stop()}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onMouseLeave={() => api && (api.plugins() as any).autoplay.play()}
       >
         {items.map((item, index) => (
