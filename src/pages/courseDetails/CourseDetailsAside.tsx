@@ -1,4 +1,6 @@
 import RatingSection from "@/pages/courseDetails/RatingSection";
+import { BackgroundGradient } from "@/shadcn/ui/background-gradient";
+import { Button } from "@/shadcn/ui/button";
 import { Progress } from "@/shadcn/ui/progress";
 import { Rating } from "@/shadcn/ui/rating";
 
@@ -10,7 +12,18 @@ const CourseDetailsAside: FC = () => {
     useCallback((state) => state.selectedTab, [])
   );
   return (
-    <aside className="sticky flex-[3] top-20 z-50 mt-20 h-48 w-full ">
+    <aside className="sticky flex-[3] top-24 z-50 mt-2 h-48 w-full">
+      {selectedTab === "summary" && (
+        <BackgroundGradient effectClassName="blur-sm rounded-lg">
+          <Button
+            className="w-full h-16 text-xl font-semibold hover:bg-background"
+            variant="outline"
+          >
+            Add To Cart
+          </Button>
+        </BackgroundGradient>
+      )}
+
       {selectedTab === "reviews" && (
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-1.5">
@@ -42,7 +55,6 @@ const CourseDetailsAside: FC = () => {
               <Rating rating={1} size={14} />
             </div>
           </div>
-
           <RatingSection />
         </div>
       )}

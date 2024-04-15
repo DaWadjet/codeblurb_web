@@ -12,7 +12,7 @@ const RatingSection: FC = () => {
 
       <Textarea
         className="h-36 resize-none"
-        placeholder="Share your opinions here"
+        placeholder="Share your opinions with fellow learners!"
       />
       <Button className="self-end" onClick={() => console.log(rating)}>
         Submit

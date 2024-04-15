@@ -8,7 +8,7 @@ const Layout: FC = () => {
   const { theme } = useTheme();
   return (
     <>
-      <div className="h-screen font-inter bg-background">
+      <div className="font-inter bg-background min-h-screen">
         <NavigationBar />
         <main className="container mx-auto my-8 max-w-5xl grow px-4 pb-10">
           <Outlet />
