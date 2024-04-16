@@ -12,7 +12,8 @@ import { FC, ReactNode, useEffect, useState } from "react";
 const CourseList: FC<{
   items: ReactNode[];
   autoplay?: boolean;
-}> = ({ items, autoplay = false }) => {
+  slidesToShow?: number;
+}> = ({ items, autoplay = false, slidesToShow = 3 }) => {
   const [api, setApi] = useState<CarouselApi>();
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const CourseList: FC<{
       return;
     }
     api.on("select", () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (api.plugins() as any).autoplay.stop();
     });
   }, [api]);
@@ -44,17 +46,28 @@ const CourseList: FC<{
       className="w-full"
     >
       <CarouselContent
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onMouseEnter={() => api && (api.plugins() as any).autoplay.stop()}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onMouseLeave={() => api && (api.plugins() as any).autoplay.play()}
       >
         {items.map((item, index) => (
-          <CarouselItem key={index} className="basis-1/3">
+          <CarouselItem
+            key={index}
+            style={{
+              flexBasis: 100 / slidesToShow + "%",
+            }}
+          >
             <div className="p-1 h-full">{item}</div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      {items.length > slidesToShow && (
+        <>
+          <CarouselPrevious />
+          <CarouselNext />
+        </>
+      )}
     </Carousel>
   );
 };

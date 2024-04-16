@@ -1,7 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-const {
-  default: flattenColorPalette,
-} = require("tailwindcss/lib/util/flattenColorPalette");
+
+import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
 module.exports = {
   darkMode: "class",
@@ -84,8 +83,8 @@ module.exports = {
 };
 
 function addVariablesForColors({ addBase, theme }) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
+  const allColors = flattenColorPalette(theme("colors"));
+  const newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
 

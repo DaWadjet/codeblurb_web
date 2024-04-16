@@ -5,12 +5,15 @@ import PriceTag from "@/components/Discount";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
-import { Ratings } from "@/shadcn/ui/rating";
+import { Rating } from "@/shadcn/ui/rating";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
 import { useNavigate } from "react-router-dom";
 
 const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
   const navigate = useNavigate();
+  const technologies = ["Javascript", "NodeJs"];
+
+  //TODO level could be displayed on the bottomright of the image
 
   return (
     // <BackgroundGradient
@@ -21,19 +24,20 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
 
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
-      className="overflow-clip hover:border-card-foreground/40 transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
+      className="overflow-clip hover:border-muted-foreground transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
     >
       <CardHeader className="p-0 relative">
-        <AspectRatio ratio={16 / 9}>
+        <AspectRatio ratio={18 / 9}>
           <img
             src={"https://fireship.io/courses/js/img/featured.webp"}
             alt={course.title}
+            className="object-cover w-full h-full"
           />
         </AspectRatio>
-        <div className="p-4">
-          <CardTitle className="text-2xl">
+        <div className="p-3">
+          <CardTitle className="text-xl">
             {course.title +
-              (course.id! % 2 === 0 ? "longer text to see how it fits" : "")}
+              (course.id! % 2 === 0 ? " longer text to see how it fits" : "")}
           </CardTitle>
         </div>
         <Button
@@ -48,15 +52,13 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
           <span className="sr-only">Add to cart</span>
         </Button>
       </CardHeader>
-      <CardContent className="p-4 pt-0">
+      <CardContent className="p-3 pt-0 flex flex-col gap-0.5">
+        <p className="text-sm text-muted-foreground">
+          {technologies.join(", ")}
+        </p>
         <div className="text-sm text-muted-foreground flex justify-between items-center">
           <div className="flex items-center">
-            <Ratings
-              rating={4.3}
-              size={12}
-              filledClassName="text-amber-500"
-              hoverClassName="text-amber-300"
-            />
+            <Rating rating={4.3} size={12} filledClassName="text-amber-500" />
             <p className="text-muted-foreground">(5)</p>
           </div>
 

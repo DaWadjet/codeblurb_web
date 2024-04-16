@@ -46,9 +46,9 @@ const Ratings = ({ ...props }: RatingsProps) => {
             filledClassName,
             hover >= i + 1 ? hoverClassName : ""
           ),
-          onMouseEnter: !!onRatingChange ? () => setHover(i + 1) : undefined,
-          onMouseLeave: !!onRatingChange ? () => setHover(0) : undefined,
-          onClick: !!onRatingChange ? () => onRatingChange(i + 1) : undefined,
+          onMouseEnter: onRatingChange ? () => setHover(i + 1) : undefined,
+          onMouseLeave: onRatingChange ? () => setHover(0) : undefined,
+          onClick: onRatingChange ? () => onRatingChange(i + 1) : undefined,
         })
       )}
       {[...Array(totalStars - fullStars)].map((_, i) =>
@@ -60,11 +60,11 @@ const Ratings = ({ ...props }: RatingsProps) => {
             emptyClassName,
             hover >= i + fullStars + 1 ? hoverClassName : ""
           ),
-          onMouseEnter: !!onRatingChange
+          onMouseEnter: onRatingChange
             ? () => setHover(i + fullStars + 1)
             : undefined,
-          onMouseLeave: !!onRatingChange ? () => setHover(0) : undefined,
-          onClick: !!onRatingChange
+          onMouseLeave: onRatingChange ? () => setHover(0) : undefined,
+          onClick: onRatingChange
             ? () => onRatingChange(i + fullStars + 1)
             : undefined,
         })
@@ -72,4 +72,4 @@ const Ratings = ({ ...props }: RatingsProps) => {
     </div>
   );
 };
-export { Ratings };
+export { Ratings as Rating };

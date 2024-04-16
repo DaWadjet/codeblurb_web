@@ -59,7 +59,7 @@ const ExplorePage: FC = () => {
     <div className="flex flex-col">
       <div className="z-10 bg-background sticky top-5 pb-5 flex flex-col gap-7">
         <h2 className="text-3xl font-semibold">Explore</h2>
-        <div className="flex items-center justify-between ">
+        <div className="flex items-center justify-between">
           <div className="flex gap-3">
             <div className="flex flex-col items-start gap-1.5">
               <Label htmlFor="sort">Sort By</Label>
@@ -67,7 +67,7 @@ const ExplorePage: FC = () => {
                 value={filterOptions.sort}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.sort = value as any;
+                    draft.sort = value as (typeof sortPossibilities)[number];
                   })
                 }
               >
@@ -92,7 +92,8 @@ const ExplorePage: FC = () => {
                 value={filterOptions.filter}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.filter = value as any;
+                    draft.filter =
+                      value as (typeof filterPossibilities)[number];
                   })
                 }
               >
