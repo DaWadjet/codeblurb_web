@@ -6,12 +6,15 @@ import { BackgroundGradient } from "@/shadcn/ui/background-gradient";
 import { Button } from "@/shadcn/ui/button";
 import { Rating } from "@/shadcn/ui/rating";
 import { Separator } from "@/shadcn/ui/separator";
+import { alertDialogAtom } from "@/store/jotaiAtoms";
+import { useSetAtom } from "jotai";
 import { X } from "lucide-react";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 
 const ShoppingCartPage: FC = () => {
   const items = useDummyData().slice(0, 3);
+  const showAlertDialog = useSetAtom(alertDialogAtom);
   const technologies = ["Javascript", "NodeJs"];
 
   return (
@@ -38,7 +41,18 @@ const ShoppingCartPage: FC = () => {
                         {item.title}
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="rounded-full size-9 p-0">
+                    <Button
+                      variant="ghost"
+                      className="rounded-full size-9 p-0"
+                      onClick={() =>
+                        showAlertDialog({
+                          title: "Remove Item",
+                          message:
+                            "Are you sure you want to remove this item from the cart?",
+                          onConfirm: () => console.log("triggered"),
+                        })
+                      }
+                    >
                       <X size={20} />
                     </Button>
                   </div>

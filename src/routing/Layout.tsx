@@ -1,6 +1,9 @@
+import Dialog from "@/components/AlertDialog";
 import NavigationBar from "@/components/navbar/NavigationBar";
+
 import { Toaster } from "@/shadcn/ui/sonner";
 import { useTheme } from "@/shadcn/ui/theme-provider";
+
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -14,6 +17,7 @@ const Layout: FC = () => {
           <Outlet />
         </main>
       </div>
+      <Dialog />
       <Toaster theme={theme ?? "system"} />
     </>
   );
