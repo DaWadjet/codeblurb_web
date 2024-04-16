@@ -19,20 +19,21 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
       className="overflow-clip hover:border-card-foreground/40 transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
     >
       <CardHeader className="p-0">
-        <AspectRatio ratio={16 / 9}>
+        <AspectRatio ratio={18 / 9}>
           <img
             src={"https://fireship.io/courses/js/img/featured.webp"}
             alt={course.title}
+            className="object-cover w-full h-full"
           />
         </AspectRatio>
-        <div className="p-4 pb-2">
+        <div className="p-3">
           <CardTitle className="text-xl">
             {course.title +
               (course.id! % 2 === 0 ? " longer text to see how it fits" : "")}
           </CardTitle>
         </div>
       </CardHeader>
-      <CardFooter className="p-4 pb-2 pt-0 flex flex-col gap-2 items-start">
+      <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">
         <Progress value={progress} className="h-2" />
         <div className="flex justify-between items-start w-full">
           <p className="text-muted-foreground text-sm">
@@ -42,7 +43,13 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
               ? "Completed"
               : `${progress}% completed`}
           </p>
-          <div className="text-xs text-muted-foreground flex flex-col items-center">
+          <div
+            className="text-xs text-muted-foreground flex flex-col items-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/course/${course.id}/?tab=reviews`);
+            }}
+          >
             <p>Leave your rating</p>
             <Rating
               rating={0}

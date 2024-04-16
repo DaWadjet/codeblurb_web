@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu";
 import useTokenStore from "@/store/tokenStore";
+import { ShoppingCart } from "lucide-react";
 import { FC, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -37,17 +38,22 @@ const NavbarLoggedIn: FC = () => {
         My Courses
       </Button>
 
-      <Button variant="link" onClick={() => navigate("/shopping-cart")}>
-        Cart
+      <Button
+        variant="outline"
+        className="rounded-full relative size-9 p-2"
+        onClick={() => navigate("/shopping-cart")}
+      >
+        <ShoppingCart className="text-foreground" />
+        <div className="absolute -top-1.5 -right-1.5 shrink-0 rounded-full bg-foreground size-4 flex items-center justify-center text-xs leading-none text-background font-bold">
+          2
+        </div>
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-9 w-9">
               <AvatarImage src="TODO" alt={userName} />
-              <AvatarFallback className="text-muted-foreground hover:text-primary active:text-primary">
-                {userMonogram}
-              </AvatarFallback>
+              <AvatarFallback>{userMonogram}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>

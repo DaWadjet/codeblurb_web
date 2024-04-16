@@ -24,16 +24,17 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
 
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
-      className="overflow-clip hover:border-card-foreground/40 transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
+      className="overflow-clip hover:border-muted-foreground transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
     >
       <CardHeader className="p-0 relative">
-        <AspectRatio ratio={16 / 9}>
+        <AspectRatio ratio={18 / 9}>
           <img
             src={"https://fireship.io/courses/js/img/featured.webp"}
             alt={course.title}
+            className="object-cover w-full h-full"
           />
         </AspectRatio>
-        <div className="p-4">
+        <div className="p-3">
           <CardTitle className="text-xl">
             {course.title +
               (course.id! % 2 === 0 ? " longer text to see how it fits" : "")}
@@ -51,7 +52,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
           <span className="sr-only">Add to cart</span>
         </Button>
       </CardHeader>
-      <CardContent className="p-4 pt-0 flex flex-col gap-0.5">
+      <CardContent className="p-3 pt-0 flex flex-col gap-0.5">
         <p className="text-sm text-muted-foreground">
           {technologies.join(", ")}
         </p>
