@@ -18,7 +18,7 @@ const initialState = {
 
 const useCourseDetailsStore = create<TState>()(
   devtools(
-    immer((set, get) => ({
+    immer((set) => ({
       ...initialState,
       setValue: (key, value) =>
         set(
