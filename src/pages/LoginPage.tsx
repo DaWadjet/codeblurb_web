@@ -116,7 +116,7 @@ const LoginPage: FC = () => {
           Don't have an account?{" "}
           <Button
             variant="link"
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary text-base"
             onClick={() => navigate("/register")}
           >
             Register

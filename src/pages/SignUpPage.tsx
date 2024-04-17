@@ -155,7 +155,7 @@ const SignUpPage: FC = () => {
         <Button
           disabled={isPending}
           variant="link"
-          className="text-muted-foreground hover:text-primary"
+          className="text-muted-foreground hover:text-primary text-base"
           onClick={() => navigate("/login")}
         >
           Login
