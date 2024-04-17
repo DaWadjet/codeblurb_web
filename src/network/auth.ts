@@ -85,9 +85,23 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: async () => {
       await logoutMutationFn();
-      logout();
     },
     mutationKey: AuthKeys.logoutMutation,
+    onSettled: () => {
+      logout();
+      navigate("/", { state: { from: "" } });
+    },
+  });
+};
+
+export const useForceLogoutMutation = () => {
+  const logout = useTokenStore(useCallback((state) => state.logout, []));
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async () => {
+      await forceLogoutMutationFn();
+    },
+    mutationKey: AuthKeys.forceLogoutMutation,
     onSettled: () => {
       logout();
       navigate("/", { state: { from: "" } });

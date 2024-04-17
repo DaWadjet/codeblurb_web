@@ -34,6 +34,7 @@ const App: FC = () => {
 
           <Route element={<RequireAuth />}>
             <Route path="/home" element={<HomePage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/explore" element={<ExplorePage />} />
             <Route path="/my-courses" element={<MyCoursesPage />} />
             <Route path="/shopping-cart" element={<ShoppingCartPage />} />

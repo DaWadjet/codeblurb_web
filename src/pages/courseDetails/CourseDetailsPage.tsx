@@ -1,14 +1,6 @@
 import { useDummyData } from "@/hooks/useDummyData";
 import CourseDetailsAside from "@/pages/courseDetails/CourseDetailsAside";
 import CourseDetailsTabs from "@/pages/courseDetails/CourseDetailsTabs";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/shadcn/ui/breadcrumb";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
 import { Rating } from "@/shadcn/ui/rating";
 import dayjs from "dayjs";
@@ -28,21 +20,6 @@ const CourseDetailsPage: FC = () => {
   const course = courses[2];
   return (
     <div className="flex flex-col gap-5">
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/components">Components</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
       <Card className="flex-row h-64 justify-between overflow-hidden flex">
         <CardContent className="p-6  flex flex-col justify-between w-full">
           <h2 className="font-semibold text-3xl line-clamp-3 text-ellipsis">
@@ -91,7 +68,6 @@ const CourseDetailsPage: FC = () => {
           />
         </CardHeader>
       </Card>
-
       <div className="flex gap-8">
         <CourseDetailsTabs />
         <CourseDetailsAside />
