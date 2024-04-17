@@ -1,3 +1,4 @@
+import PasswordField from "@/components/PasswordField";
 import { useRegistrationMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
 import {
@@ -24,10 +25,13 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-const loginSchema = z
+const signupSchema = z
   .object({
     username: z.string().min(1, {
       message: "Username is required",
+    }),
+    email: z.string().email({
+      message: "Invalid email",
     }),
     password: z.string().min(1, {
       message: "Password is required",
@@ -43,25 +47,26 @@ const loginSchema = z
 
 const SignUpPage: FC = () => {
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       username: "",
       password: "",
       confirmPassword: "",
+      email: "",
     },
   });
 
   const { mutate: login, isPending } = useRegistrationMutation();
 
   const onSubmit = useCallback(
-    (values: z.infer<typeof loginSchema>) => {
+    (values: z.infer<typeof signupSchema>) => {
       login(values);
     },
     [login]
   );
   return (
-    <div className="mx-52 my-32 flex flex-col gap-2 items-center">
+    <div className="mx-52 justify-center flex flex-col gap-2 items-center my-20">
       <Card className="self-stretch">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -88,12 +93,26 @@ const SignUpPage: FC = () => {
               />
               <FormField
                 control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <PasswordField {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -106,7 +125,7 @@ const SignUpPage: FC = () => {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input {...field} type="password" />
+                      <PasswordField {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

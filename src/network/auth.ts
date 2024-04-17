@@ -20,7 +20,9 @@ export const AuthKeys = {
 } as const;
 
 export const loginMutationFn = async (data: LoginRequest) => {
-  const response = await client.post<LoginResponse>("/auth/login", data);
+  const response = await client.post<LoginResponse>("/auth/login", data, {
+    skipAuthRefresh: true,
+  } as AxiosAuthRefreshRequestConfig);
   return response.data;
 };
 
@@ -58,11 +60,9 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       if (!data.accessToken || !data.refreshToken)
         return console.error("No access or refresh token received");
+      console.log(data.accessToken);
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
-    },
-    meta: {
-      showToast: false,
     },
     mutationKey: AuthKeys.loginMutation,
   });

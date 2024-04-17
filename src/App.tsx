@@ -1,8 +1,10 @@
 import ExplorePage from "@/pages/ExplorePage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import HomePage from "@/pages/HomePage";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import ProfilePage from "@/pages/ProfilePage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import SignUpPage from "@/pages/SignUpPage";
 import {
@@ -26,6 +28,8 @@ const App: FC = () => {
           <Route element={<RedirectIfLoggedIn />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignUpPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           </Route>
 
           <Route element={<RequireAuth />}>
