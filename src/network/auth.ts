@@ -20,7 +20,9 @@ export const AuthKeys = {
 } as const;
 
 export const loginMutationFn = async (data: LoginRequest) => {
-  const response = await client.post<LoginResponse>("/auth/login", data);
+  const response = await client.post<LoginResponse>("/auth/login", data, {
+    skipAuthRefresh: true,
+  } as AxiosAuthRefreshRequestConfig);
   return response.data;
 };
 
@@ -58,11 +60,9 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       if (!data.accessToken || !data.refreshToken)
         return console.error("No access or refresh token received");
+      console.log(data.accessToken);
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
-    },
-    meta: {
-      showToast: false,
     },
     mutationKey: AuthKeys.loginMutation,
   });
@@ -85,9 +85,23 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: async () => {
       await logoutMutationFn();
-      logout();
     },
     mutationKey: AuthKeys.logoutMutation,
+    onSettled: () => {
+      logout();
+      navigate("/", { state: { from: "" } });
+    },
+  });
+};
+
+export const useForceLogoutMutation = () => {
+  const logout = useTokenStore(useCallback((state) => state.logout, []));
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async () => {
+      await forceLogoutMutationFn();
+    },
+    mutationKey: AuthKeys.forceLogoutMutation,
     onSettled: () => {
       logout();
       navigate("/", { state: { from: "" } });

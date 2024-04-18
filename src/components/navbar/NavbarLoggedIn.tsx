@@ -1,5 +1,6 @@
+import UserAvatar from "@/components/UserAvatar";
+import useUsername from "@/hooks/useUsername";
 import { useLogoutMutation } from "@/network/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/shadcn/ui/avatar";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
@@ -10,21 +11,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu";
-import useTokenStore from "@/store/tokenStore";
 import { ShoppingCart } from "lucide-react";
-import { FC, useCallback, useMemo } from "react";
+import { FC } from "react";
 import { useNavigate } from "react-router-dom";
 
 const NavbarLoggedIn: FC = () => {
   const navigate = useNavigate();
+  const username = useUsername();
   const { mutate: logout } = useLogoutMutation();
-  const userName = useTokenStore(useCallback((state) => state.username!, []));
-
-  const userMonogram = useMemo(() => {
-    const splitted = userName.split(" ");
-    if (splitted.length === 1) return splitted[0].slice(0, 2).toUpperCase();
-    return (splitted[0][0] + splitted[1][0]).toUpperCase();
-  }, [userName]);
 
   return (
     <div className="flex gap-6 items-center">
@@ -51,10 +45,7 @@ const NavbarLoggedIn: FC = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="TODO" alt={userName} />
-              <AvatarFallback>{userMonogram}</AvatarFallback>
-            </Avatar>
+            <UserAvatar />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -64,13 +55,13 @@ const NavbarLoggedIn: FC = () => {
           forceMount
         >
           <DropdownMenuLabel className="font-normal">
-            <p className="text-base font-medium leading-none">{userName}</p>
+            <p className="text-base font-medium leading-none">{username}</p>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>
+              Profile
+            </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => logout()}>Log out</DropdownMenuItem>

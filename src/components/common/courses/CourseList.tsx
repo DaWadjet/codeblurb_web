@@ -7,7 +7,7 @@ import {
   CarouselPrevious,
 } from "@/shadcn/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useCallback, useEffect, useState } from "react";
 
 const CourseList: FC<{
   items: ReactNode[];
@@ -16,15 +16,37 @@ const CourseList: FC<{
 }> = ({ items, autoplay = false, slidesToShow = 3 }) => {
   const [api, setApi] = useState<CarouselApi>();
 
+  const startAutoplay = useCallback(() => {
+    if (!api || !autoplay) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const autoplayPlugin = (api.plugins() as any).autoplay;
+    if (autoplay) {
+      autoplayPlugin.play();
+    }
+  }, [api, autoplay]);
+
+  const stopAutoplay = useCallback(() => {
+    if (!api || !autoplay) {
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const autoplayPlugin = (api.plugins() as any).autoplay;
+    if (autoplay) {
+      autoplayPlugin.stop();
+    }
+  }, [api, autoplay]);
+
   useEffect(() => {
-    if (!api) {
+    if (!api || !autoplay) {
       return;
     }
     api.on("select", () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (api.plugins() as any).autoplay.stop();
+      stopAutoplay();
     });
-  }, [api]);
+  }, [api, autoplay, stopAutoplay]);
 
   return (
     <Carousel
@@ -47,9 +69,9 @@ const CourseList: FC<{
     >
       <CarouselContent
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onMouseEnter={() => api && (api.plugins() as any).autoplay.stop()}
+        onMouseEnter={stopAutoplay}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onMouseLeave={() => api && (api.plugins() as any).autoplay.play()}
+        onMouseLeave={startAutoplay}
       >
         {items.map((item, index) => (
           <CarouselItem

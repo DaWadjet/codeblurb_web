@@ -1,5 +1,4 @@
 import PasswordField from "@/components/PasswordField";
-import { useLoginMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
 import {
   Card,
@@ -17,40 +16,62 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shadcn/ui/form";
-import { Input } from "@/shadcn/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
+import qs from "qs";
 import { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
-const loginSchema = z.object({
-  username: z.string().min(1, {
-    message: "Username is required",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-});
+const resetPasswordSchema = z
+  .object({
+    password: z.string().min(1, {
+      message: "Password is required",
+    }),
+    confirmPassword: z.string().min(1, {
+      message: "Password is required",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
-const LoginPage: FC = () => {
+const ResetPasswordPage: FC = () => {
+  const { token } = qs.parse(useLocation().search, {
+    ignoreQueryPrefix: true,
+  }) as { token: string };
   const navigate = useNavigate();
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      username: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
-  const { mutate: login, isPending } = useLoginMutation();
+  const { isPending, mutate } = useMutation({
+    mutationKey: ["resetPassword", token],
+    mutationFn: async (data: z.infer<typeof resetPasswordSchema>) => {
+      //TODO implement password reset
+      console.log(data, token);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    },
+    onSuccess: () => {
+      navigate("/login");
+    },
+    meta: {
+      successMessage: "Password reset successfully!",
+    },
+  });
 
   const onSubmit = useCallback(
-    (values: z.infer<typeof loginSchema>) => {
-      login(values);
+    (values: z.infer<typeof resetPasswordSchema>) => {
+      mutate(values);
     },
-    [login]
+    [mutate]
   );
 
   return (
@@ -59,32 +80,29 @@ const LoginPage: FC = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <CardHeader>
-              <CardTitle>Welcome back to CodeBlurb!</CardTitle>
-              <CardDescription>
-                Continue your journey by logging in.
-              </CardDescription>
+              <CardTitle>Reset Password</CardTitle>
+              <CardDescription>Enter your new password below.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <FormField
                 control={form.control}
-                name="username"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>New Password</FormLabel>
                     <FormControl>
-                      <Input placeholder="john_doe" {...field} />
+                      <PasswordField {...field} />
                     </FormControl>
-
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Password</FormLabel>
+                    <FormLabel>Confirm New Password</FormLabel>
                     <FormControl>
                       <PasswordField {...field} />
                     </FormControl>
@@ -93,45 +111,19 @@ const LoginPage: FC = () => {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => navigate(-1)}
-              >
-                Back
-              </Button>
+            <CardFooter className="flex justify-end">
               <Button type="submit">
                 {isPending && (
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                Log In
+                Reset Password
               </Button>
             </CardFooter>
           </form>
         </Form>
       </Card>
-      <div className="flex flex-col items-center">
-        <p className="text-muted-foreground">
-          Don't have an account?{" "}
-          <Button
-            variant="link"
-            className="text-muted-foreground hover:text-primary text-base"
-            onClick={() => navigate("/register")}
-          >
-            Register
-          </Button>
-        </p>
-        <Button
-          variant="link"
-          className="text-muted-foreground hover:text-primary text-xs"
-          onClick={() => navigate("/forgot-password")}
-        >
-          Forgot password?
-        </Button>
-      </div>
     </div>
   );
 };
 
-export default LoginPage;
+export default ResetPasswordPage;

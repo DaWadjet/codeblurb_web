@@ -5,7 +5,7 @@ import { toast } from "sonner";
 
 declare module "@tanstack/react-query" {
   interface Register {
-    defaultError: AxiosError;
+    defaultError: AxiosError<{ errorMessage?: string }>;
   }
 }
 
@@ -33,11 +33,10 @@ const mutationCache = new MutationCache({
     )
       return;
     toast.error(
-      mutation.options.meta?.errorMessage ?? "Something went wrong!",
-      {}
+      mutation.options.meta?.errorMessage ??
+        props[0].response?.data?.errorMessage ??
+        "Something went wrong!"
     );
-
-    console.log("Error", props[0]);
   },
   onSuccess(...props) {
     const mutation = props[3];
