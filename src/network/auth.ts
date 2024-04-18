@@ -68,9 +68,9 @@ export const resetPasswordMutationFn = async ({
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        skipAuthRefresh: true,
       },
-    }
+      skipAuthRefresh: true,
+    } as AxiosAuthRefreshRequestConfig
   );
 
 export const requestResetPasswordMutationFn = async (username: string) =>
