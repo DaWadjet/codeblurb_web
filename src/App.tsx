@@ -28,8 +28,8 @@ const App: FC = () => {
           <Route element={<RedirectIfLoggedIn />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignUpPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/forgot-password" element={<ResetPasswordPage />} />
+            <Route path="/reset-password" element={<ForgotPasswordPage />} />
           </Route>
 
           <Route element={<RequireAuth />}>

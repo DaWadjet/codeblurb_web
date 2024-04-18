@@ -17,6 +17,8 @@ export const AuthKeys = {
   register: ["register"] as const,
   logoutMutation: ["logout"] as const,
   forceLogoutMutation: ["forceLogout"] as const,
+  resetPasswordMutation: ["resetPassword"] as const,
+  requestResetPasswordMutation: ["requestResetPassword"] as const,
 } as const;
 
 export const loginMutationFn = async (data: LoginRequest) => {
@@ -32,7 +34,9 @@ export const logoutMutationFn = async () =>
   } as AxiosAuthRefreshRequestConfig);
 
 export const forceLogoutMutationFn = async () =>
-  client.post("/auth/force-logout");
+  client.post("/auth/force-logout", undefined, {
+    skipAuthRefresh: true,
+  } as AxiosAuthRefreshRequestConfig);
 
 const registerMutationFn = async (data: RegisterRequest) =>
   client.post("/auth/register", data);
@@ -47,6 +51,38 @@ export const useRegistrationMutation = () => {
     mutationKey: AuthKeys.register,
   });
 };
+
+export const resetPasswordMutationFn = async ({
+  token,
+  newPassword,
+}: {
+  token: string;
+  newPassword: string;
+}) =>
+  //add the bearer token to the auth header
+  client.post(
+    "/auth/reset-password",
+    {
+      password: newPassword,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        skipAuthRefresh: true,
+      },
+    }
+  );
+
+export const requestResetPasswordMutationFn = async (username: string) =>
+  client.post(
+    "/auth/forgot-password",
+    {
+      username,
+    },
+    {
+      skipAuthRefresh: true,
+    } as AxiosAuthRefreshRequestConfig
+  );
 
 export const useLoginMutation = () => {
   const setAccessToken = useTokenStore(
@@ -105,6 +141,36 @@ export const useForceLogoutMutation = () => {
     onSettled: () => {
       logout();
       navigate("/", { state: { from: "" } });
+    },
+  });
+};
+
+export const useResetPasswordMutation = () => {
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: async (data: { token: string; newPassword: string }) => {
+      await resetPasswordMutationFn(data);
+    },
+    mutationKey: AuthKeys.resetPasswordMutation,
+    onSuccess: () => {
+      navigate("/login", {
+        replace: true,
+      });
+    },
+    meta: {
+      successMessage: "Password reset successfully!",
+    },
+  });
+};
+
+export const useRequestResetPasswordMutation = () => {
+  return useMutation({
+    mutationFn: async (username: string) => {
+      await requestResetPasswordMutationFn(username);
+    },
+    mutationKey: AuthKeys.requestResetPasswordMutation,
+    meta: {
+      successMessage: "Email sent! Check your inbox!",
     },
   });
 };

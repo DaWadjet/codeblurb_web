@@ -1,3 +1,4 @@
+import { useRequestResetPasswordMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
 import {
   Card,
@@ -17,41 +18,27 @@ import {
 } from "@/shadcn/ui/form";
 import { Input } from "@/shadcn/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const emailSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email",
-  }),
+const usernameSchema = z.object({
+  username: z.string().min(1),
 });
 
 const ForgotPasswordPage: FC = () => {
-  const form = useForm<z.infer<typeof emailSchema>>({
-    resolver: zodResolver(emailSchema),
+  const form = useForm<z.infer<typeof usernameSchema>>({
+    resolver: zodResolver(usernameSchema),
     defaultValues: {
-      email: "",
+      username: "",
     },
   });
 
-  const { isPending, mutate } = useMutation({
-    mutationKey: ["sendResetPasswordEmail"],
-    mutationFn: async (data: z.infer<typeof emailSchema>) => {
-      //TODO send email
-      console.log(data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    },
-    meta: {
-      successMessage: "Email sent! Check Your Inbox!",
-    },
-  });
-
+  const { isPending, mutate } = useRequestResetPasswordMutation();
   const onSubmit = useCallback(
-    (values: z.infer<typeof emailSchema>) => {
-      mutate(values);
+    (values: z.infer<typeof usernameSchema>) => {
+      mutate(values.username);
     },
     [mutate]
   );
@@ -64,18 +51,18 @@ const ForgotPasswordPage: FC = () => {
             <CardHeader>
               <CardTitle>Send Reset Email</CardTitle>
               <CardDescription>
-                Enter your email where we can send you a magic link!
+                Enter your username where so we can send you a magic link!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-8">
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Your username</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} placeholder="john_doe" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
