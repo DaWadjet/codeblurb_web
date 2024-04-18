@@ -1,4 +1,5 @@
 import PasswordField from "@/components/PasswordField";
+import { useResetPasswordMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
 import {
   Card,
@@ -17,12 +18,11 @@ import {
   FormMessage,
 } from "@/shadcn/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import qs from "qs";
 import { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { z } from "zod";
 
 const resetPasswordSchema = z
@@ -43,7 +43,7 @@ const ResetPasswordPage: FC = () => {
   const { token } = qs.parse(useLocation().search, {
     ignoreQueryPrefix: true,
   }) as { token: string };
-  const navigate = useNavigate();
+
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -52,26 +52,16 @@ const ResetPasswordPage: FC = () => {
     },
   });
 
-  const { isPending, mutate } = useMutation({
-    mutationKey: ["resetPassword", token],
-    mutationFn: async (data: z.infer<typeof resetPasswordSchema>) => {
-      //TODO implement password reset
-      console.log(data, token);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    },
-    onSuccess: () => {
-      navigate("/login");
-    },
-    meta: {
-      successMessage: "Password reset successfully!",
-    },
-  });
+  const { isPending, mutate } = useResetPasswordMutation();
 
   const onSubmit = useCallback(
     (values: z.infer<typeof resetPasswordSchema>) => {
-      mutate(values);
+      mutate({
+        token,
+        newPassword: values.password,
+      });
     },
-    [mutate]
+    [mutate, token]
   );
 
   return (

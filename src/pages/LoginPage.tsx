@@ -125,7 +125,7 @@ const LoginPage: FC = () => {
         <Button
           variant="link"
           className="text-muted-foreground hover:text-primary text-xs"
-          onClick={() => navigate("/forgot-password")}
+          onClick={() => navigate("/reset-password")}
         >
           Forgot password?
         </Button>
@@ -135,3 +135,13 @@ const LoginPage: FC = () => {
 };
 
 export default LoginPage;
+//Forgot Password Email
+{
+  /* <div>
+  <h1>Hello <Username></h1>
+  <p>We have received a request to reset your password. Click the link below to continue with the process. If you did not request this, please ignore this email.</p>
+  <a href="https://codeblurb-492f1.web.app/?token=<TOKEN>" target="_blank" rel="noreferrer">
+    Set up a new password
+    </a>
+</div> */
+}
