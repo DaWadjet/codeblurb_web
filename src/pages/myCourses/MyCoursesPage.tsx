@@ -6,10 +6,9 @@ import {
   SelectValue,
 } from "@/shadcn/ui/select";
 import capitalize from "lodash/capitalize";
-import { FC } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import PurchasedCourseItem from "@/components/common/courses/PurchasedCourseItem";
-import { useDummyData } from "@/hooks/useDummyData";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
@@ -19,66 +18,104 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2Icon } from "lucide-react";
+
+// const sortPossibilities = [
+//   "none",
+//   "recently-viewed",
+//   "recently-enrolled",
+//   "title-a-to-z",
+//   "title-z-to-a",
+// ] as const;
+
+import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
+import { useContentBundlesQuery } from "@/network/content";
+import { TPageProps, skillLevelPossibilities } from "@/utils/types";
+import { useDebounce } from "react-use";
 import { useImmer } from "use-immer";
 
-const sortPossibilities = [
-  "none",
-  "recently-viewed",
-  "recently-enrolled",
-  "freshly-released",
-  "title-a-to-z",
-  "title-z-to-a",
+const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
+  { label: "None", sortValue: null },
+  {
+    label: "Recently Viewed",
+    sortValue: { property: "lastInteractedAt", ascending: false } as const,
+  },
+  {
+    label: "Recently Enrolled",
+    sortValue: { property: "enrolledAt", ascending: false } as const,
+  },
+  {
+    label: "Title A to Z",
+    sortValue: { property: "title", ascending: true } as const,
+  },
+  {
+    label: "Title Z to A",
+    sortValue: { property: "title", ascending: false } as const,
+  },
 ] as const;
-
-const skillLevelPossibilities = [
-  "beginner",
-  "intermediate",
-  "advanced",
-] as const;
-
-//TODO add other filters as mentioned
 
 const MyCoursesPage: FC = () => {
+  const [nonDebouncedSearch, setNonDebouncedSearch] = useState("");
+  const loaderRef = useRef<HTMLDivElement>(null);
   const [filterOptions, setFilterOptions] = useImmer<{
-    sort: (typeof sortPossibilities)[number];
+    sortIndex: number;
     skillLevel: (typeof skillLevelPossibilities)[number][];
     search: string;
   }>({
-    sort: "none",
+    sortIndex: 1,
     skillLevel: [],
     search: "",
   });
 
-  const items = useDummyData();
-  //TODO useMyContentBundlesQuery();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, cancel] = useDebounce(
+    () => {
+      setFilterOptions((draft) => {
+        draft.search = nonDebouncedSearch;
+      });
+    },
+    500,
+    [nonDebouncedSearch]
+  );
+
+  useEffect(() => {
+    return () => {
+      cancel();
+    };
+  }, [cancel]);
+
+  const query = useContentBundlesQuery({
+    sort: sortPossibilities[filterOptions.sortIndex].sortValue,
+    skills: filterOptions.skillLevel,
+    title: filterOptions.search,
+    size: 2,
+  });
+
+  useInViewWithQuery(loaderRef, query);
 
   return (
     <div className="flex flex-col">
       <div className="z-10 bg-background sticky top-5 pb-5 flex flex-col gap-7">
-        <h2 className="text-3xl font-semibold">Explore</h2>
+        <h2 className="text-3xl font-semibold">Your Content</h2>
         <div className="flex items-center justify-between">
           <div className="flex gap-3">
             <div className="flex flex-col items-start gap-1.5">
               <Label htmlFor="sort">Sort By</Label>
               <Select
-                value={filterOptions.sort}
+                value={filterOptions.sortIndex.toString()}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.sort = value as (typeof sortPossibilities)[number];
+                    draft.sortIndex = parseInt(value);
                   })
                 }
               >
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-52">
                   <SelectValue id="sort" placeholder="Sort by" />
                 </SelectTrigger>
-                <SelectContent className="w-40">
-                  {sortPossibilities.map((sort) => (
-                    <SelectItem key={sort} value={sort}>
-                      {sort
-                        .split("-")
-                        .map((e) => capitalize(e))
-                        .join(" ")}
+                <SelectContent className="w-52">
+                  {sortPossibilities.map((sort, index) => (
+                    <SelectItem key={sort.label} value={index.toString()}>
+                      {sort.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -89,14 +126,14 @@ const MyCoursesPage: FC = () => {
               <Label htmlFor="sort">Skill Level</Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-40">
+                  <Button variant="outline" className="w-52">
                     {filterOptions.skillLevel.length
                       ? filterOptions.skillLevel.map(capitalize).join(", ")
                       : "All levels"}
                     <ChevronDown className="h-4 w-4 opacity-50 ml-auto" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-40">
+                <DropdownMenuContent className="w-52">
                   {skillLevelPossibilities.map((level) => (
                     <DropdownMenuCheckboxItem
                       key={level}
@@ -133,20 +170,23 @@ const MyCoursesPage: FC = () => {
               className="w-56"
               placeholder="Search..."
               onChange={(e) => {
-                setFilterOptions((draft) => {
-                  draft.search = e.target.value;
-                });
+                setNonDebouncedSearch(e.target.value);
               }}
-              value={filterOptions.search}
+              value={nonDebouncedSearch}
             />
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-8 place-items-center items-start">
-        {items.map((course, i) => (
-          <PurchasedCourseItem key={course.id! + i} course={course} />
+        {(query.data?.items ?? []).map((course) => (
+          <PurchasedCourseItem key={course!.id} course={course!} />
         ))}
+      </div>
+      <div ref={loaderRef} className="flex justify-center">
+        {(query.isFetchingNextPage || query.isPending) && (
+          <Loader2Icon className="size-10 animate-spin my-20 text-muted-foreground" />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import client from "@/network/axiosClient";
 import {
+  ChangePasswordRequest,
   LoginResponse,
   RefreshTokenResponse,
   RegisterRequest,
@@ -19,6 +20,7 @@ export const AuthKeys = {
   forceLogoutMutation: ["forceLogout"] as const,
   resetPasswordMutation: ["resetPassword"] as const,
   requestResetPasswordMutation: ["requestResetPassword"] as const,
+  changePasswordMutation: ["changePassword"] as const,
 } as const;
 
 export const loginMutationFn = async (data: LoginRequest) => {
@@ -82,6 +84,9 @@ export const requestResetPasswordMutationFn = async (username: string) =>
       skipAuthRefresh: true,
     } as AxiosAuthRefreshRequestConfig
   );
+
+export const changePasswordMutationFn = async (data: ChangePasswordRequest) =>
+  client.post("/auth/change-password", data);
 
 export const useLoginMutation = () => {
   const setAccessToken = useTokenStore(
@@ -169,6 +174,18 @@ export const useRequestResetPasswordMutation = () => {
     mutationKey: AuthKeys.requestResetPasswordMutation,
     meta: {
       successMessage: "Email sent! Check your inbox!",
+    },
+  });
+};
+
+export const useChangePasswordMutation = () => {
+  return useMutation({
+    mutationFn: async (data: ChangePasswordRequest) => {
+      await changePasswordMutationFn(data);
+    },
+    mutationKey: AuthKeys.changePasswordMutation,
+    meta: {
+      successMessage: "Password changed successfully!",
     },
   });
 };

@@ -14,6 +14,9 @@ export interface paths {
   "/payments/checkout": {
     post: operations["checkout"];
   };
+  "/content/ratings/{contentBundleId}": {
+    post: operations["submitRating"];
+  };
   "/content/quiz/solution/{contentId}": {
     post: operations["checkSolutionForQuiz"];
   };
@@ -22,6 +25,9 @@ export interface paths {
   };
   "/content/code/code-quiz-solution/{contentId}": {
     post: operations["checkCodeQuizSolutionFor"];
+  };
+  "/auth/reset-password": {
+    post: operations["resetPassword"];
   };
   "/auth/register": {
     post: operations["register"];
@@ -35,13 +41,22 @@ export interface paths {
   "/auth/login": {
     post: operations["login"];
   };
+  "/auth/forgot-password": {
+    post: operations["forgotPassword"];
+  };
   "/auth/force-logout": {
     post: operations["forceLogout"];
+  };
+  "/auth/change-password": {
+    post: operations["changePassword"];
+  };
+  "/": {
+    get: operations["getProfileInfo"];
   };
   "/sync": {
     get: operations["sync"];
   };
-  "/shopping/restore-shopping-cart": {
+  "/shopping/shopping-cart": {
     get: operations["restoreShoppingCart"];
   };
   "/shopping/available-shopping-items": {
@@ -50,11 +65,11 @@ export interface paths {
   "/payments": {
     get: operations["getPreviousPayments"];
   };
-  "/content/my-content-bundles": {
+  "/content/content-bundles": {
     get: operations["getMyContentBundles"];
   };
-  "/content/my-content-bundles/separated": {
-    get: operations["getMyContentBundlesSeparated"];
+  "/content/content-bundles/{contentBundleId}": {
+    get: operations["getMyContentBundle"];
   };
   "/shopping/delete-item/{shoppingCartItem}": {
     delete: operations["removeItemFromShoppingCart"];
@@ -66,7 +81,16 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     MinimalContentBundleResponse: {
+      /** Format: int32 */
+      id?: number;
       includedContent?: components["schemas"]["MinimalContentResponse"][];
+      title?: string;
+      imageUrl?: string;
+      /** @enum {string} */
+      skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+      ratings?: components["schemas"]["RatingsResponse"];
+      /** Format: date-time */
+      releaseDate?: string;
     };
     MinimalContentResponse: {
       /** Format: int32 */
@@ -74,6 +98,21 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+    };
+    RatingResponse: {
+      /** Format: int32 */
+      rating?: number;
+      comment?: string;
+      username?: string;
+      /** Format: date-time */
+      createdAt?: string;
+    };
+    RatingsResponse: {
+      /** Format: double */
+      averageRating?: number;
+      /** Format: int32 */
+      numberOfRatings?: number;
+      ratings?: components["schemas"]["RatingResponse"][];
     };
     ShoppingCartResponse: {
       shoppingItems?: components["schemas"]["ShoppingItemResponse"][];
@@ -84,11 +123,19 @@ export interface components {
       title?: string;
       /** Format: double */
       price?: number;
+      /** Format: int64 */
+      numberOfPurchases?: number;
       contentBundle?: components["schemas"]["MinimalContentBundleResponse"];
+      ratings?: components["schemas"]["RatingsResponse"];
     };
     PaymentRequest: {
       successUrl?: string;
       cancelUrl?: string;
+    };
+    RatingRequest: {
+      /** Format: int32 */
+      rating: number;
+      comment: string;
     };
     QuizSolutionRequest: {
       solutions: {
@@ -137,9 +184,13 @@ export interface components {
       incorrectAnswer?: string;
       correctSolution?: string;
     };
+    ResetPasswordRequest: {
+      password: string;
+    };
     RegisterRequest: {
       username: string;
       password: string;
+      email: string;
     };
     RefreshTokenRequest: {
       refreshToken: string;
@@ -156,34 +207,113 @@ export interface components {
       accessToken?: string;
       refreshToken?: string;
     };
-    GetAvailableShoppingItemsResponse: {
-      shoppingItems?: components["schemas"]["ShoppingItemResponse"][];
+    ForgotPasswordRequest: {
+      username: string;
+    };
+    ChangePasswordRequest: {
+      oldPassword: string;
+      newPassword: string;
+    };
+    ProfileResponse: {
+      username?: string;
+      email?: string;
+      /** Format: date-time */
+      registeredAt?: string;
+    };
+    SortObject: {
+      direction?: string;
+      nullHandling?: string;
+      ascending?: boolean;
+      property?: string;
+      ignoreCase?: boolean;
+    };
+    PageShoppingItemResponse: {
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components["schemas"]["ShoppingItemResponse"][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components["schemas"]["SortObject"][];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
+    };
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number;
+      sort?: components["schemas"]["SortObject"][];
+      paged?: boolean;
+      /** Format: int32 */
+      pageNumber?: number;
+      /** Format: int32 */
+      pageSize?: number;
+      unpaged?: boolean;
     };
     ContentBundleResponse: {
+      /** Format: int32 */
+      id?: number;
+      title?: string;
       includedContent?: components["schemas"]["ContentResponse"][];
+      imageUrl?: string;
+      /** @enum {string} */
+      skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+      ratings?: components["schemas"]["RatingsResponse"];
+      /** Format: date-time */
+      releaseDate?: string;
     };
     ContentResponse: {
+      /** Format: int32 */
+      id?: number;
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
     };
     PaymentResponse: {
-      /** Format: double */
-      pricePayed?: number;
+      /** @enum {string} */
+      status?: "PENDING" | "PAID" | "FAILED";
       boughtContentBundles?: components["schemas"]["ContentBundleResponse"][];
     };
     PreviousPaymentsResponse: {
       previousPayments?: components["schemas"]["PaymentResponse"][];
     };
-    MyContentBundlesResponse: {
-      contentBundles?: components["schemas"]["ContentBundleResponse"][];
+    Pageable: {
+      /** Format: int32 */
+      page?: number;
+      /** Format: int32 */
+      size?: number;
+      sort?: string[];
+    };
+    PageMinimalContentBundleResponse: {
+      /** Format: int32 */
+      totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
+      /** Format: int32 */
+      size?: number;
+      content?: components["schemas"]["MinimalContentBundleResponse"][];
+      /** Format: int32 */
+      number?: number;
+      sort?: components["schemas"]["SortObject"][];
+      /** Format: int32 */
+      numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
+      first?: boolean;
+      last?: boolean;
+      empty?: boolean;
     };
     CodingContentResponse: {
+      /** Format: int32 */
+      id?: number;
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
-      /** Format: int32 */
-      id?: number;
       description?: string;
       codeSkeleton?: string[];
       codeSnippets?: string[];
@@ -191,15 +321,12 @@ export interface components {
       /** @enum {string} */
       codingContentType?: "SCRATCH" | "DRAG_AND_DROP" | "FILL_THE_GAP";
     };
-    MyContentBundlesSeparatedResponse: {
-      contentBundles?: components["schemas"]["SeparatedContentBundleResponse"][];
-    };
     QuizContentResponse: {
+      /** Format: int32 */
+      id?: number;
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
-      /** Format: int32 */
-      id?: number;
       questions?: components["schemas"]["QuizQuestionResponse"][];
     };
     QuizQuestionResponse: {
@@ -212,6 +339,11 @@ export interface components {
       solutionChar?: string;
     };
     SeparatedContentBundleResponse: {
+      /** Format: int32 */
+      id?: number;
+      title?: string;
+      imageUrl?: string;
+      ratings?: components["schemas"]["RatingsResponse"];
       includedVideos?: components["schemas"]["VideoContentResponse"][];
       includedCodings?: components["schemas"]["CodingContentResponse"][];
       includedQuizzes?: components["schemas"]["QuizContentResponse"][];
@@ -221,6 +353,8 @@ export interface components {
       expectedOutput?: string;
     };
     VideoContentResponse: {
+      /** Format: int32 */
+      id?: number;
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
@@ -289,6 +423,24 @@ export interface operations {
       };
     };
   };
+  submitRating: {
+    parameters: {
+      path: {
+        contentBundleId: number;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RatingRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   checkSolutionForQuiz: {
     parameters: {
       path: {
@@ -349,6 +501,19 @@ export interface operations {
       };
     };
   };
+  resetPassword: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ResetPasswordRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   register: {
     requestBody: {
       content: {
@@ -400,11 +565,47 @@ export interface operations {
       };
     };
   };
+  forgotPassword: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ForgotPasswordRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   forceLogout: {
     responses: {
       /** @description OK */
       200: {
         content: never;
+      };
+    };
+  };
+  changePassword: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ChangePasswordRequest"];
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
+  getProfileInfo: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ProfileResponse"];
+        };
       };
     };
   };
@@ -427,11 +628,20 @@ export interface operations {
     };
   };
   getAvailableShoppingItems: {
+    parameters: {
+      query: {
+        page?: number;
+        pageSize?: number;
+        skills?: string[];
+        title?: string;
+        sort: components["schemas"]["SortObject"][];
+      };
+    };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["GetAvailableShoppingItemsResponse"];
+          "*/*": components["schemas"]["PageShoppingItemResponse"];
         };
       };
     };
@@ -447,21 +657,31 @@ export interface operations {
     };
   };
   getMyContentBundles: {
+    parameters: {
+      query: {
+        pageable: components["schemas"]["Pageable"];
+      };
+    };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["MyContentBundlesResponse"];
+          "*/*": components["schemas"]["PageMinimalContentBundleResponse"];
         };
       };
     };
   };
-  getMyContentBundlesSeparated: {
+  getMyContentBundle: {
+    parameters: {
+      path: {
+        contentBundleId: number;
+      };
+    };
     responses: {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["MyContentBundlesSeparatedResponse"];
+          "*/*": components["schemas"]["SeparatedContentBundleResponse"];
         };
       };
     };

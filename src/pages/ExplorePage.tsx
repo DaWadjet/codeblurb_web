@@ -6,10 +6,10 @@ import {
   SelectValue,
 } from "@/shadcn/ui/select";
 import capitalize from "lodash/capitalize";
-import { FC } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
 import CourseItem from "@/components/common/courses/CourseItem";
-import { useDummyData } from "@/hooks/useDummyData";
+import { useAvailableShoppingItemsQuery } from "@/network/shopping";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
@@ -19,41 +19,83 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
-import { ChevronDown } from "lucide-react";
+import { TPageProps, skillLevelPossibilities } from "@/utils/types";
+import { ChevronDown, Loader2Icon } from "lucide-react";
+import { useDebounce } from "react-use";
+
+import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
 import { useImmer } from "use-immer";
 
-const sortPossibilities = [
-  "none",
-  "price-ascending",
-  "price-descending",
-  "highest-rated",
-  "freshly-released",
-  "title-a-to-z",
-  "title-z-to-a",
-] as const;
-
-const filterPossibilities = ["none", "trending", "new", "popular"] as const;
-
-const skillLevelPossibilities = [
-  "beginner",
-  "intermediate",
-  "advanced",
+const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
+  { label: "None", sortValue: null },
+  {
+    label: "Most Popular",
+    sortValue: { property: "popularity", ascending: false } as const,
+  },
+  {
+    label: "Freshly Released",
+    sortValue: { property: "releaseDate", ascending: false } as const,
+  },
+  {
+    label: "Price Ascending",
+    sortValue: { property: "price", ascending: true } as const,
+  },
+  {
+    label: "Price Descending",
+    sortValue: { property: "price", ascending: false } as const,
+  },
+  {
+    label: "Highest Rated",
+    sortValue: { property: "rating", ascending: false } as const,
+  },
+  {
+    label: "Title A to Z",
+    sortValue: { property: "title", ascending: true } as const,
+  },
+  {
+    label: "Title Z to A",
+    sortValue: { property: "title", ascending: false } as const,
+  },
 ] as const;
 
 const ExplorePage: FC = () => {
+  const [nonDebouncedSearch, setNonDebouncedSearch] = useState("");
+  const loaderRef = useRef<HTMLDivElement>(null);
   const [filterOptions, setFilterOptions] = useImmer<{
-    sort: (typeof sortPossibilities)[number];
-    filter: (typeof filterPossibilities)[number];
+    sortIndex: number;
     skillLevel: (typeof skillLevelPossibilities)[number][];
     search: string;
   }>({
-    sort: "none",
-    filter: "none",
+    sortIndex: 0,
     skillLevel: [],
     search: "",
   });
 
-  const items = useDummyData();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_, cancel] = useDebounce(
+    () => {
+      setFilterOptions((draft) => {
+        draft.search = nonDebouncedSearch;
+      });
+    },
+    500,
+    [nonDebouncedSearch]
+  );
+
+  useEffect(() => {
+    return () => {
+      cancel();
+    };
+  }, [cancel]);
+
+  const query = useAvailableShoppingItemsQuery({
+    sort: sortPossibilities[filterOptions.sortIndex].sortValue,
+    skills: filterOptions.skillLevel,
+    title: filterOptions.search,
+    size: 2,
+  });
+
+  useInViewWithQuery(loaderRef, query);
 
   return (
     <div className="flex flex-col">
@@ -64,46 +106,20 @@ const ExplorePage: FC = () => {
             <div className="flex flex-col items-start gap-1.5">
               <Label htmlFor="sort">Sort By</Label>
               <Select
-                value={filterOptions.sort}
+                value={filterOptions.sortIndex.toString()}
                 onValueChange={(value) =>
                   setFilterOptions((draft) => {
-                    draft.sort = value as (typeof sortPossibilities)[number];
+                    draft.sortIndex = parseInt(value);
                   })
                 }
               >
-                <SelectTrigger className="w-40">
+                <SelectTrigger className="w-52">
                   <SelectValue id="sort" placeholder="Sort by" />
                 </SelectTrigger>
-                <SelectContent className="w-40">
-                  {sortPossibilities.map((sort) => (
-                    <SelectItem key={sort} value={sort}>
-                      {sort
-                        .split("-")
-                        .map((e) => capitalize(e))
-                        .join(" ")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col items-start gap-1.5">
-              <Label htmlFor="filter">Filter By</Label>
-              <Select
-                value={filterOptions.filter}
-                onValueChange={(value) =>
-                  setFilterOptions((draft) => {
-                    draft.filter =
-                      value as (typeof filterPossibilities)[number];
-                  })
-                }
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue id="filter" placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent className="w-40">
-                  {filterPossibilities.map((filter) => (
-                    <SelectItem key={filter} value={filter}>
-                      {capitalize(filter)}
+                <SelectContent className="w-52">
+                  {sortPossibilities.map((sort, index) => (
+                    <SelectItem key={sort.label} value={index.toString()}>
+                      {sort.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -113,14 +129,14 @@ const ExplorePage: FC = () => {
               <Label htmlFor="sort">Skill Level</Label>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-40">
+                  <Button variant="outline" className="w-52">
                     {filterOptions.skillLevel.length
                       ? filterOptions.skillLevel.map(capitalize).join(", ")
                       : "All levels"}
                     <ChevronDown className="h-4 w-4 opacity-50 ml-auto" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-40">
+                <DropdownMenuContent className="w-52">
                   {skillLevelPossibilities.map((level) => (
                     <DropdownMenuCheckboxItem
                       key={level}
@@ -154,23 +170,26 @@ const ExplorePage: FC = () => {
             <Label htmlFor="search">Search</Label>
             <Input
               id="search"
-              className="w-56"
+              className="w-64"
               placeholder="Search..."
               onChange={(e) => {
-                setFilterOptions((draft) => {
-                  draft.search = e.target.value;
-                });
+                setNonDebouncedSearch(e.target.value);
               }}
-              value={filterOptions.search}
+              value={nonDebouncedSearch}
             />
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-8 place-items-center items-start">
-        {items.map((course, i) => (
-          <CourseItem key={course.id! + i} course={course} />
+        {query.data?.items.map((course) => (
+          <CourseItem key={course!.id} course={course!} />
         ))}
+      </div>
+      <div ref={loaderRef} className="flex justify-center">
+        {(query.isFetchingNextPage || query.isPending) && (
+          <Loader2Icon className="size-10 animate-spin my-20 text-muted-foreground" />
+        )}
       </div>
     </div>
   );

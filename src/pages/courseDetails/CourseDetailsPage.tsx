@@ -1,4 +1,3 @@
-import { useDummyData } from "@/hooks/useDummyData";
 import CourseDetailsAside from "@/pages/courseDetails/CourseDetailsAside";
 import CourseDetailsTabs from "@/pages/courseDetails/CourseDetailsTabs";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
@@ -6,6 +5,7 @@ import { Rating } from "@/shadcn/ui/rating";
 import dayjs from "dayjs";
 import { FC } from "react";
 
+import { useAvailableShoppingItemsQuery } from "@/network/shopping";
 import {
   Hourglass,
   Info,
@@ -14,10 +14,15 @@ import {
 } from "lucide-react";
 
 const CourseDetailsPage: FC = () => {
-  const courses = useDummyData();
+  const { data } = useAvailableShoppingItemsQuery({
+    skills: null,
+    sort: null,
+    title: "",
+  });
 
-  if (courses.length === 0) return <div>Loading...</div>;
-  const course = courses[2];
+  const course = data?.items[2];
+
+  if (!course) return <div>Loading...</div>;
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex-row h-64 justify-between overflow-hidden flex">
