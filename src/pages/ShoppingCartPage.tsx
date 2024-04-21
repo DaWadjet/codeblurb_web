@@ -1,7 +1,6 @@
-import PriceTag from "@/components/Discount";
+import PriceTag from "@/components/PriceTag";
 import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
-import { useDummyData } from "@/hooks/useDummyData";
 import { BackgroundGradient } from "@/shadcn/ui/background-gradient";
 import { Button } from "@/shadcn/ui/button";
 import { Rating } from "@/shadcn/ui/rating";
@@ -13,7 +12,8 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 
 const ShoppingCartPage: FC = () => {
-  const items = useDummyData().slice(0, 3);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const items = [] as any[];
   const showAlertDialog = useSetAtom(alertDialogAtom);
   const technologies = ["Javascript", "NodeJs"];
 

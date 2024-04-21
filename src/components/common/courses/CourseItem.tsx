@@ -1,17 +1,18 @@
 import { ShoppingCart } from "lucide-react";
 import { FC } from "react";
 
-import PriceTag from "@/components/Discount";
+import PriceTag from "@/components/PriceTag";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Rating } from "@/shadcn/ui/rating";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
+import capitalize from "lodash/capitalize";
 import { useNavigate } from "react-router-dom";
 
 const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
   const navigate = useNavigate();
-  const technologies = ["Javascript", "NodeJs"];
+  const technologies = ["Java"];
 
   //TODO level could be displayed on the bottomright of the image
 
@@ -29,16 +30,16 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
       <CardHeader className="p-0 relative">
         <AspectRatio ratio={18 / 9}>
           <img
-            src={"https://fireship.io/courses/js/img/featured.webp"}
+            src={
+              course.contentBundle?.imageUrl ??
+              "https://fireship.io/courses/js/img/featured.webp"
+            }
             alt={course.title}
             className="object-cover w-full h-full"
           />
         </AspectRatio>
         <div className="p-3">
-          <CardTitle className="text-xl">
-            {course.title +
-              (course.id! % 2 === 0 ? " longer text to see how it fits" : "")}
-          </CardTitle>
+          <CardTitle className="text-xl">{course.title}</CardTitle>
         </div>
         <Button
           variant="outline"
@@ -54,15 +55,25 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
       </CardHeader>
       <CardContent className="p-3 pt-0 flex flex-col gap-0.5">
         <p className="text-sm text-muted-foreground">
-          {technologies.join(", ")}
+          {technologies.join(", ")} -{" "}
+          {capitalize(course.contentBundle?.skillLevel)}
         </p>
         <div className="text-sm text-muted-foreground flex justify-between items-center">
           <div className="flex items-center">
-            <Rating rating={4.3} size={12} filledClassName="text-amber-500" />
-            <p className="text-muted-foreground">(5)</p>
+            <Rating
+              rating={course.ratings?.averageRating ?? 0}
+              size={12}
+              filledClassName="text-amber-500"
+            />
+            <p className="text-muted-foreground">
+              ({course.ratings?.numberOfRatings ?? 0})
+            </p>
           </div>
 
-          <PriceTag originalPrice={course.price!} discountedPrice={12} />
+          <PriceTag
+            originalPrice={course.price!}
+            discount={course.id! % 2 === 0}
+          />
         </div>
       </CardContent>
     </Card>

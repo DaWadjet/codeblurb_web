@@ -38,3 +38,13 @@ export type TReview = {
   comment: string;
   date: string;
 };
+
+export type TPageProps = {
+  size?: number;
+  sort: {
+    property: string;
+    ascending: boolean;
+  } | null;
+};
+
+export const DEFAULT_PAGE_SIZE = 10;

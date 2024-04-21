@@ -3,51 +3,90 @@ import {
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,
   CodeSolutionRequest,
-  MyContentBundlesResponse,
-  MyContentBundlesSeparatedResponse,
+  PageMinimalContentBundleResponse,
   QuizSolutionRequest,
   QuizSolutionResponse,
+  SeparatedContentBundleResponse,
 } from "@/types/ApiTypes";
-import { useQuery } from "@tanstack/react-query";
+import { DEFAULT_PAGE_SIZE, TPageProps } from "@/utils/types";
+import {
+  infiniteQueryOptions,
+  queryOptions,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
+import qs from "qs";
 
 export const ContentKeys = {
   quizSolutionMutation: (id: number) => ["quizSolution", id],
   codeSolutionMutation: (id: number) => ["codeSolution", id],
   codeQuizSolutionMutation: (id: number) => ["codeQuizSolution", id],
-  myContentBundlesQuery: ["myContentBundles"],
-  myContentBundlesSeparatedQuery: ["myContentBundlesSeparated"],
+  contentBundlesQuery: ({ size, sort }: TPageProps) => [
+    "contentBundles",
+    size ?? DEFAULT_PAGE_SIZE,
+    sort,
+  ],
+  contentBundleDetailsQuery: (id: number) => ["myContentBundlesSeparated", id],
 } as const;
 
-function myContentBundlesQueryOptions() {
-  return {
-    queryKey: ContentKeys.myContentBundlesQuery,
-    queryFn: async () => {
-      const response = await client.get<MyContentBundlesResponse>(
-        "/content/my-content-bundles"
+function contentBundlesQueryOptions(pageProps: TPageProps) {
+  return infiniteQueryOptions({
+    queryKey: ContentKeys.contentBundlesQuery(pageProps),
+    initialPageParam: 0,
+    queryFn: async ({ pageParam }) => {
+      const queryParams = qs.stringify({
+        size: pageProps.size ?? DEFAULT_PAGE_SIZE,
+        page: pageParam,
+        sort: pageProps.sort
+          ? `${pageProps.sort.property},${
+              pageProps.sort.ascending ? "asc" : "desc"
+            }`
+          : undefined,
+      });
+
+      const response = await client.get<PageMinimalContentBundleResponse>(
+        `/content/my-content-bundles?${queryParams}`
       );
+
       return response.data;
     },
-  };
+    getNextPageParam: (lastResponse) => {
+      if (lastResponse.last) {
+        return null;
+      }
+      return lastResponse.number! + 1;
+    },
+    getPreviousPageParam: (lastResponse) => {
+      if (lastResponse.first) {
+        return null;
+      }
+      return lastResponse.number! - 1;
+    },
+    select: (data) => ({
+      ...data,
+      items: data.pages.flatMap((page) => page.content),
+    }),
+  });
 }
 
-export const useMyContentBundlesQuery = () => {
-  return useQuery(myContentBundlesQueryOptions());
+export const useContentBundlesQuery = (pageProps: TPageProps) => {
+  return useInfiniteQuery(contentBundlesQueryOptions(pageProps));
 };
 
-function myContentBundlesSeparatedQueryOptions() {
-  return {
-    queryKey: ContentKeys.myContentBundlesSeparatedQuery,
+function contentBundleDetailsQueryOptions(id: number) {
+  return queryOptions({
+    queryKey: ContentKeys.contentBundleDetailsQuery(id),
     queryFn: async () => {
-      const response = await client.get<MyContentBundlesSeparatedResponse>(
-        "/content/my-content-bundles/separated"
+      const response = await client.get<SeparatedContentBundleResponse>(
+        "/content/content-bundles/" + id
       );
       return response.data;
     },
-  };
+  });
 }
 
-export const useMyContentBundlesSeparatedQuery = () => {
-  return useQuery(myContentBundlesSeparatedQueryOptions());
+export const useContentBundleDetailsQuery = (id: number) => {
+  return useQuery(contentBundleDetailsQueryOptions(id));
 };
 
 export async function quizSolutionMutationFn({

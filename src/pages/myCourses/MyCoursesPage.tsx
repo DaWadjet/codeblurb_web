@@ -9,7 +9,7 @@ import capitalize from "lodash/capitalize";
 import { FC } from "react";
 
 import PurchasedCourseItem from "@/components/common/courses/PurchasedCourseItem";
-import { useDummyData } from "@/hooks/useDummyData";
+import { useAvailableShoppingItemsQuery } from "@/network/shopping";
 import { Button } from "@/shadcn/ui/button";
 import {
   DropdownMenu,
@@ -50,8 +50,11 @@ const MyCoursesPage: FC = () => {
     search: "",
   });
 
-  const items = useDummyData();
-  //TODO useMyContentBundlesQuery();
+  const { data } = useAvailableShoppingItemsQuery({
+    skills: null,
+    sort: null,
+    title: "",
+  });
 
   return (
     <div className="flex flex-col">
@@ -144,8 +147,8 @@ const MyCoursesPage: FC = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-8 place-items-center items-start">
-        {items.map((course, i) => (
-          <PurchasedCourseItem key={course.id! + i} course={course} />
+        {(data?.items ?? []).map((course) => (
+          <PurchasedCourseItem key={course!.id} course={course!} />
         ))}
       </div>
     </div>
