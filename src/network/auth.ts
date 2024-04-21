@@ -59,7 +59,6 @@ export const resetPasswordMutationFn = async ({
   token: string;
   newPassword: string;
 }) =>
-  //add the bearer token to the auth header
   client.post(
     "/auth/reset-password",
     {
@@ -96,7 +95,6 @@ export const useLoginMutation = () => {
     onSuccess: (data) => {
       if (!data.accessToken || !data.refreshToken)
         return console.error("No access or refresh token received");
-      console.log(data.accessToken);
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
     },

@@ -32,14 +32,26 @@ export const useTokenStore = create<TState>()(
           set(
             (state) => {
               state.access = accessToken;
-              if (
+
+              const stripeCustomerId =
+                decodedToken &&
+                typeof decodedToken === "object" &&
+                "stripeCustomerId" in decodedToken &&
+                decodedToken.stripeCustomerId &&
+                typeof decodedToken.stripeCustomerId === "number"
+                  ? decodedToken.stripeCustomerId
+                  : null;
+
+              const customerId =
                 decodedToken &&
                 typeof decodedToken === "object" &&
                 "customerId" in decodedToken &&
                 decodedToken.customerId &&
                 typeof decodedToken.customerId === "number"
-              )
-                state.userId = decodedToken.customerId;
+                  ? decodedToken.customerId
+                  : null;
+
+              state.userId = customerId || stripeCustomerId || null;
 
               if (
                 decodedToken &&
