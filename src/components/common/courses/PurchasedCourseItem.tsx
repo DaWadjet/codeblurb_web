@@ -21,16 +21,16 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
       <CardHeader className="p-0">
         <AspectRatio ratio={18 / 9}>
           <img
-            src={"https://fireship.io/courses/js/img/featured.webp"}
+            src={
+              course.contentBundle?.imageUrl ??
+              "https://fireship.io/courses/js/img/featured.webp"
+            }
             alt={course.title}
             className="object-cover w-full h-full"
           />
         </AspectRatio>
         <div className="p-3">
-          <CardTitle className="text-xl">
-            {course.title +
-              (course.id! % 2 === 0 ? " longer text to see how it fits" : "")}
-          </CardTitle>
+          <CardTitle className="text-xl">{course.title}</CardTitle>
         </div>
       </CardHeader>
       <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">

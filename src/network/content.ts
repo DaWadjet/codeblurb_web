@@ -26,7 +26,7 @@ export const ContentKeys = {
     size ?? DEFAULT_PAGE_SIZE,
     sort,
   ],
-  contentBundleDetailsQuery: (id: number) => ["myContentBundlesSeparated", id],
+  contentBundleDetailsQuery: (id: number) => ["contentBundleDetails", id],
 } as const;
 
 function contentBundlesQueryOptions(pageProps: TPageProps) {
@@ -35,17 +35,20 @@ function contentBundlesQueryOptions(pageProps: TPageProps) {
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
       const queryParams = qs.stringify({
-        size: pageProps.size ?? DEFAULT_PAGE_SIZE,
+        pageSize: pageProps.size ?? DEFAULT_PAGE_SIZE,
         page: pageParam,
         sort: pageProps.sort
           ? `${pageProps.sort.property},${
               pageProps.sort.ascending ? "asc" : "desc"
             }`
           : undefined,
+        skills: pageProps.skills?.length
+          ? pageProps.skills.join(",")
+          : undefined,
       });
 
       const response = await client.get<PageMinimalContentBundleResponse>(
-        `/content/my-content-bundles?${queryParams}`
+        `/content/content-bundles?${queryParams}`
       );
 
       return response.data;
@@ -69,8 +72,16 @@ function contentBundlesQueryOptions(pageProps: TPageProps) {
   });
 }
 
-export const useContentBundlesQuery = (pageProps: TPageProps) => {
-  return useInfiniteQuery(contentBundlesQueryOptions(pageProps));
+export const useContentBundlesQuery = (pageProps?: TPageProps) => {
+  return useInfiniteQuery(
+    contentBundlesQueryOptions(
+      pageProps ?? {
+        sort: null,
+        skills: null,
+        title: "",
+      }
+    )
+  );
 };
 
 function contentBundleDetailsQueryOptions(id: number) {

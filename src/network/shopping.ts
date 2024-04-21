@@ -12,15 +12,10 @@ import {
 } from "@tanstack/react-query";
 import qs from "qs";
 
-type TPagedShoppingItemProps = {
-  skills: string[] | null;
-  title: string;
-} & TPageProps;
-
 export const ShoppingKeys = {
   addItemMutation: ["addItem"] as const,
   shoppingCartQuery: ["shoppingCart"] as const,
-  availableShoppingItemsQuery: (props: TPagedShoppingItemProps) =>
+  availableShoppingItemsQuery: (props: TPageProps) =>
     [
       "availableShoppingItems",
       props.size ?? DEFAULT_PAGE_SIZE,
@@ -43,9 +38,7 @@ function shoppingCartQueryOptions() {
   });
 }
 
-function availableShoppingItemsQueryOptions(
-  pageProps: TPagedShoppingItemProps
-) {
+function availableShoppingItemsQueryOptions(pageProps: TPageProps) {
   return infiniteQueryOptions({
     queryKey: ShoppingKeys.availableShoppingItemsQuery(pageProps),
     initialPageParam: 0,
@@ -93,10 +86,16 @@ export const useShoppingCartQuery = () => {
   return useQuery(shoppingCartQueryOptions());
 };
 
-export const useAvailableShoppingItemsQuery = (
-  props: TPagedShoppingItemProps
-) => {
-  return useInfiniteQuery(availableShoppingItemsQueryOptions(props));
+export const useAvailableShoppingItemsQuery = (props?: TPageProps) => {
+  return useInfiniteQuery(
+    availableShoppingItemsQueryOptions(
+      props ?? {
+        skills: null,
+        title: "",
+        sort: null,
+      }
+    )
+  );
 };
 
 export const addItemMutationFn = async (shoppingCartItemId: number) => {

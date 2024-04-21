@@ -19,12 +19,12 @@ import {
 } from "@/shadcn/ui/dropdown-menu";
 import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
-import { TPageProps } from "@/utils/types";
+import { TPageProps, skillLevelPossibilities } from "@/utils/types";
 import { ChevronDown, Loader2Icon } from "lucide-react";
 import { useDebounce } from "react-use";
-import { useImmer } from "use-immer";
 
 import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
+import { useImmer } from "use-immer";
 
 const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
   { label: "None", sortValue: null },
@@ -56,12 +56,6 @@ const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
     label: "Title Z to A",
     sortValue: { property: "title", ascending: false } as const,
   },
-] as const;
-
-const skillLevelPossibilities = [
-  "beginner",
-  "intermediate",
-  "advanced",
 ] as const;
 
 const ExplorePage: FC = () => {
