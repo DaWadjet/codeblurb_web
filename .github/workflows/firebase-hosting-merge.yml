@@ -2,7 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on merge
-'on':
+"on":
   push:
     branches:
       - main
@@ -11,17 +11,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create env file
-          run: |
-            touch .env
-            echo VITE_SERVER_BASE_URL=${{ secrets.VITE_SERVER_BASE_URL }} >> .env
-            echo VITE_STRIPE_API_KEY=${{ secrets.VITE_STRIPE_API_KEY }} >> .env
-            echo VITE_CLIENT_BASE_URL=${{ secrets.VITE_CLIENT_BASE_URL }} >> .env
-            cat .env
+        run: |
+          touch .env
+          echo VITE_SERVER_BASE_URL=${{ secrets.VITE_SERVER_BASE_URL }} >> .env
+          echo VITE_STRIPE_API_KEY=${{ secrets.VITE_STRIPE_API_KEY }} >> .env
+          echo VITE_CLIENT_BASE_URL=${{ secrets.VITE_CLIENT_BASE_URL }} >> .env
+          cat .env
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CODEBLURB_492F1 }}'
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CODEBLURB_492F1 }}"
           channelId: live
           projectId: codeblurb-492f1
