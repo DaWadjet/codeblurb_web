@@ -10,7 +10,7 @@ const profileQueryOptions = () =>
   queryOptions({
     queryKey: ProfileKeys.profileQuery,
     queryFn: async () => {
-      const response = await client.get<ProfileResponse>("/profile");
+      const response = await client.get<ProfileResponse>("/");
       return response.data;
     },
   });

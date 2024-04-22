@@ -32,6 +32,7 @@ export const useTokenStore = create<TState>()(
           set(
             (state) => {
               state.access = accessToken;
+              console.log(accessToken);
 
               const stripeCustomerId =
                 decodedToken &&

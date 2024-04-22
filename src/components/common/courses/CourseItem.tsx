@@ -1,17 +1,32 @@
 import { ShoppingCart } from "lucide-react";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 
 import PriceTag from "@/components/PriceTag";
+import useItemsInCart from "@/hooks/useItemsInCart";
+import { useAddItemMutation, useDeleteItemMutation } from "@/network/shopping";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Rating } from "@/shadcn/ui/rating";
+import { alertDialogAtom } from "@/store/jotaiAtoms";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
+import { useSetAtom } from "jotai";
 import capitalize from "lodash/capitalize";
+import { Loader2Icon, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
   const navigate = useNavigate();
+  const showAlertDialog = useSetAtom(alertDialogAtom);
+  const itemsInCart = useItemsInCart();
+  const isAlreadyInCart = useMemo(
+    () => itemsInCart.includes(course.id!),
+    [itemsInCart, course.id]
+  );
+  const { mutate: addToCart, isPending: isAddPending } = useAddItemMutation();
+  const { mutate: removeFromCart, isPending: isRemovePending } =
+    useDeleteItemMutation();
+
   const technologies = ["Java"];
 
   //TODO level could be displayed on the bottomright of the image
@@ -46,11 +61,34 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
           className="absolute border-muted size-9 p-2 top-0 right-1.5"
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Add to cart");
+            if (isAlreadyInCart) {
+              showAlertDialog({
+                title: "Remove Item",
+                message:
+                  "Are you sure you want to remove this item from the cart?",
+                onConfirm: () => removeFromCart(course.id!),
+              });
+            } else {
+              addToCart(course.id!);
+            }
           }}
         >
-          <ShoppingCart className="text-foreground" />
-          <span className="sr-only">Add to cart</span>
+          {isAddPending || isRemovePending ? (
+            <>
+              <Loader2Icon className="text-foreground" />
+              <span className="sr-only">Loading</span>
+            </>
+          ) : isAlreadyInCart ? (
+            <>
+              <X className="text-foreground" />
+              <span className="sr-only">Remove from cart</span>
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="text-foreground" />
+              <span className="sr-only">Add to cart</span>
+            </>
+          )}
         </Button>
       </CardHeader>
       <CardContent className="p-3 pt-0 flex flex-col gap-0.5">

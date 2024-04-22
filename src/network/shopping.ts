@@ -8,7 +8,9 @@ import {
   infiniteQueryOptions,
   queryOptions,
   useInfiniteQuery,
+  useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 import qs from "qs";
 
@@ -110,4 +112,30 @@ export const deleteItemMutationFn = async (shoppingCartItemId: number) => {
     `/shopping/delete-item/${shoppingCartItemId}`
   );
   return response.data;
+};
+
+export const useAddItemMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await addItemMutationFn(id);
+      await queryClient.invalidateQueries({
+        queryKey: ShoppingKeys.shoppingCartQuery,
+      });
+    },
+    mutationKey: ShoppingKeys.addItemMutation,
+  });
+};
+
+export const useDeleteItemMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: number) => {
+      await deleteItemMutationFn(id);
+      await queryClient.invalidateQueries({
+        queryKey: ShoppingKeys.shoppingCartQuery,
+      });
+    },
+    mutationKey: ShoppingKeys.deleteItemMutation,
+  });
 };

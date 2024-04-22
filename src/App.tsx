@@ -3,7 +3,6 @@ import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import HomePage from "@/pages/HomePage";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
-import ProfilePage from "@/pages/ProfilePage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import SignUpPage from "@/pages/SignUpPage";
@@ -12,6 +11,7 @@ import {
   default as CourseTaskPage,
 } from "@/pages/courseDetails/CourseDetailsPage";
 import MyCoursesPage from "@/pages/myCourses/MyCoursesPage";
+import ProfilePage from "@/pages/profile/ProfilePage";
 import Layout from "@/routing/Layout";
 import RedirectIfLoggedIn from "@/routing/RedirectIfLoggedIn";
 import RequireAuth from "@/routing/RequireAuth";
