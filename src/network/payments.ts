@@ -1,7 +1,6 @@
 import client from "@/network/axiosClient";
 import { PreviousPaymentsResponse } from "@/types/ApiTypes";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
 export const PaymentKeys = {
   paymentsQuery: ["payments"] as const,
@@ -24,19 +23,18 @@ export const usePaymentsQuery = () => {
 
 export const checkoutMutationFn = async () => {
   const response = await client.post<string>("/payments/checkout", {
-    successUrl: window.location.origin + "/my-courses",
-    cancelUrl: window.location.origin + "/shopping-cart",
+    successUrl: import.meta.env.VITE_CLIENT_BASE_URL + "/my-courses",
+    cancelUrl: import.meta.env.VITE_CLIENT_BASE_URL + "/shopping-cart",
   });
   return { redirectUrl: response.data };
 };
 
 export const useCheckoutMutation = () => {
-  const navigate = useNavigate();
   return useMutation({
     mutationKey: PaymentKeys.checkoutMutation,
     mutationFn: checkoutMutationFn,
     onSuccess: ({ redirectUrl }) => {
-      navigate(redirectUrl);
+      window.location.href = redirectUrl;
     },
   });
 };
