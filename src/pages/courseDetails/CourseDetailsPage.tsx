@@ -5,36 +5,36 @@ import { Rating } from "@/shadcn/ui/rating";
 import dayjs from "dayjs";
 import { FC } from "react";
 
-import { useAvailableShoppingItemsQuery } from "@/network/shopping";
+import useCourseDetailsQuery from "@/hooks/useCourseDetailsQuery";
 import {
   Hourglass,
   Info,
   LucideUploadCloud as LastUpdated,
+  Loader2Icon,
   Users,
 } from "lucide-react";
 
 const CourseDetailsPage: FC = () => {
-  const { data } = useAvailableShoppingItemsQuery({
-    skills: null,
-    sort: null,
-    title: "",
-  });
+  const { data, isPending, isError } = useCourseDetailsQuery();
+  console.log(data);
 
-  const course = data?.items[2];
-
-  if (!course) return <div>Loading...</div>;
+  if (isPending)
+    return (
+      <Loader2Icon className="size-24 animate-spin mx-auto my-auto min-h-[90vh]" />
+    );
+  if (isError) return <div>Something went wrong</div>;
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex-row h-64 justify-between overflow-hidden flex">
         <CardContent className="p-6  flex flex-col justify-between w-full">
           <h2 className="font-semibold text-3xl line-clamp-3 text-ellipsis">
-            {course.title}
+            {data.title}
           </h2>
           <div className="flex flex-col gap-3">
             <div className="flex justify-between w-full items-center text-xs">
               <div className="flex gap-2 items-end">
                 <Info className="text-muted-foreground size-5" />
-                <span className="text-muted-foreground">Intermediate</span>
+                <span className="text-muted-foreground">TODO level</span>
               </div>
               <div className="flex gap-2 items-end">
                 <Users className="text-muted-foreground size-5" />
@@ -68,7 +68,7 @@ const CourseDetailsPage: FC = () => {
         <CardHeader className="w-80 h-full p-0 shrink-0">
           <img
             src={"https://fireship.io/courses/js/img/featured.webp"}
-            alt={course.title}
+            alt={data.title}
             className="h-full w-full object-cover"
           />
         </CardHeader>

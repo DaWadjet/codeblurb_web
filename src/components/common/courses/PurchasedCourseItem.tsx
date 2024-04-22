@@ -11,7 +11,6 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
   course,
 }) => {
   const navigate = useNavigate();
-  const progress: number = 50;
 
   return (
     <Card
@@ -34,14 +33,14 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
         </div>
       </CardHeader>
       <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">
-        <Progress value={progress} className="h-2" />
+        <Progress value={course.contentBundle?.progress} className="h-2" />
         <div className="flex justify-between items-start w-full">
           <p className="text-muted-foreground text-sm">
-            {progress === 0
+            {course?.contentBundle?.progress
               ? "Start learning"
-              : progress === 100
+              : course.contentBundle?.progress === 100
               ? "Completed"
-              : `${progress}% completed`}
+              : `${course.contentBundle?.progress ?? 0}% completed`}
           </p>
           <div
             className="text-xs text-muted-foreground flex flex-col items-center"

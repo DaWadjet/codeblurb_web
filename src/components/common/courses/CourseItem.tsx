@@ -26,18 +26,11 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
   const { mutate: addToCart, isPending: isAddPending } = useAddItemMutation();
   const { mutate: removeFromCart, isPending: isRemovePending } =
     useDeleteItemMutation();
+  console.log(course);
 
   const technologies = ["Java"];
 
-  //TODO level could be displayed on the bottomright of the image
-
   return (
-    // <BackgroundGradient
-    //   containerClassName="w-full h-full rounded-lg"
-    //   className="grow w-full h-full rounded-lg"
-    //   effectClassName="rounded-lg overflow-clip opacity-0 blur-sm"
-    // >
-
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
       className="overflow-clip hover:border-muted-foreground transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
@@ -115,8 +108,6 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
         </div>
       </CardContent>
     </Card>
-
-    // </BackgroundGradient>
   );
 };
 export default CourseItem;

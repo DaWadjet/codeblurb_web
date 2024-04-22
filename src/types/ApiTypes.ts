@@ -41,7 +41,6 @@ type ProfileResponse = API["ProfileResponse"];
 type SortObject = API["SortObject"];
 type PageShoppingItemResponse = API["PageShoppingItemResponse"];
 type PageableObject = API["PageableObject"];
-type Pageable = API["Pageable"];
 type PageMinimalContentBundleResponse = API["PageMinimalContentBundleResponse"];
 
 export type {
@@ -61,7 +60,6 @@ export type {
   MinimalContentBundleResponse,
   PageMinimalContentBundleResponse,
   PageShoppingItemResponse,
-  Pageable,
   PageableObject,
   PaymentRequest,
   PaymentResponse,
