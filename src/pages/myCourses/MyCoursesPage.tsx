@@ -20,14 +20,6 @@ import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
 import { ChevronDown, Loader2Icon } from "lucide-react";
 
-// const sortPossibilities = [
-//   "none",
-//   "recently-viewed",
-//   "recently-enrolled",
-//   "title-a-to-z",
-//   "title-z-to-a",
-// ] as const;
-
 import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
 import { useContentBundlesQuery } from "@/network/content";
 import { TPageProps, skillLevelPossibilities } from "@/utils/types";
@@ -167,7 +159,7 @@ const MyCoursesPage: FC = () => {
             <Label htmlFor="search">Search</Label>
             <Input
               id="search"
-              className="w-56"
+              className="w-64"
               placeholder="Search..."
               onChange={(e) => {
                 setNonDebouncedSearch(e.target.value);

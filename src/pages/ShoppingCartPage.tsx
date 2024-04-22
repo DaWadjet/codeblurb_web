@@ -61,7 +61,10 @@ const ShoppingCartPage: FC = () => {
               <Separator className="mb-5" />
               <div className="flex gap-4">
                 <img
-                  src={"https://fireship.io/courses/js/img/featured.webp"}
+                  src={
+                    item.contentBundle?.imageUrl ??
+                    "https://fireship.io/courses/js/img/featured.webp"
+                  }
                   className="object-cover h-36"
                   style={{ aspectRatio: "14/9" }}
                 />
@@ -87,7 +90,14 @@ const ShoppingCartPage: FC = () => {
                         })
                       }
                     >
-                      <X size={20} />
+                      {!isPending ? (
+                        <X size={20} />
+                      ) : (
+                        <Loader2Icon
+                          size={20}
+                          className="text-foreground animate-spin"
+                        />
+                      )}
                     </Button>
                   </div>
                   <div className="flex flex-col gap-2">

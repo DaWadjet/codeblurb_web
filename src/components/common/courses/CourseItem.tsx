@@ -75,7 +75,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
         >
           {isAddPending || isRemovePending ? (
             <>
-              <Loader2Icon className="text-foreground" />
+              <Loader2Icon className="text-foreground animate-spin" />
               <span className="sr-only">Loading</span>
             </>
           ) : isAlreadyInCart ? (
