@@ -50,6 +50,12 @@ export interface paths {
   "/auth/change-password": {
     post: operations["changePassword"];
   };
+  "/seen/{contentId}": {
+    patch: operations["contentSeen"];
+  };
+  "/completed/{contentId}": {
+    patch: operations["contentCompleted"];
+  };
   "/": {
     get: operations["getProfileInfo"];
   };
@@ -89,6 +95,8 @@ export interface components {
       /** @enum {string} */
       skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
       ratings?: components["schemas"]["RatingsResponse"];
+      /** Format: double */
+      progress?: number;
       /** Format: date-time */
       releaseDate?: string;
     };
@@ -98,6 +106,8 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
     };
     RatingResponse: {
       /** Format: int32 */
@@ -220,18 +230,11 @@ export interface components {
       /** Format: date-time */
       registeredAt?: string;
     };
-    SortObject: {
-      direction?: string;
-      nullHandling?: string;
-      ascending?: boolean;
-      property?: string;
-      ignoreCase?: boolean;
-    };
     PageShoppingItemResponse: {
-      /** Format: int32 */
-      totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["ShoppingItemResponse"][];
@@ -249,12 +252,19 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components["schemas"]["SortObject"][];
+      unpaged?: boolean;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
-      unpaged?: boolean;
+    };
+    SortObject: {
+      direction?: string;
+      nullHandling?: string;
+      ascending?: boolean;
+      property?: string;
+      ignoreCase?: boolean;
     };
     ContentBundleResponse: {
       /** Format: int32 */
@@ -265,6 +275,8 @@ export interface components {
       /** @enum {string} */
       skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
       ratings?: components["schemas"]["RatingsResponse"];
+      /** Format: double */
+      progress?: number;
       /** Format: date-time */
       releaseDate?: string;
     };
@@ -274,6 +286,8 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
     };
     PaymentResponse: {
       /** @enum {string} */
@@ -283,18 +297,11 @@ export interface components {
     PreviousPaymentsResponse: {
       previousPayments?: components["schemas"]["PaymentResponse"][];
     };
-    Pageable: {
-      /** Format: int32 */
-      page?: number;
-      /** Format: int32 */
-      size?: number;
-      sort?: string[];
-    };
     PageMinimalContentBundleResponse: {
-      /** Format: int32 */
-      totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["MinimalContentBundleResponse"][];
@@ -314,6 +321,8 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       description?: string;
       codeSkeleton?: string[];
       codeSnippets?: string[];
@@ -327,6 +336,8 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       questions?: components["schemas"]["QuizQuestionResponse"][];
     };
     QuizQuestionResponse: {
@@ -344,6 +355,8 @@ export interface components {
       title?: string;
       imageUrl?: string;
       ratings?: components["schemas"]["RatingsResponse"];
+      /** Format: double */
+      progress?: number;
       includedVideos?: components["schemas"]["VideoContentResponse"][];
       includedCodings?: components["schemas"]["CodingContentResponse"][];
       includedQuizzes?: components["schemas"]["QuizContentResponse"][];
@@ -358,6 +371,8 @@ export interface components {
       name?: string;
       /** @enum {string} */
       contentType?: "CODING" | "VIDEO" | "QUIZ";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       description?: string;
       resourceUrl?: string;
     };
@@ -409,9 +424,9 @@ export interface operations {
     };
   };
   checkout: {
-    parameters: {
-      query: {
-        paymentRequest: components["schemas"]["PaymentRequest"];
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PaymentRequest"];
       };
     };
     responses: {
@@ -599,6 +614,32 @@ export interface operations {
       };
     };
   };
+  contentSeen: {
+    parameters: {
+      path: {
+        contentId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
+  contentCompleted: {
+    parameters: {
+      path: {
+        contentId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: never;
+      };
+    };
+  };
   getProfileInfo: {
     responses: {
       /** @description OK */
@@ -629,17 +670,24 @@ export interface operations {
   };
   getAvailableShoppingItems: {
     parameters: {
-      query: {
+      query?: {
         page?: number;
         pageSize?: number;
         skills?: string[];
         title?: string;
-        sort: components["schemas"]["SortObject"][];
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
       };
     };
     responses: {
-      /** @description OK */
+      /** @description Shopping items retrieved successfully */
       200: {
+        content: {
+          "*/*": components["schemas"]["PageShoppingItemResponse"];
+        };
+      };
+      /** @description Invalid sorting was provided. Sorting can be done by: title, price, popularity, releaseDate, rating */
+      400: {
         content: {
           "*/*": components["schemas"]["PageShoppingItemResponse"];
         };
@@ -658,13 +706,24 @@ export interface operations {
   };
   getMyContentBundles: {
     parameters: {
-      query: {
-        pageable: components["schemas"]["Pageable"];
+      query?: {
+        page?: number;
+        pageSize?: number;
+        skills?: string[];
+        title?: string;
+        /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+        sort?: string[];
       };
     };
     responses: {
-      /** @description OK */
+      /** @description Content bundles retrieved successfully */
       200: {
+        content: {
+          "*/*": components["schemas"]["PageMinimalContentBundleResponse"];
+        };
+      };
+      /** @description Invalid sorting was provided. Sorting can be done by: title, progress, enrolledAt, lastInteractedAt, releaseDate, rating */
+      400: {
         content: {
           "*/*": components["schemas"]["PageMinimalContentBundleResponse"];
         };

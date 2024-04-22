@@ -3,7 +3,7 @@ info:
   title: OpenAPI definition
   version: v0
 servers:
-  - url: http://api.bence.kovacs.host
+  - url: http://codeblurb-backend:8080
     description: Generated server url
 paths:
   /shopping/add-item/{shoppingCartItem}:
@@ -50,12 +50,12 @@ paths:
       tags:
         - payment-controller
       operationId: checkout
-      parameters:
-        - name: paymentRequest
-          in: query
-          required: true
-          schema:
-            $ref: "#/components/schemas/PaymentRequest"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+        required: true
       responses:
         "200":
           description: OK
@@ -267,6 +267,36 @@ paths:
       responses:
         "200":
           description: OK
+  /seen/{contentId}:
+    patch:
+      tags:
+        - progress-controller
+      operationId: contentSeen
+      parameters:
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+  /completed/{contentId}:
+    patch:
+      tags:
+        - progress-controller
+      operationId: contentCompleted
+      parameters:
+        - name: contentId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
   /:
     get:
       tags:
@@ -334,14 +364,21 @@ paths:
             default: ""
         - name: sort
           in: query
-          required: true
+          description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+          required: false
           schema:
             type: array
             items:
-              $ref: "#/components/schemas/SortObject"
+              type: string
       responses:
         "200":
-          description: OK
+          description: Shopping items retrieved successfully
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageShoppingItemResponse"
+        "400":
+          description: "Invalid sorting was provided. Sorting can be done by: title, price, popularity, releaseDate, rating"
           content:
             "*/*":
               schema:
@@ -364,14 +401,50 @@ paths:
         - content-controller
       operationId: getMyContentBundles
       parameters:
-        - name: pageable
+        - name: page
           in: query
-          required: true
+          required: false
           schema:
-            $ref: "#/components/schemas/Pageable"
+            type: integer
+            format: int32
+            default: 0
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 3
+        - name: skills
+          in: query
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ""
+        - name: sort
+          in: query
+          description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         "200":
-          description: OK
+          description: Content bundles retrieved successfully
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/PageMinimalContentBundleResponse"
+        "400":
+          description: "Invalid sorting was provided. Sorting can be done by: title, progress, enrolledAt, lastInteractedAt, releaseDate, rating"
           content:
             "*/*":
               schema:
@@ -438,6 +511,9 @@ components:
             - ADVANCED
         ratings:
           $ref: "#/components/schemas/RatingsResponse"
+        progress:
+          type: number
+          format: double
         releaseDate:
           type: string
           format: date-time
@@ -455,6 +531,12 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+        status:
+          type: string
+          enum:
+            - NOT_SEEN
+            - SEEN
+            - COMPLETED
     RatingResponse:
       type: object
       properties:
@@ -722,28 +804,15 @@ components:
         registeredAt:
           type: string
           format: date-time
-    SortObject:
-      type: object
-      properties:
-        direction:
-          type: string
-        nullHandling:
-          type: string
-        ascending:
-          type: boolean
-        property:
-          type: string
-        ignoreCase:
-          type: boolean
     PageShoppingItemResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -779,6 +848,8 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+        unpaged:
+          type: boolean
         paged:
           type: boolean
         pageNumber:
@@ -787,7 +858,18 @@ components:
         pageSize:
           type: integer
           format: int32
-        unpaged:
+    SortObject:
+      type: object
+      properties:
+        direction:
+          type: string
+        nullHandling:
+          type: string
+        ascending:
+          type: boolean
+        property:
+          type: string
+        ignoreCase:
           type: boolean
     ContentBundleResponse:
       type: object
@@ -811,6 +893,9 @@ components:
             - ADVANCED
         ratings:
           $ref: "#/components/schemas/RatingsResponse"
+        progress:
+          type: number
+          format: double
         releaseDate:
           type: string
           format: date-time
@@ -828,6 +913,12 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+        status:
+          type: string
+          enum:
+            - NOT_SEEN
+            - SEEN
+            - COMPLETED
     PaymentResponse:
       type: object
       properties:
@@ -848,30 +939,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/PaymentResponse"
-    Pageable:
-      type: object
-      properties:
-        page:
-          minimum: 0
-          type: integer
-          format: int32
-        size:
-          minimum: 1
-          type: integer
-          format: int32
-        sort:
-          type: array
-          items:
-            type: string
     PageMinimalContentBundleResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -911,6 +987,12 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+        status:
+          type: string
+          enum:
+            - NOT_SEEN
+            - SEEN
+            - COMPLETED
         description:
           type: string
         codeSkeleton:
@@ -945,6 +1027,12 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+        status:
+          type: string
+          enum:
+            - NOT_SEEN
+            - SEEN
+            - COMPLETED
         questions:
           type: array
           items:
@@ -978,6 +1066,9 @@ components:
           type: string
         ratings:
           $ref: "#/components/schemas/RatingsResponse"
+        progress:
+          type: number
+          format: double
         includedVideos:
           type: array
           items:
@@ -1011,6 +1102,12 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+        status:
+          type: string
+          enum:
+            - NOT_SEEN
+            - SEEN
+            - COMPLETED
         description:
           type: string
         resourceUrl:
