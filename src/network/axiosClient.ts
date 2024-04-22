@@ -7,7 +7,6 @@ import createAuthRefreshInterceptor from "axios-auth-refresh";
 
 const baseUrl = import.meta.env.VITE_SERVER_BASE_URL;
 
-console.log(import.meta.env);
 const setTokens = (tokens: RefreshTokenResponse) => {
   useTokenStore.getState().setAccessToken(tokens.accessToken!);
   useTokenStore.getState().setAccessToken(tokens.refreshToken!);
