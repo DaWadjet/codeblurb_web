@@ -1,6 +1,7 @@
 import UserAvatar from "@/components/UserAvatar";
-import useUsername from "@/hooks/useUsername";
 import { useForceLogoutMutation, useLogoutMutation } from "@/network/auth";
+import { useProfileQuery } from "@/network/profile";
+import ChangePasswordTab from "@/pages/profile/ChangePasswordTab";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,13 +13,22 @@ import {
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent } from "@/shadcn/ui/card";
 import { Separator } from "@/shadcn/ui/separator";
+import { cn } from "@/shadcnutils";
 import dayjs from "dayjs";
-import { FC } from "react";
+import { EyeIcon, Loader2Icon, SquareGanttChart } from "lucide-react";
+import { FC, useState } from "react";
 
 const ProfilePage: FC = () => {
-  const username = useUsername();
+  const { data: profile, isPending } = useProfileQuery();
+  const [tab, setTab] = useState<"overview" | "resetPassword">("overview");
   const { mutate: logout } = useLogoutMutation();
   const { mutate: logoutFromAllDevices } = useForceLogoutMutation();
+
+  if (isPending) {
+    return (
+      <Loader2Icon className="size-24 animate-spin mx-auto my-auto min-h-[90vh]" />
+    );
+  }
 
   return (
     <div className="mx-40 my-20 flex flex-col gap-5">
@@ -33,12 +43,40 @@ const ProfilePage: FC = () => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Card className="flex p-0">
+      <Card className="flex p-0 h-[520px]">
         <CardContent className="flex flex-col gap-6 items-center p-6 flex-1 h-auto">
           <UserAvatar className="size-20 text-2xl font-semibold" />
           <h2 className="text-2xl font-bold text-ellipsis line-clamp-2">
-            {username}
+            {profile?.username}
           </h2>
+          <div className="flex flex-col items-stretch gap-1 w-full">
+            <Separator className="mb-2" />
+            <Button
+              variant="ghost"
+              className={cn(
+                "justify-start gap-2",
+                tab === "overview" ? "bg-accent/70 text-accent-foreground " : ""
+              )}
+              onClick={() => setTab("overview")}
+            >
+              <SquareGanttChart className="size-5" />
+              Overview
+            </Button>
+            <Button
+              variant="ghost"
+              className={cn(
+                "justify-start gap-2",
+                tab === "resetPassword"
+                  ? "bg-accent/70 text-accent-foreground "
+                  : ""
+              )}
+              onClick={() => setTab("resetPassword")}
+            >
+              <EyeIcon className="size-5" />
+              Change password
+            </Button>
+            <Separator className="mt-2" />
+          </div>
           <Button
             variant="ghost"
             className="flex gap-2 items-center mt-auto text-muted-foreground"
@@ -70,32 +108,39 @@ const ProfilePage: FC = () => {
           </Button>
         </CardContent>
         <Separator orientation="vertical" className="h-auto" />
-        <CardContent className="flex flex-col items-start flex-[3] gap-6 p-6">
-          <h3 className="font-semibold text-3xl mb-6">Profile</h3>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-lg font-semibold">Email</label>
-            <p className="text-lg text-muted-foreground">
-              {"TODO@example.com"}
-            </p>
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-lg font-semibold">Registered at</label>
-            <p className="text-lg text-muted-foreground">
-              {dayjs(new Date()).format("YYYY/MM/DD")}
-            </p>
-          </div>
-          <div className="flex justify-end w-full mt-10">
-            <Button
-              variant="ghost"
-              className="text-destructive"
-              onClick={() => logoutFromAllDevices()}
-            >
-              Log out of all devices
-            </Button>
-            <Button variant="ghost" onClick={() => logout()}>
-              Log out
-            </Button>
-          </div>
+        <CardContent className="flex-[3] p-6">
+          {tab === "overview" ? (
+            <div className="flex flex-col gap-6 items-start p-1 h-full">
+              <h3 className="font-semibold text-3xl mb-6">Profile</h3>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-lg font-semibold">Email</label>
+                <p className="text-lg text-muted-foreground">
+                  {profile?.email}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-lg font-semibold">Registered at</label>
+                <p className="text-lg text-muted-foreground">
+                  {dayjs(profile?.registeredAt).format("YYYY/MM/DD")}
+                </p>
+              </div>
+              <div className="grow" />
+              <div className="flex justify-end w-full">
+                <Button
+                  variant="ghost"
+                  className="text-destructive"
+                  onClick={() => logoutFromAllDevices()}
+                >
+                  Log out of all devices
+                </Button>
+                <Button variant="ghost" onClick={() => logout()}>
+                  Log out
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <ChangePasswordTab />
+          )}
         </CardContent>
       </Card>
     </div>

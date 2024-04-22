@@ -7,7 +7,6 @@ permissions:
   pull-requests: write
 env:
   VITE_SERVER_BASE_URL: ${{ secrets.VITE_SERVER_BASE_URL }}
-  VITE_STRIPE_API_KEY: ${{ secrets.VITE_STRIPE_API_KEY }}
   VITE_CLIENT_BASE_URL: ${{ secrets.VITE_CLIENT_BASE_URL }}
 jobs:
   build_and_preview:

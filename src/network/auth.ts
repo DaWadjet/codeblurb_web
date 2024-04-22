@@ -181,7 +181,7 @@ export const useRequestResetPasswordMutation = () => {
 export const useChangePasswordMutation = () => {
   return useMutation({
     mutationFn: async (data: ChangePasswordRequest) => {
-      await changePasswordMutationFn(data);
+      return changePasswordMutationFn(data);
     },
     mutationKey: AuthKeys.changePasswordMutation,
     meta: {

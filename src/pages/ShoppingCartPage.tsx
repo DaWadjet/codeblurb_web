@@ -11,6 +11,12 @@ import { BackgroundGradient } from "@/shadcn/ui/background-gradient";
 import { Button } from "@/shadcn/ui/button";
 import { Rating } from "@/shadcn/ui/rating";
 import { Separator } from "@/shadcn/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shadcn/ui/tooltip";
 import { alertDialogAtom } from "@/store/jotaiAtoms";
 import { useSetAtom } from "jotai";
 import capitalize from "lodash/capitalize";
@@ -146,15 +152,30 @@ const ShoppingCartPage: FC = () => {
             <p className="text-lg font-semibold">Total</p>
             <PriceTag originalPrice={totalPrice} />
           </div>
-          <BackgroundGradient effectClassName="blur-sm rounded-lg">
-            <Button
-              className="w-full h-14 leadng-none text-2xl font-semibold hover:bg-background"
-              variant="outline"
-              onClick={() => checkout()}
-            >
-              Checkout
-            </Button>
-          </BackgroundGradient>
+          {cartItems.length === 0 ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 opacity-50 bg-primary text-primary-foreground w-full h-14 leading-none text-2xl font-semibold">
+                    Checkout
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent align="center">
+                  <p>Your cart is empty. Add some items to continue.</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <BackgroundGradient effectClassName="blur-sm rounded-lg">
+              <Button
+                className="w-full h-14 leading-none text-2xl font-semibold hover:bg-background"
+                variant="outline"
+                onClick={() => checkout()}
+              >
+                Checkout
+              </Button>
+            </BackgroundGradient>
+          )}
         </aside>
       </div>
       <div className="flex flex-col gap-4">
