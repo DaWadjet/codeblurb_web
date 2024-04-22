@@ -1,4 +1,5 @@
 import UserAvatar from "@/components/UserAvatar";
+import useItemsInCart from "@/hooks/useItemsInCart";
 import useUsername from "@/hooks/useUsername";
 import { useLogoutMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
@@ -18,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 const NavbarLoggedIn: FC = () => {
   const navigate = useNavigate();
   const username = useUsername();
+  const itemsInCart = useItemsInCart();
   const { mutate: logout } = useLogoutMutation();
 
   return (
@@ -38,9 +40,11 @@ const NavbarLoggedIn: FC = () => {
         onClick={() => navigate("/shopping-cart")}
       >
         <ShoppingCart className="text-foreground" />
-        <div className="absolute -top-1.5 -right-1.5 shrink-0 rounded-full bg-foreground size-4 flex items-center justify-center text-xs leading-none text-background font-bold">
-          2
-        </div>
+        {itemsInCart.length > 0 && (
+          <div className="absolute -top-1.5 -right-1.5 shrink-0 rounded-full bg-foreground size-4 flex items-center justify-center text-xs leading-none text-background font-bold">
+            {itemsInCart.length}
+          </div>
+        )}
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

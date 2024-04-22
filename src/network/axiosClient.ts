@@ -5,8 +5,9 @@ import axios, { AxiosRequestHeaders } from "axios";
 
 import createAuthRefreshInterceptor from "axios-auth-refresh";
 
-const baseUrl = "https://api.bence.kovacs.host/";
+const baseUrl = import.meta.env.VITE_SERVER_BASE_URL;
 
+console.log(baseUrl);
 const setTokens = (tokens: RefreshTokenResponse) => {
   useTokenStore.getState().setAccessToken(tokens.accessToken!);
   useTokenStore.getState().setAccessToken(tokens.refreshToken!);

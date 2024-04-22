@@ -10,6 +10,13 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Create env file
+          run: |
+            touch .env
+            echo VITE_SERVER_BASE_URL=${{ secrets.VITE_SERVER_BASE_URL }} >> .env
+            echo VITE_STRIPE_API_KEY=${{ secrets.VITE_STRIPE_API_KEY }} >> .env
+            echo VITE_CLIENT_BASE_URL=${{ secrets.VITE_CLIENT_BASE_URL }} >> .env
+            cat .env
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0

@@ -1,8 +1,10 @@
 import PriceTag from "@/components/PriceTag";
 import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
+import { useCheckoutMutation } from "@/network/payments";
 import {
   useAvailableShoppingItemsQuery,
+  useDeleteItemMutation,
   useShoppingCartQuery,
 } from "@/network/shopping";
 import { BackgroundGradient } from "@/shadcn/ui/background-gradient";
@@ -19,7 +21,11 @@ import { Link, useNavigate } from "react-router-dom";
 const ShoppingCartPage: FC = () => {
   const navigate = useNavigate();
   const { data } = useShoppingCartQuery();
+  const { mutate: checkout } = useCheckoutMutation();
   const cartItems = useMemo(() => data?.shoppingItems ?? [], [data]);
+
+  const { mutate: removeItemFromCart } = useDeleteItemMutation();
+
   const totalPrice = useMemo(
     () => cartItems.reduce((acc, item) => acc + item.price!, 0),
     [cartItems]
@@ -71,7 +77,7 @@ const ShoppingCartPage: FC = () => {
                           title: "Remove Item",
                           message:
                             "Are you sure you want to remove this item from the cart?",
-                          onConfirm: () => console.log("triggered"),
+                          onConfirm: () => removeItemFromCart(item.id!),
                         })
                       }
                     >
@@ -144,6 +150,7 @@ const ShoppingCartPage: FC = () => {
             <Button
               className="w-full h-14 leadng-none text-2xl font-semibold hover:bg-background"
               variant="outline"
+              onClick={() => checkout()}
             >
               Checkout
             </Button>
