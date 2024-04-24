@@ -6,6 +6,7 @@ import LoginPage from "@/pages/LoginPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import SignUpPage from "@/pages/SignUpPage";
+import ContentPage from "@/pages/content/ContentPage";
 import {
   default as CourseDetailsPage,
   default as CourseTaskPage,
@@ -43,6 +44,10 @@ const App: FC = () => {
             <Route
               path="/course/:courseId/task/:taskId"
               element={<CourseTaskPage />}
+            />
+            <Route
+              path="/course/:courseId/section/:sectionId"
+              element={<ContentPage />}
             />
           </Route>
         </Route>

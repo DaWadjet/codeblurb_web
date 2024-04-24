@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
 } from "@/shadcn/ui/accordion";
 
+import useCourseDetailsQuery from "@/hooks/useCourseDetailsQuery";
 import { HoverBorderGradient } from "@/shadcn/ui/hover-border-gradient";
 import {
   NewspaperIcon as ArticleIcon,
@@ -16,6 +17,7 @@ import {
   LucideMessageCircleQuestion as QuestionIcon,
   VideoIcon,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const getIcon = (type: string) => {
   switch (type) {
@@ -33,6 +35,9 @@ const getIcon = (type: string) => {
 };
 
 const CourseSummaryTab: FC = () => {
+  const navigate = useNavigate();
+  const { data } = useCourseDetailsQuery();
+
   const nextUp = dummySections[0];
   return (
     <div className="flex flex-col gap-4">
@@ -41,6 +46,7 @@ const CourseSummaryTab: FC = () => {
         as="button"
         containerClassName="rounded-lg w-full"
         className="rounded-lg w-full"
+        onClick={() => navigate(`/course/${data!.id}/section/${nextUp.id}`)}
       >
         <div className="flex justify-between p-0 border-none">
           <h4 className="font-medium w-full text-left">{nextUp.title}</h4>
