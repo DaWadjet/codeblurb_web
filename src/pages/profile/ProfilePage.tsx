@@ -1,3 +1,4 @@
+import BigLoader from "@/components/BigLoader";
 import UserAvatar from "@/components/UserAvatar";
 import { useForceLogoutMutation, useLogoutMutation } from "@/network/auth";
 import { usePaymentsQuery } from "@/network/payments";
@@ -16,7 +17,7 @@ import { Card, CardContent } from "@/shadcn/ui/card";
 import { Separator } from "@/shadcn/ui/separator";
 import { cn } from "@/shadcnutils";
 import dayjs from "dayjs";
-import { EyeIcon, Loader2Icon, SquareGanttChart } from "lucide-react";
+import { EyeIcon, SquareGanttChart } from "lucide-react";
 import { FC, useEffect, useState } from "react";
 
 const ProfilePage: FC = () => {
@@ -32,9 +33,7 @@ const ProfilePage: FC = () => {
   }, [paymentQuery.data]);
 
   if (isPending) {
-    return (
-      <Loader2Icon className="size-24 animate-spin mx-auto my-auto min-h-[90vh]" />
-    );
+    return <BigLoader />;
   }
 
   return (
