@@ -1,16 +1,24 @@
 import { FC } from "react";
 
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
-import { Card, CardFooter, CardHeader, CardTitle } from "@/shadcn/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shadcn/ui/card";
 import { Progress } from "@/shadcn/ui/progress";
 import { Rating } from "@/shadcn/ui/rating";
 import { ShoppingItemResponse } from "@/types/ApiTypes";
+import capitalize from "lodash/capitalize";
 import { useNavigate } from "react-router-dom";
 
 const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
   course,
 }) => {
   const navigate = useNavigate();
+  const technologies = ["Java"];
 
   return (
     <Card
@@ -32,6 +40,13 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
           <CardTitle className="text-xl">{course.title}</CardTitle>
         </div>
       </CardHeader>
+      <CardContent className="p-3">
+        <p className="text-sm text-muted-foreground">
+          {technologies.join(", ")} -{" "}
+          {capitalize(course.contentBundle?.skillLevel)}
+        </p>
+      </CardContent>
+
       <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">
         <Progress value={course.contentBundle?.progress} className="h-2" />
         <div className="flex justify-between items-start w-full">

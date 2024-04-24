@@ -21,10 +21,12 @@ export const ContentKeys = {
   quizSolutionMutation: (id: number) => ["quizSolution", id],
   codeSolutionMutation: (id: number) => ["codeSolution", id],
   codeQuizSolutionMutation: (id: number) => ["codeQuizSolution", id],
-  contentBundlesQuery: ({ size, sort }: TPageProps) => [
+  contentBundlesQuery: ({ size, sort, title, skills }: TPageProps) => [
     "contentBundles",
     size ?? DEFAULT_PAGE_SIZE,
     sort,
+    title,
+    skills,
   ],
   contentBundleDetailsQuery: (id: number) => ["contentBundleDetails", id],
 } as const;
@@ -45,6 +47,7 @@ function contentBundlesQueryOptions(pageProps: TPageProps) {
         skills: pageProps.skills?.length
           ? pageProps.skills.join(",")
           : undefined,
+        title: pageProps.title,
       });
 
       const response = await client.get<PageMinimalContentBundleResponse>(

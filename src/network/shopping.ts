@@ -124,6 +124,9 @@ export const useAddItemMutation = () => {
       });
     },
     mutationKey: ShoppingKeys.addItemMutation,
+    meta: {
+      successMessage: "Item added to cart",
+    },
   });
 };
 
@@ -137,5 +140,8 @@ export const useDeleteItemMutation = () => {
       });
     },
     mutationKey: ShoppingKeys.deleteItemMutation,
+    meta: {
+      successMessage: "Item removed from cart",
+    },
   });
 };

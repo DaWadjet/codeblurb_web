@@ -8,7 +8,7 @@ import {
 
 import useTokenStore from "@/store/tokenStore";
 import { LoginRequest } from "@/types/ApiTypes";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosAuthRefreshRequestConfig } from "axios-auth-refresh";
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
@@ -51,6 +51,9 @@ export const useRegistrationMutation = () => {
       await login(data);
     },
     mutationKey: AuthKeys.register,
+    meta: {
+      showSuccessToast: false,
+    },
   });
 };
 
@@ -97,6 +100,9 @@ export const useLoginMutation = () => {
   );
   return useMutation({
     mutationFn: async (data: LoginRequest) => loginMutationFn(data),
+    meta: {
+      showSuccessToast: false,
+    },
     onSuccess: (data) => {
       if (!data.accessToken || !data.refreshToken)
         return console.error("No access or refresh token received");
@@ -119,31 +125,37 @@ export const refresh = async (refreshToken: string) =>
   );
 
 export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
   const logout = useTokenStore(useCallback((state) => state.logout, []));
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: async () => {
       await logoutMutationFn();
     },
     mutationKey: AuthKeys.logoutMutation,
+    meta: {
+      successMessage: "Logged out successfully!",
+    },
     onSettled: () => {
+      queryClient.clear();
       logout();
-      navigate("/", { state: { from: "" } });
     },
   });
 };
 
 export const useForceLogoutMutation = () => {
+  const queryClient = useQueryClient();
   const logout = useTokenStore(useCallback((state) => state.logout, []));
-  const navigate = useNavigate();
   return useMutation({
     mutationFn: async () => {
       await forceLogoutMutationFn();
     },
     mutationKey: AuthKeys.forceLogoutMutation,
+    meta: {
+      successMessage: "Logged out successfully from all devices!",
+    },
     onSettled: () => {
+      queryClient.clear();
       logout();
-      navigate("/", { state: { from: "" } });
     },
   });
 };

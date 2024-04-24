@@ -106,9 +106,11 @@ const ShoppingCartPage: FC = () => {
                       {capitalize(item.contentBundle?.skillLevel)}
                     </p>
                     <div className="flex justify-between items-center">
-                      <div className="flex gap-2 items-baseline leading-none">
+                      <div className="flex gap-2 items-center leading-none">
                         <div className="font-medium text-foreground flex gap-2 items-center">
-                          {item.ratings?.averageRating ?? 0}{" "}
+                          {(item.ratings?.averageRating ?? 0) > 0 && (
+                            <span>{item.ratings?.averageRating ?? 0} </span>
+                          )}
                           <Rating
                             rating={item.ratings?.averageRating ?? 0}
                             size={14}
@@ -127,9 +129,9 @@ const ShoppingCartPage: FC = () => {
             </div>
           ))}
           {cartItems.length === 0 && (
-            <div className="flex flex-col items-center justify-center gap-4 my-20">
+            <div className="flex flex-col items-center justify-center gap-4 px-5 my-20">
               <h3 className="text-xl font-semibold">Your cart is empty</h3>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground text-center">
                 Check out our collection on the{" "}
                 <Button
                   variant="link"
@@ -191,7 +193,10 @@ const ShoppingCartPage: FC = () => {
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">You Might Also Like</h2>
         {isPending ? (
-          <Loader2Icon className="size-24 animate-spin mx-auto my-auto h-72" />
+          <Loader2Icon
+            size={48}
+            className="animate-spin mx-auto my-auto h-72"
+          />
         ) : (
           <CourseList
             items={(newData?.items ?? []).map((item) => (
