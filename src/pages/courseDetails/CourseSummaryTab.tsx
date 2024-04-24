@@ -46,7 +46,11 @@ const CourseSummaryTab: FC = () => {
         as="button"
         containerClassName="rounded-lg w-full"
         className="rounded-lg w-full"
-        onClick={() => navigate(`/course/${data!.id}/section/${nextUp.id}`)}
+        onClick={() =>
+          navigate(
+            `/course/${data!.id}/content/${data?.includedQuizzes![0].id}`
+          )
+        }
       >
         <div className="flex justify-between p-0 border-none">
           <h4 className="font-medium w-full text-left">{nextUp.title}</h4>
