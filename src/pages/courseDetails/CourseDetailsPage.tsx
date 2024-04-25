@@ -63,17 +63,13 @@ const CourseDetailsPage: FC = () => {
           <div className="flex gap-2 items-baseline leading-none">
             <div className="font-medium text-foreground text-xl flex gap-2 items-center">
               {course.ratings.averageRating ?? 0}{" "}
-              <Rating
-                rating={course.ratings.averageRating ?? 0}
-                size={16}
-                filledClassName="text-amber-400"
-              />
+              <Rating rating={course.ratings.averageRating ?? 0} size={16} />
             </div>
-            {!!course.ratings.numberOfRatings && (
-              <p className="text-sm text-muted-foreground">
-                from {course.ratings.numberOfRatings} reviews
-              </p>
-            )}
+            <p className="text-sm text-muted-foreground">
+              {course.ratings.numberOfRatings
+                ? ` from ${course.ratings.numberOfRatings} reviews`
+                : "-  no reviews yet"}
+            </p>
           </div>
         </CardContent>
         <CardHeader className="w-80 min-h-56 p-0 shrink-0 grow">
