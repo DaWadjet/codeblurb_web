@@ -7,10 +7,7 @@ import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
 import SignUpPage from "@/pages/SignUpPage";
 import ContentPage from "@/pages/content/ContentPage";
-import {
-  default as CourseDetailsPage,
-  default as CourseTaskPage,
-} from "@/pages/courseDetails/CourseDetailsPage";
+import CourseDetailsPage from "@/pages/courseDetails/CourseDetailsPage";
 import MyCoursesPage from "@/pages/myCourses/MyCoursesPage";
 import ProfilePage from "@/pages/profile/ProfilePage";
 import Layout from "@/routing/Layout";
@@ -18,7 +15,7 @@ import RedirectIfLoggedIn from "@/routing/RedirectIfLoggedIn";
 import RequireAuth from "@/routing/RequireAuth";
 import { ThemeProvider } from "@/shadcn/ui/theme-provider";
 import { FC } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 const App: FC = () => {
   return (
@@ -41,14 +38,12 @@ const App: FC = () => {
             <Route path="/shopping-cart" element={<ShoppingCartPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/course/:courseId" element={<CourseDetailsPage />} />
+
             <Route
-              path="/course/:courseId/task/:taskId"
-              element={<CourseTaskPage />}
-            />
-            <Route
-              path="/course/:courseId/section/:sectionId"
+              path="/course/:courseId/content/:contentId"
               element={<ContentPage />}
             />
+            <Route path="*" element={<Navigate to="/home" replace />} />
           </Route>
         </Route>
       </Routes>

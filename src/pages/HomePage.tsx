@@ -1,9 +1,9 @@
+import BigLoader from "@/components/BigLoader";
 import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
 import PurchasedCourseItem from "@/components/common/courses/PurchasedCourseItem";
 import { useContentBundlesQuery } from "@/network/content";
 import { useAvailableShoppingItemsQuery } from "@/network/shopping";
-import { Loader2Icon } from "lucide-react";
 import { FC } from "react";
 
 const HomePage: FC = () => {
@@ -31,9 +31,7 @@ const HomePage: FC = () => {
     });
 
   if (isPending_Purchased || isPending_MostPopular || isPending_TopRated) {
-    return (
-      <Loader2Icon className="size-24 animate-spin mx-auto my-auto min-h-[90vh]" />
-    );
+    return <BigLoader />;
   }
 
   return (

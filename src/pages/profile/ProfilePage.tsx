@@ -61,7 +61,7 @@ const ProfilePage: FC = () => {
               variant="ghost"
               className={cn(
                 "justify-start gap-2",
-                tab === "overview" ? "bg-accent/70 text-accent-foreground " : ""
+                tab === "overview" ? "bg-accent/70 text-accent-foreground" : ""
               )}
               onClick={() => setTab("overview")}
             >

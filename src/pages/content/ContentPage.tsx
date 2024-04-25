@@ -6,6 +6,16 @@ import DragAndDropContent from "@/pages/content/DragAndDropContent";
 import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
+import BigLoader from "@/components/BigLoader";
+import useViewedContent from "@/hooks/useViewedContent";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/shadcn/ui/breadcrumb";
 import { Label } from "@/shadcn/ui/label";
 import {
   Select,
@@ -14,7 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-import { FC, useState } from "react";
+import { FC, Fragment, useState } from "react";
+import { useParams } from "react-router-dom";
 
 const contentTypePossibilities = [
   "article",
@@ -26,11 +37,26 @@ const contentTypePossibilities = [
 ] as const;
 
 const ContentPage: FC = () => {
+  const { courseId } = useParams<{
+    courseId: string;
+  }>();
+
+  const { viewedContent: content, isPending, courseTitle } = useViewedContent();
+
   const [activeTab, setActiveTab] =
     useState<(typeof contentTypePossibilities)[number]>("article");
+
+  if (isPending) return <BigLoader />;
+  if (!content) return null; //should not happen
+
   return (
-    <div className="flex flex-col gap-5 h-full">
-      <div className="flex flex-col items-start gap-1.5">
+    <div
+      className="flex flex-col gap-8"
+      style={{
+        height: "calc(100vh - 148px)",
+      }}
+    >
+      <div className="flex flex-col items-start gap-1.5 absolute top-24 left-5">
         <Label htmlFor="type">Content Type</Label>
         <Select
           value={activeTab}
@@ -48,13 +74,32 @@ const ContentPage: FC = () => {
           </SelectContent>
         </Select>
       </div>
-
-      {activeTab === "article" && <ArticleContent />}
-      {activeTab === "video" && <VideoContent />}
-      {activeTab === "scratch" && <ScratchContent />}
-      {activeTab === "draganddrop" && <DragAndDropContent />}
-      {activeTab === "quiz" && <QuizContent />}
-      {activeTab === "fillthegap" && <FillInTheGapsContent />}
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/my-courses">My Courses</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href={`/course/${courseId}`}>
+              {courseTitle}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{content.name}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+      <Fragment key={content.id}>
+        {/* key is important to trigger remount */}
+        {activeTab === "article" && <ArticleContent />}
+        {activeTab === "video" && <VideoContent />}
+        {activeTab === "scratch" && <ScratchContent />}
+        {activeTab === "draganddrop" && <DragAndDropContent />}
+        {activeTab === "quiz" && <QuizContent />}
+        {activeTab === "fillthegap" && <FillInTheGapsContent />}
+      </Fragment>
     </div>
   );
 };
