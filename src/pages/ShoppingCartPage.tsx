@@ -65,7 +65,7 @@ const ShoppingCartPage: FC = () => {
                     item.contentBundle?.imageUrl ??
                     "https://fireship.io/courses/js/img/featured.webp"
                   }
-                  className="object-cover h-36"
+                  className="object-cover h-36 rounded-lg"
                   style={{ aspectRatio: "14/9" }}
                 />
                 <div className="flex flex-col gap-1 items-stretch justify-between w-full py-1">

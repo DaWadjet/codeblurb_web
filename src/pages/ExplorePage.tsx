@@ -24,6 +24,7 @@ import { ChevronDown, Loader2Icon } from "lucide-react";
 import { useDebounce } from "react-use";
 
 import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
+import { useNavigate } from "react-router-dom";
 import { useImmer } from "use-immer";
 
 const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
@@ -59,6 +60,7 @@ const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
 ] as const;
 
 const ExplorePage: FC = () => {
+  const navigate = useNavigate();
   const [nonDebouncedSearch, setNonDebouncedSearch] = useState("");
   const loaderRef = useRef<HTMLDivElement>(null);
   const [filterOptions, setFilterOptions] = useImmer<{
@@ -191,6 +193,23 @@ const ExplorePage: FC = () => {
           <Loader2Icon className="size-10 animate-spin my-20" />
         )}
       </div>
+      {query.data?.items.length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 px-5 my-20">
+          <h3 className="text-xl font-semibold">No courses found!</h3>
+          <span className="text-muted-foreground text-center">
+            Play around with the filters to find your desired course or check
+            back to your{" "}
+            <Button
+              variant="link"
+              className="p-0 text-base"
+              onClick={() => navigate("/home")}
+            >
+              Home page
+            </Button>{" "}
+            to see recommendations!
+          </span>
+        </div>
+      )}
     </div>
   );
 };

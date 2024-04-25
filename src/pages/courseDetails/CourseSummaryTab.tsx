@@ -45,19 +45,19 @@ const CourseSummaryTab: FC = () => {
             value={section.id!.toString()}
             key={section.id}
             className={cn(
-              "border-border border rounded-lg py-2.5 px-4 hover:bg-accent transition-all",
+              "border-border border rounded-lg hover:bg-accent transition-all",
               section.status === "SEEN" && "bg-accent/50",
               section.status === "COMPLETED" && "bg-accent/80"
             )}
           >
-            <AccordionTrigger className="flex justify-between p-0 border-none">
+            <AccordionTrigger className="flex justify-between p-0 border-none py-2.5 px-4 ">
               <h4 className="font-medium w-full text-left">{section.name}</h4>
               <div className="pb-1 mr-2 text-muted-foreground">
                 <ContentTypeIcon type={section.contentType} />
               </div>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 pt-4 pb-1">
-              <div className="flex justify-between items-end gap-4 text-muted-foreground flex-nowrap">
+              <div className="flex justify-between items-end gap-4 text-muted-foreground flex-nowrap pb-2.5 px-4 ">
                 <p>{section.shortDescription}</p>
                 <span className="font-medium whitespace-nowrap">
                   {section.estimatedTime} min

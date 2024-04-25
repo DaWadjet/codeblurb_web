@@ -26,7 +26,6 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
   const { mutate: addToCart, isPending: isAddPending } = useAddItemMutation();
   const { mutate: removeFromCart, isPending: isRemovePending } =
     useDeleteItemMutation();
-  console.log(course);
 
   const technologies = ["Java"];
 
@@ -91,11 +90,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
         </p>
         <div className="text-sm text-muted-foreground flex justify-between items-center">
           <div className="flex items-center">
-            <Rating
-              rating={course.ratings?.averageRating ?? 0}
-              size={12}
-              filledClassName="text-amber-500"
-            />
+            <Rating rating={course.ratings?.averageRating ?? 0} size={12} />
             <p className="text-muted-foreground">
               ({course.ratings?.numberOfRatings ?? 0})
             </p>

@@ -1,6 +1,7 @@
 import useCourseDetailsMagicQuery from "@/hooks/useCourseDetailsMagicQuery";
 import { Rating } from "@/shadcn/ui/rating";
 import { Separator } from "@/shadcn/ui/separator";
+import dayjs from "dayjs";
 import { FC } from "react";
 
 const CourseReviewsTab: FC = () => {
@@ -11,7 +12,9 @@ const CourseReviewsTab: FC = () => {
         <div className="flex flex-col" key={review.createdAt}>
           <div className="flex justify-between mb-1">
             <h4 className="text-lg font-semibold">{review.username}</h4>
-            <p className="text-xs text-gray-400">{review.createdAt}</p>
+            <p className="text-xs text-gray-400">
+              {dayjs(review.createdAt).format("YYYY/MM/DD")}
+            </p>
           </div>
           <Rating rating={review.rating!} size={16} />
           <p className="text-base mt-3">{review.comment}</p>

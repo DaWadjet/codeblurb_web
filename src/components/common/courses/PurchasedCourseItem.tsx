@@ -22,12 +22,9 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
   const username = useUsername();
   const technologies = ["Java"];
   const ratingOfUser = useMemo(() => {
-    return course.ratings?.ratings?.find((r) => {
-      console.log(r);
-      return r.username == username;
-    });
+    return course.ratings?.ratings?.find((r) => r.username == username);
   }, [course.ratings?.ratings, username]);
-  console.log(ratingOfUser);
+
   return (
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
@@ -76,8 +73,6 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
             <Rating
               rating={ratingOfUser?.rating ?? 0}
               size={10}
-              filledClassName="text-amber-500"
-              hoverClassName="text-amber-300"
               onRatingChange={ratingOfUser ? undefined : () => {}}
             />
           </div>
