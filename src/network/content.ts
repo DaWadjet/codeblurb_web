@@ -13,6 +13,7 @@ import {
   infiniteQueryOptions,
   queryOptions,
   useInfiniteQuery,
+  useMutation,
   useQuery,
 } from "@tanstack/react-query";
 import qs from "qs";
@@ -118,6 +119,13 @@ export async function quizSolutionMutationFn({
   );
   return response.data;
 }
+
+export const useQuizSolutionSubmissionMutation = (contentId: number) => {
+  return useMutation({
+    mutationKey: ContentKeys.quizSolutionMutation(contentId),
+    mutationFn: quizSolutionMutationFn,
+  });
+};
 
 export async function codeSolutionMutationFn({
   contentId,

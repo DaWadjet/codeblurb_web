@@ -11,6 +11,8 @@ import {
 } from "@/shadcn/ui/pagination";
 
 import useGoToNextContent from "@/hooks/useGoToNextContent";
+import { useViewedContent } from "@/hooks/useViewedContent";
+import { useQuizSolutionSubmissionMutation } from "@/network/content";
 import {
   Accordion,
   AccordionContent,
@@ -21,77 +23,32 @@ import { Progress } from "@/shadcn/ui/progress";
 import { ScrollArea } from "@/shadcn/ui/scroll-area";
 import { Separator } from "@/shadcn/ui/separator";
 import { cn } from "@/shadcnutils";
-import { QuizContentResponse } from "@/types/ApiTypes";
-import { CircleCheckIcon, XCircleIcon } from "lucide-react";
+import { QuizSolutionResponse } from "@/types/ApiTypes";
+import { CircleCheckIcon, Loader2Icon, XCircleIcon } from "lucide-react";
 import { FC, Fragment, useCallback, useMemo, useState } from "react";
 
-const dummyQuiz: QuizContentResponse = {
-  questions: [
-    {
-      id: 1,
-      question: "What is the capital of France?",
-      answers: ["Paris", "Berlin", "London", "Madrid"],
-      solutionIndex: 0,
-    },
-    {
-      id: 2,
-      question: "What is the capital of Germany?",
-      answers: ["Paris", "Berlin", "London", "Madrid"],
-      solutionIndex: 1,
-    },
-    {
-      id: 3,
-      question: "What is the capital of the UK?",
-      answers: [
-        "Paris",
-        "Very long answer xddd lorem ipsum dolor sit amet con anectetur nem tudom tovabb",
-        "London",
-        "Madrid",
-      ],
-      solutionIndex: 2,
-    },
-    {
-      id: 4,
-      question: "What is the capital of Spain?",
-      answers: ["Paris", "Berlin", "London", "Madrid"],
-      solutionIndex: 3,
-    },
-    {
-      id: 5,
-      question: "What is the capital of the UK?",
-      answers: [
-        "Paris",
-        "Very long answer xddd lorem ipsum dolor sit amet con anectetur nem tudom tovabb",
-        "London",
-        "Madrid",
-      ],
-      solutionIndex: 2,
-    },
-    {
-      id: 6,
-      question: "What is the capital of Spain?",
-      answers: ["Paris", "Berlin", "London", "Madrid"],
-      solutionIndex: 3,
-    },
-  ],
-  contentType: "QUIZ",
-  status: "COMPLETED",
-  id: 1,
-  name: "Countries and capitals",
-};
-
 const QuizContent: FC = () => {
+  const { viewedContent, isPending } = useViewedContent();
+  const [solution, setSolution] = useState<QuizSolutionResponse | null>(null);
+  if (!viewedContent?.contentType || viewedContent.contentType !== "QUIZ") {
+    throw new Error("This component should only be used for quiz content");
+  }
+  const { mutateAsync: submitQuiz } = useQuizSolutionSubmissionMutation(
+    viewedContent.id!
+  );
+
   const { goToNextContent, hasNextContent } = useGoToNextContent();
+
   const [shownQuestionIndex, setShownQuestionIndex] = useState<
-    number | "NOT_STARTED" | "RESULTS"
+    number | "NOT_STARTED" | "BEFORE_SUBMIT"
   >("NOT_STARTED");
   const [answerIndices, setAnswerIndices] = useState<number[]>([]);
 
   const progress = useMemo(() => {
     if (shownQuestionIndex === "NOT_STARTED") return 0;
-    if (shownQuestionIndex === "RESULTS") return 100;
-    return (shownQuestionIndex / dummyQuiz.questions!.length) * 100;
-  }, [shownQuestionIndex]);
+    if (shownQuestionIndex === "BEFORE_SUBMIT") return 100;
+    return (shownQuestionIndex / viewedContent.questions!.length) * 100;
+  }, [shownQuestionIndex, viewedContent.questions]);
 
   const indicesAnswered = useMemo(() => {
     if (shownQuestionIndex === "NOT_STARTED") return [];
@@ -111,41 +68,45 @@ const QuizContent: FC = () => {
         newIndices[questionIndex] = answerIndex;
         return newIndices;
       });
-      if (questionIndex === dummyQuiz.questions!.length - 1) {
-        setShownQuestionIndex("RESULTS");
-        //TODO: send answers to backend
+      if (questionIndex === viewedContent.questions!.length - 1) {
+        setShownQuestionIndex("BEFORE_SUBMIT");
       } else {
         setShownQuestionIndex(questionIndex + 1);
       }
     },
-    []
+    [viewedContent.questions]
   );
 
+  const submitResults = useCallback(async () => {
+    const results = await submitQuiz({
+      contentId: viewedContent.id!,
+      quizSolution: {
+        solutions: viewedContent.questions!.map((question, index) => ({
+          questionId: question.id!,
+          answerIndex: answerIndices[index],
+        })),
+      },
+    });
+    setSolution(results!);
+  }, [submitQuiz, viewedContent.id, viewedContent.questions, answerIndices]);
+
   const correctlyAnswered = useMemo(
-    () =>
-      dummyQuiz.questions!.reduce(
-        (acc, question, index) =>
-          acc + (answerIndices[index] === question.solutionIndex ? 1 : 0),
-        0
-      ),
-    [answerIndices]
-  );
-  const hasWrongAnswers = useMemo(
-    () => correctlyAnswered !== dummyQuiz.questions!.length,
-    [correctlyAnswered]
+    () => solution?.correctAnswerQuestionIds?.length ?? 0,
+    [solution]
   );
 
   return (
     <div className="mx-40 flex flex-col gap-4 min-h-0 h-full justify-start">
       <div className="flex gap-2 items-baseline justify-between">
-        <h1 className="font-semibold text-3xl ">Quiz - {dummyQuiz.name}</h1>
+        <h1 className="font-semibold text-3xl ">Quiz - {viewedContent.name}</h1>
         {shownQuestionIndex === "NOT_STARTED" ? (
           <span className="text-muted-foreground">
-            {dummyQuiz.questions!.length} questions
+            {viewedContent.questions!.length} questions
           </span>
-        ) : shownQuestionIndex === "RESULTS" ? null : (
+        ) : shownQuestionIndex === "BEFORE_SUBMIT" ? null : (
           <span className="text-muted-foreground">
-            Question {shownQuestionIndex + 1} of {dummyQuiz.questions!.length}
+            Question {shownQuestionIndex + 1} of{" "}
+            {viewedContent.questions!.length}
           </span>
         )}
       </div>
@@ -160,10 +121,19 @@ const QuizContent: FC = () => {
             <CardHeader>
               <h2 className="text-2xl font-medium">Let the quiz begin!</h2>
             </CardHeader>
-            <CardContent className="flex flex-col items-start h-full">
+            <CardContent className="flex flex-col items-start h-full gap-4">
+              {!!viewedContent.shortDescription && (
+                <p className="text-lg">{viewedContent.shortDescription}</p>
+              )}
               <div className="grow" />
+
+              <p className="text-lg text-muted-foreground">
+                Answer the following questions to test your knowledge of the
+                section.
+              </p>
+
               <Button
-                className="self-end"
+                className="self-end mt-6"
                 onClick={() => setShownQuestionIndex(0)}
               >
                 I'm ready!
@@ -172,15 +142,16 @@ const QuizContent: FC = () => {
           </>
         )}
         {shownQuestionIndex !== "NOT_STARTED" &&
-          shownQuestionIndex !== "RESULTS" && (
+          shownQuestionIndex !== "BEFORE_SUBMIT" &&
+          !solution && (
             <>
               <CardHeader className="text-2xl font-medium pt-4 pb-2">
-                {dummyQuiz.questions![shownQuestionIndex].question}
+                {viewedContent.questions![shownQuestionIndex].question}
               </CardHeader>
               <Separator />
               <ScrollArea>
                 <CardContent className="flex flex-col h-full justify-between gap-2 py-4 px-3">
-                  {dummyQuiz.questions![shownQuestionIndex].answers!.map(
+                  {viewedContent.questions![shownQuestionIndex].answers!.map(
                     (answer, index, arr) => (
                       <Fragment key={index}>
                         <Button
@@ -276,13 +247,67 @@ const QuizContent: FC = () => {
               </CardFooter>
             </>
           )}
-        {shownQuestionIndex === "RESULTS" && (
+        {shownQuestionIndex === "BEFORE_SUBMIT" && !solution && (
           <>
             <CardHeader className="text-2xl font-medium pb-2 pt-4">
-              Results: {correctlyAnswered}/{dummyQuiz.questions!.length}
+              Your Answers
             </CardHeader>
             <Separator />
-
+            <ScrollArea>
+              <CardContent className="flex flex-col items-start h-full pt-4">
+                <div className="flex flex-col gap-2 w-full">
+                  <Accordion
+                    type="multiple"
+                    className="flex w-full flex-col gap-3"
+                  >
+                    {viewedContent.questions!.map((question, index) => (
+                      <AccordionItem
+                        value={question.id!.toString()}
+                        key={question.id!.toString()}
+                        className=" border-border border rounded-lg py-2.5 px-4"
+                      >
+                        <AccordionTrigger className="flex gap-2 items-start p-0 border-none">
+                          <h4 className="font-medium w-full text-left text-lg">
+                            {question.question}
+                          </h4>
+                        </AccordionTrigger>
+                        <AccordionContent className="flex justify-between pt-4 pb-1 items-end gap-4 text-muted-foreground  flex-nowrap">
+                          <div className="flex flex-col gap-1">
+                            <h5 className="text-base  font-medium">
+                              Your answer is
+                            </h5>
+                            <p className="text-lg text-foreground">
+                              {question.answers![answerIndices[index]]}
+                            </p>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              </CardContent>
+            </ScrollArea>
+            <div className="grow" />
+            <Separator />
+            <CardFooter className="flex justify-end w-full p-4">
+              <Button
+                onClick={submitResults}
+                className="text-base font-semibold"
+              >
+                {isPending && (
+                  <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Submit!
+              </Button>
+            </CardFooter>
+          </>
+        )}
+        {!!solution && (
+          <>
+            <CardHeader className="text-2xl font-medium pb-2 pt-4">
+              Results: {correctlyAnswered}/{viewedContent.questions!.length}
+            </CardHeader>
+            <Separator />
             <ScrollArea>
               <CardContent className="flex flex-col items-start h-full pt-4">
                 <div className="flex flex-col gap-2 w-full">
@@ -291,14 +316,16 @@ const QuizContent: FC = () => {
                     collapsible
                     className="flex w-full flex-col gap-3"
                   >
-                    {dummyQuiz.questions!.map((question, index) => (
+                    {viewedContent.questions!.map((question, index) => (
                       <AccordionItem
                         value={question.id!.toString()}
                         key={question.id!.toString()}
                         className=" border-border border rounded-lg py-2.5 px-4"
                       >
-                        <AccordionTrigger className="flex gap-2 items-start p-0 border-none">
-                          {answerIndices[index] === question.solutionIndex ? (
+                        <AccordionTrigger className="flex gap-3 items-start p-0 border-none">
+                          {solution.correctAnswerQuestionIds?.includes(
+                            question.id!
+                          ) ? (
                             <CircleCheckIcon
                               size={24}
                               className="text-green-600"
@@ -314,13 +341,11 @@ const QuizContent: FC = () => {
                           </h4>
                         </AccordionTrigger>
                         <AccordionContent className="flex justify-between pt-4 pb-1 items-end gap-4 text-muted-foreground  flex-nowrap">
-                          <div className="flex flex-col gap-2">
+                          <div className="flex flex-col gap-1">
                             <h5 className="text-base text-foreground font-medium">
                               Your answer was
                             </h5>
-                            <p>
-                              {question.answers![answerIndices[question.id!]]}
-                            </p>
+                            <p>{question.answers![answerIndices[index]]}</p>
                           </div>
                         </AccordionContent>
                       </AccordionItem>
@@ -336,7 +361,7 @@ const QuizContent: FC = () => {
         {shownQuestionIndex !== "NOT_STARTED" && (
           <Button
             variant={
-              shownQuestionIndex === "RESULTS" && hasWrongAnswers
+              solution && solution.incorrectSolutions!.length > 0
                 ? "default"
                 : "ghost"
             }
@@ -344,17 +369,16 @@ const QuizContent: FC = () => {
             onClick={() => {
               setShownQuestionIndex("NOT_STARTED");
               setAnswerIndices([]);
+              setSolution(null);
             }}
           >
             Redo Quiz
           </Button>
         )}
-        {shownQuestionIndex === "RESULTS" && (
+        {!!solution && (
           <Button
             variant={
-              shownQuestionIndex === "RESULTS" && hasWrongAnswers
-                ? "ghost"
-                : "default"
+              solution.incorrectSolutions!.length > 0 ? "ghost" : "default"
             }
             className="w-32"
             onClick={goToNextContent}

@@ -50,7 +50,7 @@ const CourseDetailsAside: FC = () => {
   }, [course.ratings]);
 
   return (
-    <aside className="sticky flex-[3] top-24 z-50 mt-2 h-48 w-full flex-col flex gap-10">
+    <aside className="sticky flex-[3] top-10 z-50 mt-2 h-48 w-full flex-col flex gap-10">
       {!course.isPurchased && (
         <BackgroundGradient effectClassName="blur-sm rounded-lg">
           {isCourseInCart ? (

@@ -23,7 +23,7 @@ export const useRatingMutation = () => {
   return useMutation({
     mutationFn: async (props: RatingProps) => {
       await ratingMutationFn(props);
-      await queryClient.refetchQueries({
+      await queryClient.invalidateQueries({
         queryKey: ContentKeys.contentBundleDetailsQuery(props.bundleId),
       });
     },

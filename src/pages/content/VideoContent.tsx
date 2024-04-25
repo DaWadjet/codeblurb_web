@@ -1,10 +1,11 @@
 import useGoToNextContent from "@/hooks/useGoToNextContent";
-import useViewedContent from "@/hooks/useViewedContent";
+import { useViewedContent } from "@/hooks/useViewedContent";
 import { Button } from "@/shadcn/ui/button";
 import { ElementRef, FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { OnProgressProps } from "react-player/base";
 
+//TODO remove once testing is finished
 const description = `Lorem ipsum dolor, sit amet consectetur adipisicing elit.
 Exercitationem non illum iste mollitia nihil at assumenda. Voluptatem
 dolorem, iusto molestias repudiandae ipsum fugit culpa dicta labore
@@ -24,13 +25,17 @@ facilis voluptate voluptates aut!\n\nQuas iusto ipsam soluta officia
 reprehenderit culpa dolorum vero aspernatur quam asperiores?`;
 
 const VideoContent: FC = () => {
+  const { viewedContent } = useViewedContent();
+  if (!viewedContent?.contentType || viewedContent.contentType !== "VIDEO") {
+    throw new Error("This component should only be used for video content");
+  }
+
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
   const ref = useRef<ElementRef<typeof ReactPlayer>>(null);
   const [duration, setDuration] = useState<number>(0);
   const [seen, setSeen] = useState<boolean>(false);
   const [completed, setCompleted] = useState<boolean>(false);
-  const { viewedContent } = useViewedContent();
 
   const onSeen = useCallback(() => {
     if (seen) return;
@@ -54,11 +59,11 @@ const VideoContent: FC = () => {
 
   return (
     <div className="flex flex-col gap-6 min-h-0 justify-start">
-      <h1 className="font-semibold text-3xl ">Video - {viewedContent?.name}</h1>
+      <h1 className="font-semibold text-3xl ">Video - {viewedContent.name}</h1>
       <div className="aspect-video flex mx-5">
         <ReactPlayer
           ref={ref}
-          url="https://www.youtube.com/watch?v=LXb3EKWsInQ"
+          url={viewedContent.resourceUrl}
           controls
           controlsList="nodownload"
           muted={false}
@@ -85,11 +90,13 @@ const VideoContent: FC = () => {
             {hasNextContent ? "Next Section" : "Back To Course"}
           </Button>
         </div>
-        {description.split("\n\n").map((text, index) => (
-          <p key={index} className="font-medium">
-            {text}
-          </p>
-        ))}
+        {(viewedContent.description ?? description)
+          .split("\n\n")
+          .map((text, index) => (
+            <p key={index} className="font-medium">
+              {text}
+            </p>
+          ))}
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import QuizContent from "@/pages/content/QuizContent";
 import { components } from "@/types/openApiTypes";
 
 type API = components["schemas"];
@@ -27,6 +28,7 @@ type IncorrectCodeQuizSolutionResponse =
 type CodingContentResponse = API["CodingContentResponse"];
 type QuizContentResponse = API["QuizContentResponse"];
 type QuizQuestionResponse = API["QuizQuestionResponse"];
+type QuizQuestionSolutionRequestItem = API["QuizQuestionSolutionRequestItem"];
 type SeparatedContentBundleResponse = API["SeparatedContentBundleResponse"];
 type TestCaseResponse = API["TestCaseResponse"];
 type VideoContentResponse = API["VideoContentResponse"];
@@ -41,6 +43,28 @@ type PageShoppingItemResponse = API["PageShoppingItemResponse"];
 type PageableObject = API["PageableObject"];
 type PageMinimalContentBundleResponse = API["PageMinimalContentBundleResponse"];
 
+type VideoContent = API["VideoContentResponse"] & {
+  contentType: "VIDEO";
+};
+
+type QuizContent = API["QuizContentResponse"] & {
+  contentType: "QUIZ";
+};
+type ScratchContent = API["CodingContentResponse"] & {
+  contentType: "CODING";
+  codingContentType: "SCRATCH";
+};
+
+type DragAndDropContent = API["CodingContentResponse"] & {
+  contentType: "CODING";
+  codingContentType: "DRAG_AND_DROP";
+};
+
+type FillInTheGapsContent = API["CodingContentResponse"] & {
+  contentType: "CODING";
+  codingContentType: "FILL_THE_GAP";
+};
+
 export type {
   ChangePasswordRequest,
   CodeQuizSolutionRequest,
@@ -48,6 +72,8 @@ export type {
   CodeSolutionRequest,
   CodeSolutionResponse,
   CodingContentResponse,
+  DragAndDropContent,
+  FillInTheGapsContent,
   ForgotPasswordRequest,
   IncorrectCodeQuizSolutionResponse,
   IncorrectQuizSolutionResponse,
@@ -61,8 +87,10 @@ export type {
   PaymentResponse,
   PreviousPaymentsResponse,
   ProfileResponse,
+  QuizContent,
   QuizContentResponse,
   QuizQuestionResponse,
+  QuizQuestionSolutionRequestItem,
   QuizSolutionRequest,
   QuizSolutionResponse,
   RatingRequest,
@@ -71,11 +99,13 @@ export type {
   RefreshTokenResponse,
   RegisterRequest,
   ResetPasswordRequest,
+  ScratchContent,
   SeparatedContentBundleResponse,
   ShoppingCartResponse,
   ShoppingItemResponse,
   SortObject,
   TestCaseOutcomeResponse,
   TestCaseResponse,
+  VideoContent,
   VideoContentResponse,
 };

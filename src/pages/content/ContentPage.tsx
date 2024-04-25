@@ -1,4 +1,3 @@
-import ArticleContent from "@/pages/content/ArticleContent";
 import ScratchContent from "@/pages/content/scratch/ScratchContent";
 import VideoContent from "@/pages/content/VideoContent";
 
@@ -7,7 +6,11 @@ import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
 import BigLoader from "@/components/common/BigLoader";
-import useViewedContent from "@/hooks/useViewedContent";
+import {
+  ContentType,
+  contentTypePossibilities,
+  useViewedContent,
+} from "@/hooks/useViewedContent";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,17 +27,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-
-const contentTypePossibilities = [
-  "article",
-  "video",
-  "quiz",
-  "scratch",
-  "draganddrop",
-  "fillthegap",
-] as const;
 
 const ContentPage: FC = () => {
   const { courseId } = useParams<{
@@ -43,11 +37,16 @@ const ContentPage: FC = () => {
 
   const { viewedContent: content, isPending, courseTitle } = useViewedContent();
 
-  const [activeTab, setActiveTab] =
-    useState<(typeof contentTypePossibilities)[number]>("article");
+  const contentType = useMemo<ContentType | null>(() => {
+    if (!content) return null;
+    if (content.contentType === "CODING") return content.codingContentType;
+    return content.contentType;
+  }, [content]);
+
+  const [activeTab, setActiveTab] = useState(contentType ?? "QUIZ");
 
   if (isPending) return <BigLoader />;
-  if (!content) return null; //should not happen
+  if (!contentType || !content) return null; //should not happen
 
   return (
     <div className="flex flex-col gap-8 ">
@@ -88,12 +87,12 @@ const ContentPage: FC = () => {
       </Breadcrumb>
       <Fragment key={content.id}>
         {/* key is important to trigger remount */}
-        {activeTab === "article" && <ArticleContent />}
-        {activeTab === "video" && <VideoContent />}
-        {activeTab === "scratch" && <ScratchContent />}
-        {activeTab === "draganddrop" && <DragAndDropContent />}
-        {activeTab === "quiz" && <QuizContent />}
-        {activeTab === "fillthegap" && <FillInTheGapsContent />}
+        {/* {activeTab === "ARTICLE" && <ArticleContent />} */}
+        {activeTab === "VIDEO" && <VideoContent />}
+        {activeTab === "SCRATCH" && <ScratchContent />}
+        {activeTab === "DRAG_AND_DROP" && <DragAndDropContent />}
+        {activeTab === "QUIZ" && <QuizContent />}
+        {activeTab === "FILL_THE_GAP" && <FillInTheGapsContent />}
       </Fragment>
     </div>
   );
