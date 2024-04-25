@@ -7,7 +7,7 @@ import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
 import BigLoader from "@/components/BigLoader";
-import useCourseDetailsQuery from "@/hooks/useCourseDetailsQuery";
+import useViewedContent from "@/hooks/useViewedContent";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/ui/select";
-import { FC, useMemo, useState } from "react";
+import { FC, Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const contentTypePossibilities = [
@@ -37,23 +37,11 @@ const contentTypePossibilities = [
 ] as const;
 
 const ContentPage: FC = () => {
-  const { contentId, courseId } = useParams<{
+  const { courseId } = useParams<{
     courseId: string;
-    contentId: string;
   }>();
-  const { data, isPending } = useCourseDetailsQuery();
 
-  const content = useMemo(() => {
-    if (!data) return null;
-
-    const includedContent = [
-      ...(data?.includedCodings ?? []),
-      ...(data?.includedVideos ?? []),
-      ...(data?.includedQuizzes ?? []),
-    ];
-    console.log(includedContent.map((item) => item.id));
-    return includedContent.find((item) => item.id === Number(contentId));
-  }, [data, contentId]);
+  const { viewedContent: content, isPending, courseTitle } = useViewedContent();
 
   const [activeTab, setActiveTab] =
     useState<(typeof contentTypePossibilities)[number]>("article");
@@ -63,7 +51,7 @@ const ContentPage: FC = () => {
 
   return (
     <div
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-8"
       style={{
         height: "calc(100vh - 148px)",
       }}
@@ -93,8 +81,8 @@ const ContentPage: FC = () => {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href={`/courses/${courseId}`}>
-              {data?.title}
+            <BreadcrumbLink href={`/course/${courseId}`}>
+              {courseTitle}
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
@@ -103,12 +91,15 @@ const ContentPage: FC = () => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      {activeTab === "article" && <ArticleContent />}
-      {activeTab === "video" && <VideoContent />}
-      {activeTab === "scratch" && <ScratchContent />}
-      {activeTab === "draganddrop" && <DragAndDropContent />}
-      {activeTab === "quiz" && <QuizContent />}
-      {activeTab === "fillthegap" && <FillInTheGapsContent />}
+      <Fragment key={content.id}>
+        {/* key is important to trigger remount */}
+        {activeTab === "article" && <ArticleContent />}
+        {activeTab === "video" && <VideoContent />}
+        {activeTab === "scratch" && <ScratchContent />}
+        {activeTab === "draganddrop" && <DragAndDropContent />}
+        {activeTab === "quiz" && <QuizContent />}
+        {activeTab === "fillthegap" && <FillInTheGapsContent />}
+      </Fragment>
     </div>
   );
 };

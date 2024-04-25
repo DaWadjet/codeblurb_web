@@ -1,5 +1,5 @@
 import { Button } from "@/shadcn/ui/button";
-import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/shadcn/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -10,6 +10,7 @@ import {
   PaginationPrevious,
 } from "@/shadcn/ui/pagination";
 
+import useGoToNextContent from "@/hooks/useGoToNextContent";
 import {
   Accordion,
   AccordionContent,
@@ -28,8 +29,7 @@ const dummyQuiz: QuizContentResponse = {
   questions: [
     {
       id: 1,
-      question:
-        "What is the capital of France? Long quesiton to break stuff sd;liga klskdjg; da;ld gkjad  a;sldgkjas;d als;dkg ;asjg asdg  ;alkdgj ;lkasdgj ka gds;lkj gkjas;d als;dkg ;asjg asdg  ;alkdgj ;lkasdgj ka gds;lkj gkjas;d als;dkg ;asjg asdg  ;alkdgj ;lkasdgj ka gds;lkj gkjas;d als;dkg ;asjg asdg  ;alkdgj ;lkasdgj ka gds;lkj",
+      question: "What is the capital of France?",
       answers: ["Paris", "Berlin", "London", "Madrid"],
       solutionIndex: 0,
     },
@@ -81,6 +81,7 @@ const dummyQuiz: QuizContentResponse = {
 };
 
 const QuizContent: FC = () => {
+  const { goToNextContent, hasNextContent } = useGoToNextContent();
   const [shownQuestionIndex, setShownQuestionIndex] = useState<
     number | "NOT_STARTED" | "RESULTS"
   >("NOT_STARTED");
@@ -112,6 +113,7 @@ const QuizContent: FC = () => {
       });
       if (questionIndex === dummyQuiz.questions!.length - 1) {
         setShownQuestionIndex("RESULTS");
+        //TODO: send answers to backend
       } else {
         setShownQuestionIndex(questionIndex + 1);
       }
@@ -128,18 +130,31 @@ const QuizContent: FC = () => {
       ),
     [answerIndices]
   );
-
-  console.log(answerIndices, correctlyAnswered);
+  const hasWrongAnswers = useMemo(
+    () => correctlyAnswered !== dummyQuiz.questions!.length,
+    [correctlyAnswered]
+  );
 
   return (
-    <div className="mx-40 flex flex-col gap-6 min-h-0 h-full justify-center">
-      <h1 className="font-semibold text-3xl ">Quiz - {dummyQuiz.name}</h1>
+    <div className="mx-40 flex flex-col gap-4 min-h-0 h-full justify-start">
+      <div className="flex gap-2 items-baseline justify-between">
+        <h1 className="font-semibold text-3xl ">Quiz - {dummyQuiz.name}</h1>
+        {shownQuestionIndex === "NOT_STARTED" ? (
+          <span className="text-muted-foreground">
+            {dummyQuiz.questions!.length} questions
+          </span>
+        ) : shownQuestionIndex === "RESULTS" ? null : (
+          <span className="text-muted-foreground">
+            Question {shownQuestionIndex + 1} of {dummyQuiz.questions!.length}
+          </span>
+        )}
+      </div>
       {shownQuestionIndex === "NOT_STARTED" ? (
         <div className="h-4" />
       ) : (
         <Progress value={progress} className="shrink-0 h-3" />
       )}
-      <Card className="h-[500px] flex flex-col justify-between">
+      <Card className="h-[500px] flex flex-col justify-start">
         {shownQuestionIndex === "NOT_STARTED" && (
           <>
             <CardHeader>
@@ -159,122 +174,118 @@ const QuizContent: FC = () => {
         {shownQuestionIndex !== "NOT_STARTED" &&
           shownQuestionIndex !== "RESULTS" && (
             <>
-              <CardHeader>
-                <h2 className="text-2xl font-medium">
-                  {dummyQuiz.questions![shownQuestionIndex].question}
-                </h2>
+              <CardHeader className="text-2xl font-medium pt-4 pb-2">
+                {dummyQuiz.questions![shownQuestionIndex].question}
               </CardHeader>
-              <CardContent className="flex flex-col justify-between gap-4 h-full">
-                <div className="flex flex-col gap-2 w-full">
-                  <Separator className="w-full h-1 mb-2" />
-                  <ScrollArea className="gap-4 h-full bg-green-500">
-                    {dummyQuiz.questions![shownQuestionIndex].answers!.map(
-                      (answer, index, arr) => (
-                        <Fragment key={index}>
-                          <Button
-                            variant="ghost"
-                            className={cn(
-                              "w-full text-lg font-medium py-6 whitespace-normal",
-                              answerIndices[shownQuestionIndex] === index
-                                ? "bg-accent/70 text-accent-foreground"
-                                : ""
-                            )}
-                            onClick={() =>
-                              answerQuestion({
-                                questionIndex: shownQuestionIndex,
-                                answerIndex: index,
-                              })
-                            }
-                          >
-                            {answer}
-                          </Button>
-                          {index < arr.length - 1 && (
-                            <Separator className="w-full" />
+              <Separator />
+              <ScrollArea>
+                <CardContent className="flex flex-col h-full justify-between gap-2 py-4 px-3">
+                  {dummyQuiz.questions![shownQuestionIndex].answers!.map(
+                    (answer, index, arr) => (
+                      <Fragment key={index}>
+                        <Button
+                          variant="ghost"
+                          className={cn(
+                            "w-full font-medium py-6 whitespace-normal text-lg",
+                            answerIndices[shownQuestionIndex] === index
+                              ? "bg-accent/70 text-accent-foreground"
+                              : ""
                           )}
-                        </Fragment>
-                      )
+                          onClick={() =>
+                            answerQuestion({
+                              questionIndex: shownQuestionIndex,
+                              answerIndex: index,
+                            })
+                          }
+                        >
+                          {answer}
+                        </Button>
+                        {index < arr.length - 1 && <Separator />}
+                      </Fragment>
+                    )
+                  )}
+                </CardContent>
+              </ScrollArea>
+              <div className="grow" />
+              <Separator />
+              <CardFooter className="flex flex-col gap-4 w-full items-center p-4">
+                <Pagination className="px-20">
+                  <PaginationContent className="flex justify-between w-full">
+                    {shownQuestionIndex > 0 ? (
+                      <PaginationItem className="w-28">
+                        <PaginationPrevious
+                          onClick={() =>
+                            setShownQuestionIndex(shownQuestionIndex - 1)
+                          }
+                        />
+                      </PaginationItem>
+                    ) : (
+                      <div className="w-28" />
                     )}
-                  </ScrollArea>
-                </div>
-                <div className="flex flex-col gap-4 w-full items-center">
-                  <Separator className="w-full h-1" />
-                  <Pagination className="px-20">
-                    <PaginationContent className="flex justify-between w-full">
-                      {shownQuestionIndex > 0 ? (
-                        <PaginationItem className="w-28">
-                          <PaginationPrevious
-                            onClick={() =>
-                              setShownQuestionIndex(shownQuestionIndex - 1)
-                            }
-                          />
-                        </PaginationItem>
-                      ) : (
-                        <div className="w-28" />
-                      )}
-                      <div className="flex items-center justify-center gap-1">
-                        {indicesAnswered.length < 4
-                          ? [...indicesAnswered, "current"].map((_, index) => (
-                              <PaginationItem key={index}>
+                    <div className="flex items-center justify-center gap-1">
+                      {indicesAnswered.length < 4
+                        ? [...indicesAnswered, "current"].map((_, index) => (
+                            <PaginationItem key={index}>
+                              <PaginationLink
+                                isActive={index === shownQuestionIndex}
+                                onClick={() => setShownQuestionIndex(index)}
+                              >
+                                {index + 1}
+                              </PaginationLink>
+                            </PaginationItem>
+                          ))
+                        : [
+                            ...indicesAnswered.slice(0, 2),
+                            "ellipsis",
+                            ...indicesAnswered.slice(-1),
+                            "current",
+                          ].map((item, index) => (
+                            <PaginationItem key={index}>
+                              {item !== "ellipsis" ? (
                                 <PaginationLink
-                                  isActive={index === shownQuestionIndex}
+                                  isActive={item === "current"}
                                   onClick={() => setShownQuestionIndex(index)}
                                 >
-                                  {index + 1}
+                                  {index +
+                                    1 +
+                                    (shownQuestionIndex >= 4 && index > 2
+                                      ? shownQuestionIndex - 4
+                                      : 0)}
                                 </PaginationLink>
-                              </PaginationItem>
-                            ))
-                          : [
-                              ...indicesAnswered.slice(0, 2),
-                              "ellipsis",
-                              ...indicesAnswered.slice(-1),
-                              "current",
-                            ].map((item, index) => (
-                              <PaginationItem key={index}>
-                                {item !== "ellipsis" ? (
-                                  <PaginationLink
-                                    isActive={item === "current"}
-                                    onClick={() => setShownQuestionIndex(index)}
-                                  >
-                                    {index +
-                                      1 +
-                                      (shownQuestionIndex >= 4 && index > 2
-                                        ? shownQuestionIndex - 4
-                                        : 0)}
-                                  </PaginationLink>
-                                ) : (
-                                  <PaginationEllipsis />
-                                )}
-                              </PaginationItem>
-                            ))}
-                      </div>
+                              ) : (
+                                <PaginationEllipsis />
+                              )}
+                            </PaginationItem>
+                          ))}
+                    </div>
 
-                      {shownQuestionIndex < answerIndices.length ? (
-                        <PaginationItem>
-                          <PaginationNext
-                            className="w-28"
-                            onClick={() =>
-                              setShownQuestionIndex(shownQuestionIndex + 1)
-                            }
-                          />
-                        </PaginationItem>
-                      ) : (
-                        <div className="w-28" />
-                      )}
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              </CardContent>
+                    {shownQuestionIndex < answerIndices.length ? (
+                      <PaginationItem>
+                        <PaginationNext
+                          className="w-28"
+                          onClick={() =>
+                            setShownQuestionIndex(shownQuestionIndex + 1)
+                          }
+                        />
+                      </PaginationItem>
+                    ) : (
+                      <div className="w-28" />
+                    )}
+                  </PaginationContent>
+                </Pagination>
+              </CardFooter>
             </>
           )}
         {shownQuestionIndex === "RESULTS" && (
           <>
-            <CardHeader className="text-2xl font-medium">
+            <CardHeader className="text-2xl font-medium pb-2 pt-4">
               Results: {correctlyAnswered}/{dummyQuiz.questions!.length}
             </CardHeader>
-            <CardContent className="flex flex-col items-start h-full">
-              <ScrollArea>
+            <Separator />
+
+            <ScrollArea>
+              <CardContent className="flex flex-col items-start h-full pt-4">
                 <div className="flex flex-col gap-2 w-full">
-                  <Separator className="w-full h-1 mb-2" />
                   <Accordion
                     type="single"
                     collapsible
@@ -316,26 +327,42 @@ const QuizContent: FC = () => {
                     ))}
                   </Accordion>
                 </div>
-              </ScrollArea>
-            </CardContent>
+              </CardContent>
+            </ScrollArea>
           </>
         )}
       </Card>
-      {shownQuestionIndex !== "NOT_STARTED" ? (
-        <Button
-          variant="ghost"
-          className="w-fit self-center"
-          onClick={() => {
-            setShownQuestionIndex("NOT_STARTED");
-            setAnswerIndices([]);
-          }}
-        >
-          Restart
-        </Button>
-      ) : (
-        <div className="h-10" />
-      )}
-      <div className="h-3" />
+      <div className="w-full flex items-center justify-center gap-4">
+        {shownQuestionIndex !== "NOT_STARTED" && (
+          <Button
+            variant={
+              shownQuestionIndex === "RESULTS" && hasWrongAnswers
+                ? "default"
+                : "ghost"
+            }
+            className="w-32"
+            onClick={() => {
+              setShownQuestionIndex("NOT_STARTED");
+              setAnswerIndices([]);
+            }}
+          >
+            Restart
+          </Button>
+        )}
+        {shownQuestionIndex === "RESULTS" && (
+          <Button
+            variant={
+              shownQuestionIndex === "RESULTS" && hasWrongAnswers
+                ? "ghost"
+                : "default"
+            }
+            className="w-32"
+            onClick={goToNextContent}
+          >
+            {hasNextContent ? "Next Section" : "Back To Course"}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
