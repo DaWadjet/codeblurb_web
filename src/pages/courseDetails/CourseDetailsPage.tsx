@@ -29,33 +29,33 @@ const CourseDetailsPage: FC = () => {
           </h2>
           <div className="grow" />
           <div className="grid grid-cols-3 text-xs w-full gap-x-6 gap-y-3">
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-center">
               <Code className="text-muted-foreground size-5" />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground pt-0.5">
                 {course.technologies.join(", ")}
               </span>
             </div>
-            <div className="flex gap-2 items-end col-span-2">
+            <div className="flex gap-2 items-center col-span-2">
               <Info className="text-muted-foreground size-5" />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground pt-0.5">
                 {capitalize(course.skillLevel)}
               </span>
             </div>
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-center">
               <Users className="text-muted-foreground size-5" />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground pt-0.5">
                 {course.numberOfPurchases} enrolled
               </span>
             </div>
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-center">
               <Hourglass className="text-muted-foreground size-5" />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground pt-0.5">
                 {course.totalHours} hours
               </span>
             </div>
-            <div className="flex gap-2 items-end">
+            <div className="flex gap-2 items-center">
               <LastUpdated className="text-muted-foreground size-5" />
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground pt-0.5">
                 Updated {dayjs(course.releaseDate).format("DD/MM/YYYY")}
               </span>
             </div>

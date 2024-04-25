@@ -25,6 +25,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ShoppingCartResponse"
+      security:
+        - bearerAuth: []
   /payments/stripe/webhooks:
     post:
       tags:
@@ -63,6 +65,8 @@ paths:
             "*/*":
               schema:
                 type: string
+      security:
+        - bearerAuth: []
   /content/ratings/{contentBundleId}:
     post:
       tags:
@@ -84,6 +88,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /content/quiz/solution/{contentId}:
     post:
       tags:
@@ -109,6 +115,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/QuizSolutionResponse"
+      security:
+        - bearerAuth: []
   /content/code/scratch-solution/{contentId}:
     post:
       tags:
@@ -134,6 +142,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/CodeSolutionResponse"
+      security:
+        - bearerAuth: []
   /content/code/code-quiz-solution/{contentId}:
     post:
       tags:
@@ -159,6 +169,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/CodeQuizSolutionResponse"
+      security:
+        - bearerAuth: []
   /auth/reset-password:
     post:
       tags:
@@ -213,6 +225,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /auth/login:
     post:
       tags:
@@ -253,6 +267,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /auth/change-password:
     post:
       tags:
@@ -267,6 +283,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /seen/{contentId}:
     patch:
       tags:
@@ -282,6 +300,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /completed/{contentId}:
     patch:
       tags:
@@ -297,6 +317,8 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+        - bearerAuth: []
   /:
     get:
       tags:
@@ -309,6 +331,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ProfileResponse"
+      security:
+        - bearerAuth: []
   /sync:
     get:
       tags:
@@ -336,6 +360,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ShoppingItemResponse"
+      security:
+        - bearerAuth: []
   /shopping/shopping-cart:
     get:
       tags:
@@ -348,6 +374,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ShoppingCartResponse"
+      security:
+        - bearerAuth: []
   /shopping/available-shopping-items:
     get:
       tags:
@@ -391,7 +419,7 @@ paths:
               type: string
       responses:
         "200":
-          description: Shopping items retrieved successfully
+          description: Shopping solutions retrieved successfully
           content:
             "*/*":
               schema:
@@ -402,6 +430,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/PageShoppingItemResponse"
+      security:
+        - bearerAuth: []
   /payments:
     get:
       tags:
@@ -414,6 +444,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/PreviousPaymentsResponse"
+      security:
+        - bearerAuth: []
   /content/content-bundles:
     get:
       tags:
@@ -468,6 +500,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/PageMinimalContentBundleResponse"
+      security:
+        - bearerAuth: []
   /content/content-bundles/{contentBundleId}:
     get:
       tags:
@@ -487,6 +521,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/SeparatedContentBundleResponse"
+      security:
+        - bearerAuth: []
   /shopping/delete-item/{shoppingCartItem}:
     delete:
       tags:
@@ -506,6 +542,8 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/ShoppingCartResponse"
+      security:
+        - bearerAuth: []
 components:
   schemas:
     MinimalContentBundleResponse:
@@ -563,9 +601,6 @@ components:
           format: int32
         shortDescription:
           type: string
-        order:
-          type: integer
-          format: int32
     RatingResponse:
       type: object
       properties:
@@ -637,16 +672,27 @@ components:
           maxLength: 50
           minLength: 1
           type: string
+    QuizQuestionSolutionRequestItem:
+      required:
+        - answerIndex
+        - questionId
+      type: object
+      properties:
+        questionId:
+          type: integer
+          format: int32
+        answerIndex:
+          type: integer
+          format: int32
     QuizSolutionRequest:
       required:
         - solutions
       type: object
       properties:
         solutions:
-          type: object
-          additionalProperties:
-            type: integer
-            format: int32
+          type: array
+          items:
+            $ref: "#/components/schemas/QuizQuestionSolutionRequestItem"
     IncorrectQuizSolutionResponse:
       type: object
       properties:
@@ -710,12 +756,14 @@ components:
             type: string
     CodeQuizSolutionRequest:
       required:
-        - solutionsByIndex
+        - solutionsInOrder
       type: object
       properties:
-        solutionsByIndex:
-          type: object
-          additionalProperties:
+        solutionsInOrder:
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+          items:
             type: string
     CodeQuizSolutionResponse:
       type: object
@@ -836,12 +884,12 @@ components:
     PageShoppingItemResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -856,15 +904,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -877,9 +925,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        unpaged:
-          type: boolean
         paged:
+          type: boolean
+        unpaged:
           type: boolean
         pageNumber:
           type: integer
@@ -923,12 +971,12 @@ components:
     PageMinimalContentBundleResponse:
       type: object
       properties:
-        totalPages:
-          type: integer
-          format: int32
         totalElements:
           type: integer
           format: int64
+        totalPages:
+          type: integer
+          format: int32
         size:
           type: integer
           format: int32
@@ -943,15 +991,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         empty:
           type: boolean
     CodingContentResponse:
@@ -1059,6 +1107,8 @@ components:
           format: int32
         title:
           type: string
+        description:
+          type: string
         imageUrl:
           type: string
         ratings:
@@ -1129,3 +1179,8 @@ components:
           type: string
         resourceUrl:
           type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

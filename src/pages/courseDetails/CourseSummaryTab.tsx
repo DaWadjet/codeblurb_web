@@ -56,8 +56,8 @@ const CourseSummaryTab: FC = () => {
                 <ContentTypeIcon type={section.contentType} />
               </div>
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 pt-4 pb-1">
-              <div className="flex justify-between items-end gap-4 text-muted-foreground flex-nowrap pb-2.5 px-4 ">
+            <AccordionContent className="flex flex-col gap-4 pt-4 px-4 pb-2.5">
+              <div className="flex justify-between items-end gap-4 text-muted-foreground flex-nowrap ">
                 <p>{section.shortDescription}</p>
                 <span className="font-medium whitespace-nowrap">
                   {section.estimatedTime} min

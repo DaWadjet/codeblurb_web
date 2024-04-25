@@ -1,6 +1,13 @@
 import { useContentBundleDetailsQuery } from "@/network/content";
 import { usePaymentsQuery } from "@/network/payments";
 import { useShoppingItemDetailsQuery } from "@/network/shopping";
+import {
+  DragAndDropContent,
+  FillInTheGapsContent,
+  QuizContent,
+  ScratchContent,
+  VideoContent,
+} from "@/types/ApiTypes";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
@@ -46,9 +53,13 @@ const useCourseDetailsMagicQuery = () => {
     const contentsVisibleWithoutPurchase =
       shoppingItemDetails?.contentBundle?.includedContent ?? [];
     const purchasedContents = [
-      ...(courseDetails?.includedVideos ?? []),
-      ...(courseDetails?.includedQuizzes ?? []),
-      ...(courseDetails?.includedCodings ?? []),
+      ...((courseDetails?.includedVideos ?? []) as VideoContent[]),
+      ...((courseDetails?.includedQuizzes ?? []) as QuizContent[]),
+      ...((courseDetails?.includedCodings ?? []) as (
+        | ScratchContent
+        | DragAndDropContent
+        | FillInTheGapsContent
+      )[]),
     ].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     const totalHours =

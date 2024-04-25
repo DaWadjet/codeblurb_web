@@ -1,23 +1,16 @@
-import useCourseDetailsQuery from "@/hooks/useCourseDetailsQuery";
+import useCourseDetailsMagicQuery from "@/hooks/useCourseDetailsMagicQuery";
 import { useMemo } from "react";
 
 const useContentsOfBundle = () => {
-  const { data, isPending } = useCourseDetailsQuery();
-  const contents = useMemo(
-    () => [
-      ...(data?.includedCodings ?? []),
-      ...(data?.includedVideos ?? []),
-      ...(data?.includedQuizzes ?? []),
-    ],
-    [data]
-  );
+  const { course, isLoading } = useCourseDetailsMagicQuery();
+
   const returnValue = useMemo(
     () => ({
-      contents,
-      isPending,
-      courseTitle: data?.title ?? "",
+      contents: course.purchasedContents ?? [],
+      isPending: isLoading,
+      courseTitle: course.title,
     }),
-    [contents, isPending, data?.title]
+    [course, isLoading]
   );
 
   return returnValue;
