@@ -1,5 +1,6 @@
 import Dialog from "@/components/AlertDialog";
 import NavigationBar from "@/components/navbar/NavigationBar";
+import { ScrollArea } from "@/shadcn/ui/scroll-area";
 
 import { Toaster } from "@/shadcn/ui/sonner";
 import { useTheme } from "@/shadcn/ui/theme-provider";
@@ -11,12 +12,20 @@ const Layout: FC = () => {
   const { theme } = useTheme();
   return (
     <>
-      <div className="font-inter bg-background min-h-screen">
+      <div className="font-inter bg-background">
         <NavigationBar />
-        <main className="container mx-auto my-8 max-w-5xl grow px-4 pb-10">
-          <Outlet />
-        </main>
+        <ScrollArea
+          className="overflow-y-auto"
+          style={{
+            height: "calc(100vh - 64px)",
+          }}
+        >
+          <main className="container mx-auto my-8 max-w-5xl grow px-4 pb-10">
+            <Outlet />
+          </main>
+        </ScrollArea>
       </div>
+
       <Dialog />
       <Toaster theme={theme ?? "system"} />
     </>
