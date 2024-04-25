@@ -1,4 +1,4 @@
-import Dialog from "@/components/AlertDialog";
+import Dialog from "@/components/common/AlertDialog";
 import NavigationBar from "@/components/navbar/NavigationBar";
 import { ScrollArea } from "@/shadcn/ui/scroll-area";
 

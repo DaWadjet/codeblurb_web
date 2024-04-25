@@ -1,12 +1,12 @@
 import ArticleContent from "@/pages/content/ArticleContent";
-import ScratchContent from "@/pages/content/ScratchContent";
+import ScratchContent from "@/pages/content/scratch/ScratchContent";
 import VideoContent from "@/pages/content/VideoContent";
 
 import DragAndDropContent from "@/pages/content/DragAndDropContent";
 import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
-import BigLoader from "@/components/BigLoader";
+import BigLoader from "@/components/common/BigLoader";
 import useViewedContent from "@/hooks/useViewedContent";
 import {
   Breadcrumb,
@@ -51,7 +51,7 @@ const ContentPage: FC = () => {
 
   return (
     <div className="flex flex-col gap-8 ">
-      <div className="flex flex-col items-start gap-1.5 absolute top-24 left-5 ">
+      <div className="flex flex-col items-start gap-1.5 absolute top-0 left-5 ">
         <Label htmlFor="type">Content Type</Label>
         <Select
           value={activeTab}

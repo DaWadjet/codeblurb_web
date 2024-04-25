@@ -1,4 +1,4 @@
-import UserAvatar from "@/components/UserAvatar";
+import UserAvatar from "@/components/common/UserAvatar";
 import useItemsInCart from "@/hooks/useItemsInCart";
 import useUsername from "@/hooks/useUsername";
 import { useLogoutMutation } from "@/network/auth";

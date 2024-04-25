@@ -1,4 +1,4 @@
-import PasswordField from "@/components/PasswordField";
+import PasswordField from "@/components/common/PasswordField";
 import { useLoginMutation } from "@/network/auth";
 import { Button } from "@/shadcn/ui/button";
 import {

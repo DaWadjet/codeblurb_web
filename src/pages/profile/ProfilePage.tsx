@@ -1,5 +1,5 @@
-import BigLoader from "@/components/BigLoader";
-import UserAvatar from "@/components/UserAvatar";
+import BigLoader from "@/components/common/BigLoader";
+import UserAvatar from "@/components/common/UserAvatar";
 import { useForceLogoutMutation, useLogoutMutation } from "@/network/auth";
 import { usePaymentsQuery } from "@/network/payments";
 import { useProfileQuery } from "@/network/profile";

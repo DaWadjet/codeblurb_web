@@ -1,4 +1,4 @@
-import BigLoader from "@/components/BigLoader";
+import BigLoader from "@/components/common/BigLoader";
 import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
 import PurchasedCourseItem from "@/components/common/courses/PurchasedCourseItem";

@@ -65,7 +65,6 @@ const CourseSummaryTab: FC = () => {
           </span>
         </div>
       </HoverBorderGradient>
-
       <Card className="my-4">
         <CardHeader className="text-xl font-semibold">
           What you'll learn

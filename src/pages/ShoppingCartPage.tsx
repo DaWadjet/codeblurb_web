@@ -1,6 +1,6 @@
-import PriceTag from "@/components/PriceTag";
 import CourseItem from "@/components/common/courses/CourseItem";
 import CourseList from "@/components/common/courses/CourseList";
+import PriceTag from "@/components/common/courses/PriceTag";
 import { useCheckoutMutation } from "@/network/payments";
 import {
   useAvailableShoppingItemsQuery,
