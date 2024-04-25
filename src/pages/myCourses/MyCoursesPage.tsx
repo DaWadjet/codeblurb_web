@@ -20,9 +20,12 @@ import { Input } from "@/shadcn/ui/input";
 import { Label } from "@/shadcn/ui/label";
 import { ChevronDown, Loader2Icon } from "lucide-react";
 
+import BigLoader from "@/components/common/BigLoader";
 import { useInViewWithQuery } from "@/hooks/useInViewWithQuery";
 import { useContentBundlesQuery } from "@/network/content";
+import { usePaymentsQuery } from "@/network/payments";
 import { TPageProps, skillLevelPossibilities } from "@/utils/types";
+import { useNavigate } from "react-router-dom";
 import { useDebounce } from "react-use";
 import { useImmer } from "use-immer";
 
@@ -47,6 +50,8 @@ const sortPossibilities: { label: string; sortValue: TPageProps["sort"] }[] = [
 ] as const;
 
 const MyCoursesPage: FC = () => {
+  const { data: paymentData, isPending } = usePaymentsQuery();
+  const navigate = useNavigate();
   const [nonDebouncedSearch, setNonDebouncedSearch] = useState("");
   const loaderRef = useRef<HTMLDivElement>(null);
   const [filterOptions, setFilterOptions] = useImmer<{
@@ -85,6 +90,9 @@ const MyCoursesPage: FC = () => {
 
   useInViewWithQuery(loaderRef, query);
 
+  if (isPending) {
+    return <BigLoader />;
+  }
   return (
     <div className="flex flex-col">
       <div className="z-10 bg-background sticky top-5 pb-5 flex flex-col gap-7">
@@ -180,6 +188,26 @@ const MyCoursesPage: FC = () => {
           <Loader2Icon className="size-10 animate-spin my-20 text-muted-foreground" />
         )}
       </div>
+      {paymentData?.previousPayments?.filter(
+        (payment) => payment.status === "PAID"
+      ).length === 0 && (
+        <div className="flex flex-col items-center justify-center gap-4 px-5 my-20">
+          <h3 className="text-xl font-semibold">
+            You have no purchased courses
+          </h3>
+          <span className="text-muted-foreground text-center">
+            browse our collection on the{" "}
+            <Button
+              variant="link"
+              className="p-0 text-base"
+              onClick={() => navigate("/explore")}
+            >
+              Expore page
+            </Button>{" "}
+            to find your next course.
+          </span>
+        </div>
+      )}
     </div>
   );
 };

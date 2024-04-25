@@ -1,7 +1,6 @@
-import useCourseDetailsStore from "@/store/courseDetailsStore";
 import qs from "qs";
-import { FC, useCallback, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { FC } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import CourseReviewsTab from "@/pages/courseDetails/CourseRatingsTab";
 import CourseSummaryTab from "@/pages/courseDetails/CourseSummaryTab";
@@ -9,26 +8,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shadcn/ui/tabs";
 
 const CourseDetailsTabs: FC = () => {
   const location = useLocation();
-  const selectedTab = useCourseDetailsStore(
-    useCallback((state) => state.selectedTab, [])
-  );
-  const setValue = useCourseDetailsStore(
-    useCallback((state) => state.setValue, [])
-  );
+  const navigate = useNavigate();
 
   const { tab } = qs.parse(location.search, { ignoreQueryPrefix: true });
 
-  useEffect(() => {
-    if (tab) {
-      setValue("selectedTab", tab !== "reviews" ? "summary" : "reviews");
-    }
-  }, [tab, setValue]);
-
   return (
     <Tabs
-      value={selectedTab}
+      value={tab === "reviews" ? "reviews" : "summary"}
       onValueChange={(value) =>
-        setValue("selectedTab", value as typeof selectedTab)
+        navigate({
+          search: qs.stringify({
+            tab: value,
+          }),
+        })
       }
       defaultValue="summary"
       className="w-full flex-[7]"

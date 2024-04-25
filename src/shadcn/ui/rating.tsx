@@ -22,9 +22,9 @@ const Ratings = ({ ...props }: RatingsProps) => {
     size = 20,
     fill = true,
     Icon = <Star />,
-    filledClassName = "text-foreground",
+    filledClassName = "text-amber-400",
     emptyClassName = "text-muted-foreground",
-    hoverClassName = "text-foreground",
+    hoverClassName = "text-amber-300",
     className,
     onRatingChange,
     ...rest

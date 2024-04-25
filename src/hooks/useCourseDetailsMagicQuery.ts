@@ -8,8 +8,11 @@ const useCourseDetailsMagicQuery = () => {
   const { courseId } = useParams<{
     courseId: string;
   }>();
-  const { data: paymentData, isSuccess: hasQueriedPaymentData } =
-    usePaymentsQuery();
+  const {
+    data: paymentData,
+    isSuccess: hasQueriedPaymentData,
+    isPending: isPaymentsPending,
+  } = usePaymentsQuery();
 
   const hasPurchasedCourseWithId = useMemo(() => {
     if (hasQueriedPaymentData === false) return "CHECKING";
@@ -98,9 +101,17 @@ const useCourseDetailsMagicQuery = () => {
   const returnValue = useMemo(() => {
     return {
       course,
-      isLoading: isCourseDetailsPending || isShoppingItemDetailsPending,
+      isLoading:
+        isCourseDetailsPending ||
+        isShoppingItemDetailsPending ||
+        isPaymentsPending,
     };
-  }, [course, isCourseDetailsPending, isShoppingItemDetailsPending]);
+  }, [
+    course,
+    isCourseDetailsPending,
+    isShoppingItemDetailsPending,
+    isPaymentsPending,
+  ]);
 
   return returnValue;
 };
