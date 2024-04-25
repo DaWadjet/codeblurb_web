@@ -24,8 +24,6 @@ type CodeQuizSolutionRequest = API["CodeQuizSolutionRequest"];
 type CodeQuizSolutionResponse = API["CodeQuizSolutionResponse"];
 type IncorrectCodeQuizSolutionResponse =
   API["IncorrectCodeQuizSolutionResponse"];
-type ContentBundleResponse = API["ContentBundleResponse"];
-type ContentResponse = API["ContentResponse"];
 type CodingContentResponse = API["CodingContentResponse"];
 type QuizContentResponse = API["QuizContentResponse"];
 type QuizQuestionResponse = API["QuizQuestionResponse"];
@@ -50,8 +48,6 @@ export type {
   CodeSolutionRequest,
   CodeSolutionResponse,
   CodingContentResponse,
-  ContentBundleResponse,
-  ContentResponse,
   ForgotPasswordRequest,
   IncorrectCodeQuizSolutionResponse,
   IncorrectQuizSolutionResponse,

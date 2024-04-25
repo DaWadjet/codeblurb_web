@@ -1,12 +1,12 @@
 import ArticleContent from "@/pages/content/ArticleContent";
-import ScratchContent from "@/pages/content/ScratchContent";
+import ScratchContent from "@/pages/content/scratch/ScratchContent";
 import VideoContent from "@/pages/content/VideoContent";
 
 import DragAndDropContent from "@/pages/content/DragAndDropContent";
 import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
-import BigLoader from "@/components/BigLoader";
+import BigLoader from "@/components/common/BigLoader";
 import useViewedContent from "@/hooks/useViewedContent";
 import {
   Breadcrumb,
@@ -50,13 +50,8 @@ const ContentPage: FC = () => {
   if (!content) return null; //should not happen
 
   return (
-    <div
-      className="flex flex-col gap-8"
-      style={{
-        height: "calc(100vh - 148px)",
-      }}
-    >
-      <div className="flex flex-col items-start gap-1.5 absolute top-24 left-5">
+    <div className="flex flex-col gap-8 ">
+      <div className="flex flex-col items-start gap-1.5 absolute top-0 left-5 ">
         <Label htmlFor="type">Content Type</Label>
         <Select
           value={activeTab}
@@ -74,7 +69,7 @@ const ContentPage: FC = () => {
           </SelectContent>
         </Select>
       </div>
-      <Breadcrumb>
+      <Breadcrumb className="w-full bg-background sticky top-0 h-10 pt-2">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/my-courses">My Courses</BreadcrumbLink>

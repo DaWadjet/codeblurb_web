@@ -1,5 +1,5 @@
-import { DarkModeToggle } from "@/components/DarkModeToggle";
 import Logo from "@/components/common/Logo";
+import { DarkModeToggle } from "@/components/navbar/DarkModeToggle";
 import NavbarLoggedIn from "@/components/navbar/NavbarLoggedIn";
 import NavbarLoggedOut from "@/components/navbar/NavbarLoggedOut";
 import useLoggedIn from "@/hooks/useLoggedIn";

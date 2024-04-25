@@ -2,6 +2,7 @@ import client from "@/network/axiosClient";
 import {
   PageShoppingItemResponse,
   ShoppingCartResponse,
+  ShoppingItemResponse,
 } from "@/types/ApiTypes";
 import { DEFAULT_PAGE_SIZE, TPageProps } from "@/utils/types";
 import {
@@ -17,6 +18,8 @@ import qs from "qs";
 export const ShoppingKeys = {
   addItemMutation: ["addItem"] as const,
   shoppingCartQuery: ["shoppingCart"] as const,
+  shoppingItemDetailsQuery: (id: number) =>
+    ["shoppingItemDetails", id] as const,
   availableShoppingItemsQuery: (props: TPageProps) =>
     [
       "availableShoppingItems",
@@ -98,6 +101,28 @@ export const useAvailableShoppingItemsQuery = (props?: TPageProps) => {
       }
     )
   );
+};
+
+export const shoppingItemDetailsQueryOptions = (id: number) => {
+  return queryOptions({
+    queryKey: ShoppingKeys.shoppingItemDetailsQuery(id),
+    queryFn: async () => {
+      const response = await client.get<ShoppingItemResponse>(
+        `/shopping/shopping-item/${id}`
+      );
+      return response.data;
+    },
+  });
+};
+
+export const useShoppingItemDetailsQuery = ({
+  id,
+  enabled,
+}: {
+  id: number;
+  enabled?: boolean;
+}) => {
+  return useQuery({ ...shoppingItemDetailsQueryOptions(id), enabled });
 };
 
 export const addItemMutationFn = async (shoppingCartItemId: number) => {

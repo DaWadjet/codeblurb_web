@@ -3,7 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
   "/shopping/add-item/{shoppingCartItem}": {
     post: operations["addItemToShoppingCart"];
@@ -62,6 +61,9 @@ export interface paths {
   "/sync": {
     get: operations["sync"];
   };
+  "/shopping/shopping-item/{shoppingItemId}": {
+    get: operations["getShoppingItemById"];
+  };
   "/shopping/shopping-cart": {
     get: operations["restoreShoppingCart"];
   };
@@ -89,6 +91,7 @@ export interface components {
     MinimalContentBundleResponse: {
       /** Format: int32 */
       id?: number;
+      description?: string;
       includedContent?: components["schemas"]["MinimalContentResponse"][];
       title?: string;
       imageUrl?: string;
@@ -108,6 +111,11 @@ export interface components {
       contentType?: "CODING" | "VIDEO" | "QUIZ";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
     };
     RatingResponse: {
       /** Format: int32 */
@@ -231,21 +239,21 @@ export interface components {
       registeredAt?: string;
     };
     PageShoppingItemResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["ShoppingItemResponse"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"][];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
     PageableObject: {
@@ -266,53 +274,30 @@ export interface components {
       property?: string;
       ignoreCase?: boolean;
     };
-    ContentBundleResponse: {
-      /** Format: int32 */
-      id?: number;
-      title?: string;
-      includedContent?: components["schemas"]["ContentResponse"][];
-      imageUrl?: string;
-      /** @enum {string} */
-      skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-      ratings?: components["schemas"]["RatingsResponse"];
-      /** Format: double */
-      progress?: number;
-      /** Format: date-time */
-      releaseDate?: string;
-    };
-    ContentResponse: {
-      /** Format: int32 */
-      id?: number;
-      name?: string;
-      /** @enum {string} */
-      contentType?: "CODING" | "VIDEO" | "QUIZ";
-      /** @enum {string} */
-      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
-    };
     PaymentResponse: {
       /** @enum {string} */
       status?: "PENDING" | "PAID" | "FAILED";
-      boughtContentBundles?: components["schemas"]["ContentBundleResponse"][];
+      boughtContentBundles?: components["schemas"]["MinimalContentBundleResponse"][];
     };
     PreviousPaymentsResponse: {
       previousPayments?: components["schemas"]["PaymentResponse"][];
     };
     PageMinimalContentBundleResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["MinimalContentBundleResponse"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"][];
+      first?: boolean;
+      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
       pageable?: components["schemas"]["PageableObject"];
-      first?: boolean;
-      last?: boolean;
       empty?: boolean;
     };
     CodingContentResponse: {
@@ -323,6 +308,11 @@ export interface components {
       contentType?: "CODING" | "VIDEO" | "QUIZ";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
       description?: string;
       codeSkeleton?: string[];
       codeSnippets?: string[];
@@ -338,6 +328,11 @@ export interface components {
       contentType?: "CODING" | "VIDEO" | "QUIZ";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
       questions?: components["schemas"]["QuizQuestionResponse"][];
     };
     QuizQuestionResponse: {
@@ -357,6 +352,12 @@ export interface components {
       ratings?: components["schemas"]["RatingsResponse"];
       /** Format: double */
       progress?: number;
+      /** @enum {string} */
+      skillLevel?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+      /** Format: date-time */
+      releaseDate?: string;
+      /** Format: int32 */
+      numberOfPurchases?: number;
       includedVideos?: components["schemas"]["VideoContentResponse"][];
       includedCodings?: components["schemas"]["CodingContentResponse"][];
       includedQuizzes?: components["schemas"]["QuizContentResponse"][];
@@ -373,6 +374,11 @@ export interface components {
       contentType?: "CODING" | "VIDEO" | "QUIZ";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
       description?: string;
       resourceUrl?: string;
     };
@@ -389,7 +395,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
   addItemToShoppingCart: {
     parameters: {
       path: {
@@ -655,6 +660,21 @@ export interface operations {
       /** @description OK */
       200: {
         content: never;
+      };
+    };
+  };
+  getShoppingItemById: {
+    parameters: {
+      path: {
+        shoppingItemId: number;
+      };
+    };
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          "*/*": components["schemas"]["ShoppingItemResponse"];
+        };
       };
     };
   };

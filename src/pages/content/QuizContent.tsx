@@ -346,7 +346,7 @@ const QuizContent: FC = () => {
               setAnswerIndices([]);
             }}
           >
-            Restart
+            Redo Quiz
           </Button>
         )}
         {shownQuestionIndex === "RESULTS" && (

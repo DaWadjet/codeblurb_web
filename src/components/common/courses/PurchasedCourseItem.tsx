@@ -1,5 +1,6 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 
+import useUsername from "@/hooks/useUsername";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";
 import {
   Card,
@@ -18,8 +19,15 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
   course,
 }) => {
   const navigate = useNavigate();
+  const username = useUsername();
   const technologies = ["Java"];
-
+  const ratingOfUser = useMemo(() => {
+    return course.ratings?.ratings?.find((r) => {
+      console.log(r);
+      return r.username == username;
+    });
+  }, [course.ratings?.ratings, username]);
+  console.log(ratingOfUser);
   return (
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
@@ -48,7 +56,7 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
       </CardContent>
 
       <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">
-        <Progress value={course.contentBundle?.progress} className="h-2" />
+        <Progress value={course.contentBundle?.progress ?? 0} className="h-2" />
         <div className="flex justify-between items-start w-full">
           <p className="text-muted-foreground text-sm">
             {course?.contentBundle?.progress
@@ -64,13 +72,13 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
               navigate(`/course/${course.id}/?tab=reviews`);
             }}
           >
-            <p>Leave your rating</p>
+            <p>{ratingOfUser ? "Your review" : "Leave a review!"}</p>
             <Rating
-              rating={0}
+              rating={ratingOfUser?.rating ?? 0}
               size={10}
               filledClassName="text-amber-500"
               hoverClassName="text-amber-300"
-              onRatingChange={() => {}}
+              onRatingChange={ratingOfUser ? undefined : () => {}}
             />
           </div>
         </div>

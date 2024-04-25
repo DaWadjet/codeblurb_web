@@ -1,7 +1,7 @@
 import { ShoppingCart } from "lucide-react";
 import { FC, useMemo } from "react";
 
-import PriceTag from "@/components/PriceTag";
+import PriceTag from "@/components/common/courses/PriceTag";
 import useItemsInCart from "@/hooks/useItemsInCart";
 import { useAddItemMutation, useDeleteItemMutation } from "@/network/shopping";
 import { AspectRatio } from "@/shadcn/ui/aspect-ratio";

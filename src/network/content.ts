@@ -18,17 +18,13 @@ import {
 import qs from "qs";
 
 export const ContentKeys = {
-  quizSolutionMutation: (id: number) => ["quizSolution", id],
-  codeSolutionMutation: (id: number) => ["codeSolution", id],
-  codeQuizSolutionMutation: (id: number) => ["codeQuizSolution", id],
-  contentBundlesQuery: ({ size, sort, title, skills }: TPageProps) => [
-    "contentBundles",
-    size ?? DEFAULT_PAGE_SIZE,
-    sort,
-    title,
-    skills,
-  ],
-  contentBundleDetailsQuery: (id: number) => ["contentBundleDetails", id],
+  quizSolutionMutation: (id: number) => ["quizSolution", id] as const,
+  codeSolutionMutation: (id: number) => ["codeSolution", id] as const,
+  codeQuizSolutionMutation: (id: number) => ["codeQuizSolution", id] as const,
+  contentBundlesQuery: ({ size, sort, title, skills }: TPageProps) =>
+    ["contentBundles", size ?? DEFAULT_PAGE_SIZE, sort, title, skills] as const,
+  contentBundleDetailsQuery: (id: number) =>
+    ["contentBundleDetails", id] as const,
 } as const;
 
 function contentBundlesQueryOptions(pageProps: TPageProps) {
@@ -87,7 +83,7 @@ export const useContentBundlesQuery = (pageProps?: TPageProps) => {
   );
 };
 
-function contentBundleDetailsQueryOptions(id: number) {
+export function contentBundleDetailsQueryOptions(id: number) {
   return queryOptions({
     queryKey: ContentKeys.contentBundleDetailsQuery(id),
     queryFn: async () => {
@@ -99,8 +95,14 @@ function contentBundleDetailsQueryOptions(id: number) {
   });
 }
 
-export const useContentBundleDetailsQuery = (id: number) => {
-  return useQuery(contentBundleDetailsQueryOptions(id));
+export const useContentBundleDetailsQuery = ({
+  id,
+  enabled,
+}: {
+  id: number;
+  enabled?: boolean;
+}) => {
+  return useQuery({ ...contentBundleDetailsQueryOptions(id), enabled });
 };
 
 export async function quizSolutionMutationFn({

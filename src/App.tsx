@@ -1,3 +1,4 @@
+import { usePaymentsQuery } from "@/network/payments";
 import ExplorePage from "@/pages/ExplorePage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import HomePage from "@/pages/HomePage";
@@ -18,6 +19,7 @@ import { FC } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 const App: FC = () => {
+  usePaymentsQuery();
   return (
     <ThemeProvider defaultTheme="dark">
       <Routes>

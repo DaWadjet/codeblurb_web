@@ -317,6 +317,25 @@ paths:
       responses:
         "200":
           description: OK
+  /shopping/shopping-item/{shoppingItemId}:
+    get:
+      tags:
+        - shopping-cart-controller
+      operationId: getShoppingItemById
+      parameters:
+        - name: shoppingItemId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/ShoppingItemResponse"
   /shopping/shopping-cart:
     get:
       tags:
@@ -495,6 +514,8 @@ components:
         id:
           type: integer
           format: int32
+        description:
+          type: string
         includedContent:
           type: array
           items:
@@ -537,6 +558,14 @@ components:
             - NOT_SEEN
             - SEEN
             - COMPLETED
+        estimatedTime:
+          type: integer
+          format: int32
+        shortDescription:
+          type: string
+        order:
+          type: integer
+          format: int32
     RatingResponse:
       type: object
       properties:
@@ -807,12 +836,12 @@ components:
     PageShoppingItemResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -827,15 +856,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -871,54 +900,6 @@ components:
           type: string
         ignoreCase:
           type: boolean
-    ContentBundleResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        title:
-          type: string
-        includedContent:
-          type: array
-          items:
-            $ref: "#/components/schemas/ContentResponse"
-        imageUrl:
-          type: string
-        skillLevel:
-          type: string
-          enum:
-            - BEGINNER
-            - INTERMEDIATE
-            - ADVANCED
-        ratings:
-          $ref: "#/components/schemas/RatingsResponse"
-        progress:
-          type: number
-          format: double
-        releaseDate:
-          type: string
-          format: date-time
-    ContentResponse:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-        name:
-          type: string
-        contentType:
-          type: string
-          enum:
-            - CODING
-            - VIDEO
-            - QUIZ
-        status:
-          type: string
-          enum:
-            - NOT_SEEN
-            - SEEN
-            - COMPLETED
     PaymentResponse:
       type: object
       properties:
@@ -931,7 +912,7 @@ components:
         boughtContentBundles:
           type: array
           items:
-            $ref: "#/components/schemas/ContentBundleResponse"
+            $ref: "#/components/schemas/MinimalContentBundleResponse"
     PreviousPaymentsResponse:
       type: object
       properties:
@@ -942,12 +923,12 @@ components:
     PageMinimalContentBundleResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -962,15 +943,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     CodingContentResponse:
@@ -993,6 +974,14 @@ components:
             - NOT_SEEN
             - SEEN
             - COMPLETED
+        estimatedTime:
+          type: integer
+          format: int32
+        shortDescription:
+          type: string
+        order:
+          type: integer
+          format: int32
         description:
           type: string
         codeSkeleton:
@@ -1033,6 +1022,14 @@ components:
             - NOT_SEEN
             - SEEN
             - COMPLETED
+        estimatedTime:
+          type: integer
+          format: int32
+        shortDescription:
+          type: string
+        order:
+          type: integer
+          format: int32
         questions:
           type: array
           items:
@@ -1069,6 +1066,18 @@ components:
         progress:
           type: number
           format: double
+        skillLevel:
+          type: string
+          enum:
+            - BEGINNER
+            - INTERMEDIATE
+            - ADVANCED
+        releaseDate:
+          type: string
+          format: date-time
+        numberOfPurchases:
+          type: integer
+          format: int32
         includedVideos:
           type: array
           items:
@@ -1108,6 +1117,14 @@ components:
             - NOT_SEEN
             - SEEN
             - COMPLETED
+        estimatedTime:
+          type: integer
+          format: int32
+        shortDescription:
+          type: string
+        order:
+          type: integer
+          format: int32
         description:
           type: string
         resourceUrl:
