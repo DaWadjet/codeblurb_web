@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { cn } from "@/shadcnutils";
 import { motion } from "framer-motion";
+import { useEffectOnce } from "react-use";
 
 type Direction = "TOP" | "LEFT" | "BOTTOM" | "RIGHT";
 
@@ -58,6 +59,10 @@ export function HoverBorderGradient({
       return () => clearInterval(interval);
     }
   }, [duration, hovered, rotateDirection]);
+
+  useEffectOnce(() => {
+    setDirection((prevState) => rotateDirection(prevState));
+  });
   return (
     <Tag
       onMouseEnter={() => {
@@ -65,7 +70,7 @@ export function HoverBorderGradient({
       }}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "relative flex rounded-full border content-center bg-background/20 hover:bg-background/10 transition duration-500 items-center flex-col flex-nowrap gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit",
+        "relative flex border content-center bg-background hover:bg-accent/30 transition duration-500 items-center flex-col flex-nowrap gap-10 h-min justify-center overflow-visible p-px decoration-clone w-fit",
         containerClassName
       )}
       {...props}

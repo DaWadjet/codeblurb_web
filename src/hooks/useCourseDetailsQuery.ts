@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 
 const useCourseDetailsQuery = () => {
   const { courseId } = useParams<{ courseId: string }>();
-  return useContentBundleDetailsQuery(Number(courseId));
+  return useContentBundleDetailsQuery({
+    id: Number(courseId),
+  });
 };
 export default useCourseDetailsQuery;
