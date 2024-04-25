@@ -76,7 +76,7 @@ const CourseDetailsPage: FC = () => {
             )}
           </div>
         </CardContent>
-        <CardHeader className="w-80 min-h-56 p-0 shrink-0 grow bg-red-500">
+        <CardHeader className="w-80 min-h-56 p-0 shrink-0 grow">
           <img
             src={
               course.imageUrl ??
