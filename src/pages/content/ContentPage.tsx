@@ -1,7 +1,7 @@
 import ScratchContent from "@/pages/content/scratch/ScratchContent";
 import VideoContent from "@/pages/content/VideoContent";
 
-import DragAndDropContent from "@/pages/content/DragAndDropContent";
+import DragAndDropContent from "@/pages/content/dragAndDrop/DragAndDropContent";
 import FillInTheGapsContent from "@/pages/content/FillInTheGapsContent";
 import QuizContent from "@/pages/content/QuizContent";
 
