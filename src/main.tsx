@@ -9,16 +9,17 @@ import { BrowserRouter } from "react-router-dom";
 
 import { queryClient } from "@/queryClient";
 import "@tanstack/react-query";
+import { StrictMode } from "react";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  // <React.StrictMode>
-  <I18nextProvider i18n={i18n}>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </I18nextProvider>
-  // </React.StrictMode>
+  <StrictMode>
+    <I18nextProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </I18nextProvider>
+  </StrictMode>
 );

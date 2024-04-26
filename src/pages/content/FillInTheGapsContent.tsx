@@ -7,7 +7,7 @@ import { Input } from "@/shadcn/ui/input";
 import { cn } from "@/shadcnutils";
 import { CodeQuizSolutionResponse } from "@/types/ApiTypes";
 import { BadgeInfo, Loader2Icon, Send, WandSparklesIcon } from "lucide-react";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 
@@ -38,13 +38,11 @@ const FillInTheGapsContent: FC = () => {
     useCodeQuizSolutionMutation(viewedContent.id!);
 
   const [state, setState] = useImmer<{
-    solution: CodeQuizSolutionResponse | null;
+    result: CodeQuizSolutionResponse | null;
     answers: string[];
-    passed: boolean;
     amountOfHintsShown: number;
   }>({
-    solution: null,
-    passed: false,
+    result: null,
     amountOfHintsShown: 0,
     answers: Array.from(
       { length: viewedContent.codeSkeleton!.length - 1 },
@@ -59,8 +57,7 @@ const FillInTheGapsContent: FC = () => {
       },
     });
     setState((draft) => {
-      draft.solution = results;
-      draft.passed = !results.incorrectSolutions?.length;
+      draft.result = results;
     });
     if (results.incorrectSolutions?.length) {
       toast.error("Some answers are incorrect");
@@ -68,6 +65,11 @@ const FillInTheGapsContent: FC = () => {
       toast.success("All answers are correct! Good job!");
     }
   }, [state.answers, setState, submitSolution]);
+
+  const passed = useMemo(
+    () => !state.result?.incorrectSolutions?.length,
+    [state.result?.incorrectSolutions?.length]
+  );
 
   return (
     <div className="flex flex-col gap-8">
@@ -104,7 +106,7 @@ const FillInTheGapsContent: FC = () => {
             {!!hints.length && (
               <Button
                 disabled={state.amountOfHintsShown >= hints.length}
-                variant={!state.passed ? "default" : "outline"}
+                variant={!passed ? "default" : "outline"}
                 onClick={() =>
                   setState((draft) => {
                     draft.amountOfHintsShown += 1;
@@ -140,22 +142,22 @@ const FillInTheGapsContent: FC = () => {
                       setState((draft) => {
                         draft.answers[index] = e.target.value;
                         if (
-                          state.solution?.incorrectSolutions?.length &&
-                          state.solution?.incorrectSolutions?.find(
+                          state.result?.incorrectSolutions?.length &&
+                          state.result?.incorrectSolutions?.find(
                             (s) => s.incorrectSolutionIndex === index
                           )
                         ) {
-                          draft.solution!.incorrectSolutions =
-                            state.solution?.incorrectSolutions?.filter((s) => {
+                          draft.result!.incorrectSolutions =
+                            state.result?.incorrectSolutions?.filter((s) => {
                               return s.incorrectSolutionIndex !== index;
                             });
                         }
                         if (
-                          state.solution?.correctAnswerIndices?.length &&
-                          state.solution?.correctAnswerIndices?.includes(index)
+                          state.result?.correctAnswerIndices?.length &&
+                          state.result?.correctAnswerIndices?.includes(index)
                         ) {
-                          draft.solution!.correctAnswerIndices =
-                            draft.solution?.correctAnswerIndices?.filter(
+                          draft.result!.correctAnswerIndices =
+                            draft.result?.correctAnswerIndices?.filter(
                               (i) => i !== index
                             );
                         }
@@ -173,10 +175,10 @@ const FillInTheGapsContent: FC = () => {
                     }}
                     className={cn(
                       "focus-visible:ring-offset-0 h-7 px-2 font-mono",
-                      state.solution?.incorrectSolutions?.find(
+                      state.result?.incorrectSolutions?.find(
                         (s) => s.incorrectSolutionIndex === index
                       ) && "border-destructive border-2 focus-visible:ring-0",
-                      state.solution?.correctAnswerIndices?.includes(index) &&
+                      state.result?.correctAnswerIndices?.includes(index) &&
                         "border-green-600 border-2 focus-visible:ring-0"
                     )}
                   />
@@ -187,7 +189,7 @@ const FillInTheGapsContent: FC = () => {
         </Card>
 
         <Button
-          variant={state.passed ? "default" : "ghost"}
+          variant={passed && state.result ? "default" : "ghost"}
           className="w-32 self-end"
           onClick={goToNextContent}
         >
