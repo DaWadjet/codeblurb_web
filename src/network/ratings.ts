@@ -23,9 +23,15 @@ export const useRatingMutation = () => {
   return useMutation({
     mutationFn: async (props: RatingProps) => {
       await ratingMutationFn(props);
-      await queryClient.invalidateQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(props.bundleId),
-      });
+      const queryKeysToInvalidate = [
+        ContentKeys.contentBundleDetailsQuery(props.bundleId),
+        [ContentKeys.contentBundlesQuery()[0]], //all filters
+      ];
+      await Promise.all(
+        queryKeysToInvalidate.map((key) =>
+          queryClient.invalidateQueries({ queryKey: key })
+        )
+      );
     },
     mutationKey: RatingKeys.ratingMutation,
   });

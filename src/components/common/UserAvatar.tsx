@@ -14,7 +14,7 @@ const UserAvatar: FC<{ className?: string }> = ({ className }) => {
 
   return (
     <Avatar className={cn("size-9", className)}>
-      <AvatarImage src="TODO" alt={userName} />
+      <AvatarImage alt={userName} />
       <AvatarFallback>{userMonogram}</AvatarFallback>
     </Avatar>
   );

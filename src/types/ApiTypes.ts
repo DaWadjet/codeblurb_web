@@ -64,8 +64,19 @@ type FillInTheGapsContent = API["CodingContentResponse"] & {
   contentType: "CODING";
   codingContentType: "FILL_THE_GAP";
 };
+type ArticleContent = {
+  contentType: "ARTICLE";
+  id: number;
+  status: "NOT_SEEN";
+  shortDescription: string;
+  name: string;
+  markdown: string;
+  estimatedTime: number;
+  order: number;
+};
 
 export type {
+  ArticleContent,
   ChangePasswordRequest,
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,

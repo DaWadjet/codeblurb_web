@@ -3,6 +3,7 @@ import {
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,
   CodeSolutionRequest,
+  CodeSolutionResponse,
   PageMinimalContentBundleResponse,
   QuizSolutionRequest,
   QuizSolutionResponse,
@@ -23,29 +24,35 @@ export const ContentKeys = {
   quizSolutionMutation: (id: number) => ["quizSolution", id] as const,
   codeSolutionMutation: (id: number) => ["codeSolution", id] as const,
   codeQuizSolutionMutation: (id: number) => ["codeQuizSolution", id] as const,
-  contentBundlesQuery: ({ size, sort, title, skills }: TPageProps) =>
-    ["contentBundles", size ?? DEFAULT_PAGE_SIZE, sort, title, skills] as const,
+  contentBundlesQuery: (props?: TPageProps) =>
+    [
+      "contentBundles",
+      props?.size ?? DEFAULT_PAGE_SIZE,
+      props?.sort ?? null,
+      props?.title ?? "",
+      props?.skills ?? [],
+    ] as const,
   contentBundleDetailsQuery: (id: number) =>
     ["contentBundleDetails", id] as const,
 } as const;
 
-function contentBundlesQueryOptions(pageProps: TPageProps) {
+function contentBundlesQueryOptions(pageProps?: TPageProps) {
   return infiniteQueryOptions({
     queryKey: ContentKeys.contentBundlesQuery(pageProps),
     initialPageParam: 0,
     queryFn: async ({ pageParam }) => {
       const queryParams = qs.stringify({
-        pageSize: pageProps.size ?? DEFAULT_PAGE_SIZE,
+        pageSize: pageProps?.size ?? DEFAULT_PAGE_SIZE,
         page: pageParam,
-        sort: pageProps.sort
-          ? `${pageProps.sort.property},${
-              pageProps.sort.ascending ? "asc" : "desc"
+        sort: pageProps?.sort
+          ? `${pageProps?.sort.property},${
+              pageProps?.sort.ascending ? "asc" : "desc"
             }`
           : undefined,
-        skills: pageProps.skills?.length
-          ? pageProps.skills.join(",")
+        skills: pageProps?.skills?.length
+          ? pageProps?.skills.join(",")
           : undefined,
-        title: pageProps.title,
+        title: pageProps?.title,
       });
 
       const response = await client.get<PageMinimalContentBundleResponse>(
@@ -74,15 +81,7 @@ function contentBundlesQueryOptions(pageProps: TPageProps) {
 }
 
 export const useContentBundlesQuery = (pageProps?: TPageProps) => {
-  return useInfiniteQuery(
-    contentBundlesQueryOptions(
-      pageProps ?? {
-        sort: null,
-        skills: null,
-        title: "",
-      }
-    )
-  );
+  return useInfiniteQuery(contentBundlesQueryOptions(pageProps));
 };
 
 export function contentBundleDetailsQueryOptions(id: number) {
@@ -134,8 +133,11 @@ export const useQuizSolutionSubmissionMutation = (contentId: number) => {
       quizSolution: QuizSolutionRequest;
     }) => {
       const result = await quizSolutionMutationFn({ contentId, quizSolution });
-      await queryClient.refetchQueries({
+      queryClient.refetchQueries({
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ContentKeys.contentBundlesQuery()[0]],
       });
       return result;
     },
@@ -149,7 +151,7 @@ export async function codeSolutionMutationFn({
   contentId: number;
   codeSolution: CodeSolutionRequest;
 }) {
-  const response = await client.post(
+  const response = await client.post<CodeSolutionResponse>(
     `/content/code/scratch-solution/${contentId}`,
     codeSolution
   );
@@ -186,10 +188,38 @@ export const useCodeQuizSolutionMutation = (contentId: number) => {
         contentId,
         codeSolution,
       });
-      await queryClient.refetchQueries({
+      queryClient.refetchQueries({
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
       });
+      queryClient.invalidateQueries({
+        queryKey: [ContentKeys.contentBundlesQuery()[0]],
+      });
+
       return solution;
+    },
+  });
+};
+
+export const useScratchSubmitMutation = (contentId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ContentKeys.codeSolutionMutation(contentId),
+    meta: {
+      showSuccessToast: false,
+    },
+    mutationFn: async ({
+      codeSolution,
+    }: {
+      codeSolution: CodeSolutionRequest;
+    }) => {
+      const result = await codeSolutionMutationFn({ contentId, codeSolution });
+      queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: [ContentKeys.contentBundlesQuery()[0]],
+      });
+      return result;
     },
   });
 };

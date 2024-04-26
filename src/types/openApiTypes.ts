@@ -3,7 +3,6 @@
  * Do not make direct changes to the file.
  */
 
-
 export interface paths {
   "/shopping/add-item/{shoppingCartItem}": {
     post: operations["addItemToShoppingCart"];
@@ -397,7 +396,6 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
-
   addItemToShoppingCart: {
     parameters: {
       path: {
