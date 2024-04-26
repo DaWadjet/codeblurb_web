@@ -185,7 +185,7 @@ const MyCoursesPage: FC = () => {
       </div>
       <div ref={loaderRef} className="flex justify-center">
         {(query.isFetchingNextPage || query.isPending) && (
-          <Loader2Icon className="size-10 animate-spin my-20 text-muted-foreground" />
+          <Loader2Icon className="size-10 animate-spin my-20" />
         )}
       </div>
       {paymentData?.previousPayments?.filter(

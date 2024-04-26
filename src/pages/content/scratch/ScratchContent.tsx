@@ -1,6 +1,7 @@
 import useGoToNextContent from "@/hooks/useGoToNextContent";
 import { Editor } from "@monaco-editor/react";
 
+import SyntaxHighlighter from "@/pages/content/scratch/SyntaxHighlighter";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
 import { useTheme } from "@/shadcn/ui/theme-provider";
@@ -128,6 +129,7 @@ const ScratchContent: FC = () => {
       >
         {hasNextContent ? "Next Section" : "Back To Course"}
       </Button>
+      <SyntaxHighlighter language="java" code={code} className="h-20" />
     </div>
   );
 };
