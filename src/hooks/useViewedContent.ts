@@ -8,6 +8,7 @@ export const contentTypePossibilities = [
   "SCRATCH",
   "DRAG_AND_DROP",
   "FILL_THE_GAP",
+  "ARTICLE",
 ] as const;
 
 export type ContentType = (typeof contentTypePossibilities)[number];

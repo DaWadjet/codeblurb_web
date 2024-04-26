@@ -11,17 +11,19 @@ import { FC, useCallback } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 
+//TODO replace with response
+const hints = [
+  "Hello, World!",
+  'Use double quotes for strings, like "abc"',
+
+  "It is simpler than you think",
+  "Type 'world' without a capital letter",
+  "OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX",
+];
+
 const FillInTheGapsContent: FC = () => {
   const { viewedContent } = useViewedContent();
 
-  const hints = [
-    "Hello, World!",
-    'Use double quotes for strings, like "abc"',
-
-    "It is simpler than you think",
-    "Type 'world' without a capital letter",
-    "OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX",
-  ];
   if (
     !viewedContent?.contentType ||
     viewedContent.contentType !== "CODING" ||

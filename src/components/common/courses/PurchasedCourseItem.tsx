@@ -11,16 +11,18 @@ import {
 } from "@/shadcn/ui/card";
 import { Progress } from "@/shadcn/ui/progress";
 import { Rating } from "@/shadcn/ui/rating";
-import { ShoppingItemResponse } from "@/types/ApiTypes";
+import { MinimalContentBundleResponse } from "@/types/ApiTypes";
 import capitalize from "lodash/capitalize";
 import { useNavigate } from "react-router-dom";
 
-const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
+const PurchasedCourseItem: FC<{ course: MinimalContentBundleResponse }> = ({
   course,
 }) => {
   const navigate = useNavigate();
   const username = useUsername();
   const technologies = ["Java"];
+  const progress = (course?.progress ?? 0) * 100;
+
   const ratingOfUser = useMemo(() => {
     return course.ratings?.ratings?.find((r) => r.username == username);
   }, [course.ratings?.ratings, username]);
@@ -34,7 +36,7 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
         <AspectRatio ratio={18 / 9}>
           <img
             src={
-              course.contentBundle?.imageUrl ??
+              course?.imageUrl ??
               "https://fireship.io/courses/js/img/featured.webp"
             }
             alt={course.title}
@@ -47,20 +49,19 @@ const PurchasedCourseItem: FC<{ course: ShoppingItemResponse }> = ({
       </CardHeader>
       <CardContent className="p-3">
         <p className="text-sm text-muted-foreground">
-          {technologies.join(", ")} -{" "}
-          {capitalize(course.contentBundle?.skillLevel)}
+          {technologies.join(", ")} - {capitalize(course?.skillLevel)}
         </p>
       </CardContent>
 
       <CardFooter className="p-3 pt-0 flex flex-col gap-2 items-start">
-        <Progress value={course.contentBundle?.progress ?? 0} className="h-2" />
+        <Progress value={progress} className="h-2" />
         <div className="flex justify-between items-start w-full">
           <p className="text-muted-foreground text-sm">
-            {course?.contentBundle?.progress
+            {progress === 0
               ? "Start learning"
-              : course.contentBundle?.progress === 100
+              : progress === 100
               ? "Completed"
-              : `${course.contentBundle?.progress ?? 0}% completed`}
+              : `${progress}% completed`}
           </p>
           <div
             className="text-xs text-muted-foreground flex flex-col items-center"

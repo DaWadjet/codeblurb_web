@@ -190,22 +190,24 @@ const ShoppingCartPage: FC = () => {
           )}
         </aside>
       </div>
-      <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold">You Might Also Like</h2>
-        {isPending ? (
-          <Loader2Icon
-            size={48}
-            className="animate-spin mx-auto my-auto h-72"
-          />
-        ) : (
-          <CourseList
-            items={(newData?.items ?? []).map((item) => (
-              <CourseItem course={item!} key={item!.id} />
-            ))}
-            autoplay
-          />
-        )}
-      </div>
+      {!!newData?.items?.length && !isPending && (
+        <div className="flex flex-col gap-4">
+          <h2 className="text-2xl font-semibold">You Might Also Like</h2>
+          {isPending ? (
+            <Loader2Icon
+              size={48}
+              className="animate-spin mx-auto my-auto h-72"
+            />
+          ) : (
+            <CourseList
+              items={(newData?.items ?? []).map((item) => (
+                <CourseItem course={item!} key={item!.id} />
+              ))}
+              autoplay
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

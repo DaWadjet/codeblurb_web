@@ -374,17 +374,13 @@ const QuizContent: FC = () => {
             Redo Quiz
           </Button>
         )}
-        {!!solution && (
-          <Button
-            variant={
-              solution.incorrectSolutions!.length > 0 ? "ghost" : "default"
-            }
-            className="w-32"
-            onClick={goToNextContent}
-          >
-            {hasNextContent ? "Next Section" : "Back To Course"}
-          </Button>
-        )}
+        <Button
+          variant={!solution?.incorrectSolutions?.length ? "ghost" : "default"}
+          className="w-32"
+          onClick={goToNextContent}
+        >
+          {hasNextContent ? "Next Section" : "Back To Course"}
+        </Button>
       </div>
     </div>
   );

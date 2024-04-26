@@ -36,6 +36,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
     >
       <CardHeader className="p-0 relative">
         <AspectRatio ratio={18 / 9}>
+          {/* TODO remove hardcoded image urls across project */}
           <img
             src={
               course.contentBundle?.imageUrl ??
