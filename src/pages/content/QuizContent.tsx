@@ -24,19 +24,17 @@ import { ScrollArea } from "@/shadcn/ui/scroll-area";
 import { Separator } from "@/shadcn/ui/separator";
 import { cn } from "@/shadcnutils";
 import { QuizSolutionResponse } from "@/types/ApiTypes";
-import { CircleCheckIcon, Loader2Icon, XCircleIcon } from "lucide-react";
+import { CircleCheckIcon, Loader2Icon, Send, XCircleIcon } from "lucide-react";
 import { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 const QuizContent: FC = () => {
-  const { viewedContent, isPending } = useViewedContent();
-  const [solution, setSolution] = useState<QuizSolutionResponse | null>(null);
+  const { viewedContent } = useViewedContent();
   if (!viewedContent?.contentType || viewedContent.contentType !== "QUIZ") {
     throw new Error("This component should only be used for quiz content");
   }
-  const { mutateAsync: submitQuiz } = useQuizSolutionSubmissionMutation(
-    viewedContent.id!
-  );
-
+  const { mutateAsync: submitQuiz, isPending } =
+    useQuizSolutionSubmissionMutation(viewedContent.id!);
+  const [solution, setSolution] = useState<QuizSolutionResponse | null>(null);
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
   const [shownQuestionIndex, setShownQuestionIndex] = useState<
@@ -79,7 +77,6 @@ const QuizContent: FC = () => {
 
   const submitResults = useCallback(async () => {
     const results = await submitQuiz({
-      contentId: viewedContent.id!,
       quizSolution: {
         solutions: viewedContent.questions!.map((question, index) => ({
           questionId: question.id!,
@@ -88,7 +85,7 @@ const QuizContent: FC = () => {
       },
     });
     setSolution(results!);
-  }, [submitQuiz, viewedContent.id, viewedContent.questions, answerIndices]);
+  }, [submitQuiz, viewedContent.questions, answerIndices]);
 
   const correctlyAnswered = useMemo(
     () => solution?.correctAnswerQuestionIds?.length ?? 0,
@@ -294,8 +291,10 @@ const QuizContent: FC = () => {
                 onClick={submitResults}
                 className="text-base font-semibold"
               >
-                {isPending && (
+                {isPending ? (
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="size-4 mr-2" />
                 )}
                 Submit!
               </Button>

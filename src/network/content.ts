@@ -125,17 +125,19 @@ export const useQuizSolutionSubmissionMutation = (contentId: number) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ContentKeys.quizSolutionMutation(contentId),
+    meta: {
+      showSuccessToast: false,
+    },
     mutationFn: async ({
-      contentId,
       quizSolution,
     }: {
-      contentId: number;
       quizSolution: QuizSolutionRequest;
     }) => {
-      await quizSolutionMutationFn({ contentId, quizSolution });
+      const result = await quizSolutionMutationFn({ contentId, quizSolution });
       await queryClient.refetchQueries({
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
       });
+      return result;
     },
   });
 };
@@ -148,7 +150,7 @@ export async function codeSolutionMutationFn({
   codeSolution: CodeSolutionRequest;
 }) {
   const response = await client.post(
-    `/content/scratch-solution/${contentId}`,
+    `/content/code/scratch-solution/${contentId}`,
     codeSolution
   );
   return response.data;
@@ -162,8 +164,32 @@ export async function codeQuizSolutionMutationFn({
   codeSolution: CodeQuizSolutionRequest;
 }) {
   const response = await client.post<CodeQuizSolutionResponse>(
-    `/content/code-quiz-solution/${contentId}`,
+    `/content/code/code-quiz-solution/${contentId}`,
     codeSolution
   );
   return response.data;
 }
+
+export const useCodeQuizSolutionMutation = (contentId: number) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ContentKeys.codeQuizSolutionMutation(contentId),
+    meta: {
+      showSuccessToast: false,
+    },
+    mutationFn: async ({
+      codeSolution,
+    }: {
+      codeSolution: CodeQuizSolutionRequest;
+    }) => {
+      const solution = await codeQuizSolutionMutationFn({
+        contentId,
+        codeSolution,
+      });
+      await queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+      return solution;
+    },
+  });
+};
