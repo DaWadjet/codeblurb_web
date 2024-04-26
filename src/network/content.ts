@@ -15,6 +15,7 @@ import {
   useInfiniteQuery,
   useMutation,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 import qs from "qs";
 
@@ -121,9 +122,21 @@ export async function quizSolutionMutationFn({
 }
 
 export const useQuizSolutionSubmissionMutation = (contentId: number) => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ContentKeys.quizSolutionMutation(contentId),
-    mutationFn: quizSolutionMutationFn,
+    mutationFn: async ({
+      contentId,
+      quizSolution,
+    }: {
+      contentId: number;
+      quizSolution: QuizSolutionRequest;
+    }) => {
+      await quizSolutionMutationFn({ contentId, quizSolution });
+      await queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+    },
   });
 };
 
