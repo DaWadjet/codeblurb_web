@@ -1,5 +1,6 @@
 import useGoToNextContent from "@/hooks/useGoToNextContent";
 import { useViewedContent } from "@/hooks/useViewedContent";
+import { useCompletedMutation, useSeenMutation } from "@/network/progress";
 import { Button } from "@/shadcn/ui/button";
 import { ElementRef, FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
@@ -29,6 +30,8 @@ const VideoContent: FC = () => {
   if (!viewedContent?.contentType || viewedContent.contentType !== "VIDEO") {
     throw new Error("This component should only be used for video content");
   }
+  const { mutate: markAsSeen } = useSeenMutation();
+  const { mutate: markAsCompleted } = useCompletedMutation();
 
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
@@ -39,15 +42,15 @@ const VideoContent: FC = () => {
 
   const onSeen = useCallback(() => {
     if (seen) return;
-    console.log("set seen");
+    markAsSeen(viewedContent.id!);
     setSeen(true);
-  }, [seen]);
+  }, [seen, markAsSeen, viewedContent.id]);
 
   const onCompleted = useCallback(() => {
     if (completed) return;
-    console.log("set completed");
+    markAsCompleted(viewedContent.id!);
     setCompleted(true);
-  }, [completed]);
+  }, [completed, markAsCompleted, viewedContent.id]);
 
   const onProgress = useCallback(
     (state: OnProgressProps) => {

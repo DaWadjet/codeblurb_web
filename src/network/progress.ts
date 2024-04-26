@@ -1,26 +1,28 @@
 import client from "@/network/axiosClient";
-import { useMutation } from "@tanstack/react-query";
+import { ContentKeys } from "@/network/content";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 export const ProgressKeys = {
   seenMutation: ["seenMutation"] as const,
   completedMutation: ["completedMutation"] as const,
 } as const;
 
-const seenMutationFn = async (contentId: number) => {
-  const response = await client.patch<void>("/seen/" + contentId);
-  console.log(response.data);
-  return response.data;
-};
+const seenMutationFn = async (contentId: number) =>
+  await client.patch<void>("/seen/" + contentId);
 
-const completedMutationFn = async (contentId: number) => {
-  const response = await client.patch<void>("/completed/" + contentId);
-  console.log(response.data);
-  return response.data;
-};
+const completedMutationFn = async (contentId: number) =>
+  client.patch<void>("/completed/" + contentId);
 
 export const useSeenMutation = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: ProgressKeys.seenMutation,
-    mutationFn: seenMutationFn,
+    mutationFn: async (contentId: number) => {
+      await seenMutationFn(contentId);
+      await queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+    },
     meta: {
       showToast: false,
     },
@@ -28,9 +30,15 @@ export const useSeenMutation = () => {
 };
 
 export const useCompletedMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ProgressKeys.completedMutation,
-    mutationFn: completedMutationFn,
+    mutationFn: async (contentId: number) => {
+      await completedMutationFn(contentId);
+      await queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      });
+    },
     meta: {
       showToast: false,
     },
