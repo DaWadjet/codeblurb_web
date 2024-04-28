@@ -27,7 +27,8 @@ import { Link, useNavigate } from "react-router-dom";
 const ShoppingCartPage: FC = () => {
   const navigate = useNavigate();
   const { data } = useShoppingCartQuery();
-  const { mutate: checkout } = useCheckoutMutation();
+  const { mutate: checkout, isPending: isPendingCheckout } =
+    useCheckoutMutation();
   const cartItems = useMemo(() => data?.shoppingItems ?? [], [data]);
 
   const { mutate: removeItemFromCart } = useDeleteItemMutation();
@@ -145,7 +146,7 @@ const ShoppingCartPage: FC = () => {
             </div>
           )}
         </div>
-        <aside className="flex flex-col sticky flex-[3] top-24 z-50 -mt-8 h-48 w-full gap-4">
+        <aside className="flex flex-col sticky flex-[3] top-24 z-50 -mt-8 h-48 w-full gap-4 mb-20">
           <h2 className="font-semibold text-2xl">Total Price</h2>
           <div className="flex flex-col gap-3">
             {cartItems.map((item, index) => (
@@ -182,8 +183,11 @@ const ShoppingCartPage: FC = () => {
               <Button
                 className="w-full h-14 leading-none text-2xl font-semibold hover:bg-background"
                 variant="outline"
-                onClick={() => checkout()}
+                onClick={isPendingCheckout ? () => {} : () => checkout()}
               >
+                {isPendingCheckout && (
+                  <Loader2Icon size={28} className="animate-spin mr-3" />
+                )}
                 Checkout
               </Button>
             </BackgroundGradient>

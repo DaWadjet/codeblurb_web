@@ -37,7 +37,7 @@ const ContentPage: FC = () => {
 
   return (
     <div className="flex flex-col gap-8 ">
-      <Breadcrumb className="w-full bg-background sticky top-0 h-10 pt-2">
+      <Breadcrumb className="w-full bg-background sticky top-0 z-10 h-10 pt-2">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink href="/my-courses">My Courses</BreadcrumbLink>

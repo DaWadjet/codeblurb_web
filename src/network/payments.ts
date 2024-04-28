@@ -32,6 +32,9 @@ export const checkoutMutationFn = async () => {
 export const useCheckoutMutation = () => {
   return useMutation({
     mutationKey: PaymentKeys.checkoutMutation,
+    meta: {
+      showSuccessToast: false,
+    },
     mutationFn: checkoutMutationFn,
     onSuccess: ({ redirectUrl }) => {
       window.location.href = redirectUrl;
