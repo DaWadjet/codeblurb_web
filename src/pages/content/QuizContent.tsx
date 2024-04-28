@@ -319,9 +319,9 @@ const QuizContent: FC = () => {
                       <AccordionItem
                         value={question.id!.toString()}
                         key={question.id!.toString()}
-                        className=" border-border border rounded-lg py-2.5 px-4"
+                        className="border-border border rounded-lg py-2.5 px-4"
                       >
-                        <AccordionTrigger className="flex gap-3 items-start p-0 border-none">
+                        <div className="flex gap-3 items-start w-full">
                           {solution.correctAnswerQuestionIds?.includes(
                             question.id!
                           ) ? (
@@ -335,10 +335,13 @@ const QuizContent: FC = () => {
                               className="text-destructive"
                             />
                           )}
-                          <h4 className="font-medium w-full text-left text-lg">
-                            {question.question}
-                          </h4>
-                        </AccordionTrigger>
+                          <AccordionTrigger className="p-0 border-none">
+                            <h4 className="font-medium text-left text-lg">
+                              {question.question}
+                            </h4>
+                          </AccordionTrigger>
+                        </div>
+
                         <AccordionContent className="flex justify-between pt-4 pb-1 items-end gap-4 text-muted-foreground  flex-nowrap">
                           <div className="flex flex-col gap-1">
                             <h5 className="text-base text-foreground font-medium">
