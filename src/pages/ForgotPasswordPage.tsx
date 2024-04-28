@@ -38,9 +38,9 @@ const ForgotPasswordPage: FC = () => {
   const { isPending, mutate } = useRequestResetPasswordMutation();
   const onSubmit = useCallback(
     (values: z.infer<typeof usernameSchema>) => {
-      mutate(values.username);
+      if (!isPending) mutate(values.username);
     },
-    [mutate]
+    [mutate, isPending]
   );
 
   return (

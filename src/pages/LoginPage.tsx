@@ -48,9 +48,9 @@ const LoginPage: FC = () => {
 
   const onSubmit = useCallback(
     (values: z.infer<typeof loginSchema>) => {
-      login(values);
+      if (!isPending) login(values);
     },
-    [login]
+    [login, isPending]
   );
 
   return (
@@ -135,13 +135,3 @@ const LoginPage: FC = () => {
 };
 
 export default LoginPage;
-//Forgot Password Email
-{
-  /* <div>
-  <h1>Hello <Username></h1>
-  <p>We have received a request to reset your password. Click the link below to continue with the process. If you did not request this, please ignore this email.</p>
-  <a href="https://codeblurb-492f1.web.app/?token=<TOKEN>" target="_blank" rel="noreferrer">
-    Set up a new password
-    </a>
-</div> */
-}

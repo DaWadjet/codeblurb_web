@@ -590,6 +590,7 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+            - ARTICLE
         status:
           type: string
           enum:
@@ -884,12 +885,12 @@ components:
     PageShoppingItemResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -904,15 +905,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     PageableObject:
@@ -925,9 +926,9 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
-        paged:
-          type: boolean
         unpaged:
+          type: boolean
+        paged:
           type: boolean
         pageNumber:
           type: integer
@@ -971,12 +972,12 @@ components:
     PageMinimalContentBundleResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -991,15 +992,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SortObject"
+        first:
+          type: boolean
+        last:
+          type: boolean
         numberOfElements:
           type: integer
           format: int32
         pageable:
           $ref: "#/components/schemas/PageableObject"
-        first:
-          type: boolean
-        last:
-          type: boolean
         empty:
           type: boolean
     CodingContentResponse:
@@ -1016,6 +1017,7 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+            - ARTICLE
         status:
           type: string
           enum:
@@ -1064,6 +1066,7 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+            - ARTICLE
         status:
           type: string
           enum:
@@ -1161,6 +1164,7 @@ components:
             - CODING
             - VIDEO
             - QUIZ
+            - ARTICLE
         status:
           type: string
           enum:

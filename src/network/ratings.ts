@@ -21,17 +21,27 @@ const ratingMutationFn = async ({ bundleId, review }: RatingProps) => {
 export const useRatingMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
+    meta: {
+      successMessage: "Rating submitted",
+    },
     mutationFn: async (props: RatingProps) => {
-      await ratingMutationFn(props);
-      const queryKeysToInvalidate = [
-        ContentKeys.contentBundleDetailsQuery(props.bundleId),
-        [ContentKeys.contentBundlesQuery()[0]], //all filters
-      ];
-      await Promise.all(
-        queryKeysToInvalidate.map((key) =>
-          queryClient.invalidateQueries({ queryKey: key })
-        )
-      );
+      await ratingMutationFn({
+        bundleId: props.bundleId,
+        review: {
+          rating: props.review.rating,
+          comment:
+            props.review.comment || "Note: No review was provided by the user.",
+        },
+      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ContentKeys.contentBundleDetailsQuery(props.bundleId),
+        }),
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
+        }),
+      ]);
     },
     mutationKey: RatingKeys.ratingMutation,
   });

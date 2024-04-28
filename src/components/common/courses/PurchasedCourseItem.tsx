@@ -21,7 +21,7 @@ const PurchasedCourseItem: FC<{ course: MinimalContentBundleResponse }> = ({
   const navigate = useNavigate();
   const username = useUsername();
   const technologies = ["Java"];
-  const progress = (course?.progress ?? 0) * 100;
+  const progress = Math.floor((course?.progress ?? 0) * 100);
 
   const ratingOfUser = useMemo(() => {
     return course.ratings?.ratings?.find((r) => r.username == username);

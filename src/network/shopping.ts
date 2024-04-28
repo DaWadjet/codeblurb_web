@@ -74,12 +74,6 @@ function availableShoppingItemsQueryOptions(pageProps: TPageProps) {
       }
       return lastResponse.number! + 1;
     },
-    getPreviousPageParam: (lastResponse) => {
-      if (lastResponse.first) {
-        return null;
-      }
-      return lastResponse.number! - 1;
-    },
     select: (data) => ({
       ...data,
       items: data.pages.flatMap((page) => page.content),

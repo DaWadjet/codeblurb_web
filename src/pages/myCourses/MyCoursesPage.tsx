@@ -85,14 +85,10 @@ const MyCoursesPage: FC = () => {
     sort: sortPossibilities[filterOptions.sortIndex].sortValue,
     skills: filterOptions.skillLevel,
     title: filterOptions.search,
-    size: 2,
   });
 
   useInViewWithQuery(loaderRef, query);
 
-  if (isPending) {
-    return <BigLoader />;
-  }
   return (
     <div className="flex flex-col">
       <div className="z-10 bg-background sticky top-5 pb-5 flex flex-col gap-7">
@@ -178,13 +174,17 @@ const MyCoursesPage: FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 place-items-center items-start">
-        {(query.data?.items ?? []).map((course) => (
-          <PurchasedCourseItem key={course!.id} course={course!} />
-        ))}
-      </div>
+      {isPending ? (
+        <BigLoader className="min-h-[70vh]" />
+      ) : (
+        <div className="grid grid-cols-3 gap-8 place-items-center items-start">
+          {(query.data?.items ?? []).map((course) => (
+            <PurchasedCourseItem key={course!.id} course={course!} />
+          ))}
+        </div>
+      )}
       <div ref={loaderRef} className="flex justify-center">
-        {(query.isFetchingNextPage || query.isPending) && (
+        {(query.isFetchingNextPage || query.isPending) && !isPending && (
           <Loader2Icon className="size-10 animate-spin my-20" />
         )}
       </div>

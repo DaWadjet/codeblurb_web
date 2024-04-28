@@ -21,6 +21,14 @@ const CourseReviewsTab: FC = () => {
           <Separator className="mt-5" />
         </div>
       ))}
+      {!course.ratings?.ratings?.length && (
+        <div className="flex flex-col items-center justify-center gap-4 px-5 my-20">
+          <h3 className="text-xl font-semibold">No reviews found!</h3>
+          <span className="text-muted-foreground text-center">
+            Be the first one to review this course!
+          </span>
+        </div>
+      )}
     </div>
   );
 };
