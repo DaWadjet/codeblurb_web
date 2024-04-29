@@ -28,7 +28,7 @@ const ScratchContent: FC = () => {
   const { goToNextContent, hasNextContent } = useGoToNextContent();
   const editorRef = useRef<unknown>(null);
 
-  const { viewedContent } = useViewedContent();
+  const { viewedContent, courseId } = useViewedContent();
   if (
     !viewedContent?.contentType ||
     viewedContent.contentType !== "CODING" ||
@@ -47,11 +47,13 @@ const ScratchContent: FC = () => {
     amountOfHintsShown: 0,
   });
 
-  const { mutateAsync: submitSolution, isPending } = useScratchSubmitMutation(
-    viewedContent.id!
-  );
+  const { mutateAsync: submitSolution, isPending } = useScratchSubmitMutation({
+    courseId,
+    contentId: viewedContent.id!,
+  });
 
   const submitResults = useCallback(async () => {
+    if (isPending) return;
     const results = await submitSolution({
       codeSolution: {
         code: state.code,
@@ -65,7 +67,7 @@ const ScratchContent: FC = () => {
     } else {
       toast.success("Your code passed all tests! Good job!");
     }
-  }, [state.code, setState, submitSolution]);
+  }, [state.code, setState, submitSolution, isPending]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -146,7 +148,6 @@ const ScratchContent: FC = () => {
               });
             }}
             options={{
-              // readOnly: isReadonly,
               autoIndent: "brackets",
               autoClosingBrackets: "always",
               scrollbar: { vertical: "hidden", horizontal: "hidden" },

@@ -11,6 +11,9 @@ export const PaymentKeys = {
 function paymentsQueryOptions() {
   return queryOptions({
     queryKey: PaymentKeys.paymentsQuery,
+    refetchOnMount: true,
+    refetchOnReconnect: true,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const response = await client.get<PreviousPaymentsResponse>("/payments");
       return response.data;

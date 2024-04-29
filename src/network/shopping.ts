@@ -138,7 +138,7 @@ export const useAddItemMutation = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       await addItemMutationFn(id);
-      await queryClient.invalidateQueries({
+      await queryClient.refetchQueries({
         queryKey: ShoppingKeys.shoppingCartQuery,
       });
     },
@@ -154,7 +154,7 @@ export const useDeleteItemMutation = () => {
   return useMutation({
     mutationFn: async (id: number) => {
       await deleteItemMutationFn(id);
-      await queryClient.invalidateQueries({
+      await queryClient.refetchQueries({
         queryKey: ShoppingKeys.shoppingCartQuery,
       });
     },

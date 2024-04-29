@@ -12,15 +12,21 @@ const seenMutationFn = async (contentId: number) =>
 const completedMutationFn = async (contentId: number) =>
   client.patch<void>("/completed/" + contentId);
 
-export const useSeenMutation = () => {
+export const useSeenMutation = ({
+  contentId,
+  courseId,
+}: {
+  contentId: number;
+  courseId: number;
+}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ProgressKeys.seenMutation,
-    mutationFn: async (contentId: number) => {
+    mutationFn: async () => {
       await seenMutationFn(contentId);
-      await queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
       });
     },
     meta: {
@@ -29,14 +35,20 @@ export const useSeenMutation = () => {
   });
 };
 
-export const useCompletedMutation = () => {
+export const useCompletedMutation = ({
+  contentId,
+  courseId,
+}: {
+  contentId: number;
+  courseId: number;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ProgressKeys.completedMutation,
-    mutationFn: async (contentId: number) => {
+    mutationFn: async () => {
       await completedMutationFn(contentId);
-      await queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+      queryClient.refetchQueries({
+        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
       });
     },
     meta: {

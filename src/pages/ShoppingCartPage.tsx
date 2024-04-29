@@ -83,6 +83,7 @@ const ShoppingCartPage: FC = () => {
                       variant="ghost"
                       className="rounded-full size-9 p-0"
                       onClick={() =>
+                        !isPending &&
                         showAlertDialog({
                           title: "Remove Item",
                           message:
@@ -110,7 +111,9 @@ const ShoppingCartPage: FC = () => {
                       <div className="flex gap-2 items-center leading-none">
                         <div className="font-medium text-foreground flex gap-2 items-center">
                           {(item.ratings?.averageRating ?? 0) > 0 && (
-                            <span>{item.ratings?.averageRating ?? 0} </span>
+                            <span>
+                              {(item.ratings?.averageRating ?? 0).toFixed(1)}{" "}
+                            </span>
                           )}
                           <Rating
                             rating={item.ratings?.averageRating ?? 0}

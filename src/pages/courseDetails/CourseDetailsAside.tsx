@@ -64,7 +64,7 @@ const CourseDetailsAside: FC = () => {
           ) : (
             <Button
               className="w-full h-16 text-2xl font-semibold "
-              onClick={() => addToCart(course.id)}
+              onClick={() => !isPending && addToCart(course.id)}
             >
               {isPending ? (
                 <Loader2Icon className="animate-spin" />
@@ -82,7 +82,7 @@ const CourseDetailsAside: FC = () => {
             <h3 className="text-xl font-medium">Rating Distribution</h3>
             <div className="flex items-end justify-between">
               <h6 className="font-medium text-muted-foreground">
-                Course Rating: {(course.ratings.averageRating ?? 0).toFixed(2)}
+                Course Rating: {(course.ratings.averageRating ?? 0).toFixed(1)}
               </h6>
               <p className="text-sm text-muted-foreground">
                 from {course.ratings.numberOfRatings ?? 0} reviews

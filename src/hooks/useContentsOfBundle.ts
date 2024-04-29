@@ -9,6 +9,7 @@ const useContentsOfBundle = () => {
       contents: course.purchasedContents ?? [],
       isPending: isLoading,
       courseTitle: course.title,
+      courseId: course.id,
     }),
     [course, isLoading]
   );

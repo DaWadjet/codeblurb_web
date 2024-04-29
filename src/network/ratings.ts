@@ -34,7 +34,7 @@ export const useRatingMutation = () => {
         },
       });
       await Promise.all([
-        queryClient.invalidateQueries({
+        queryClient.refetchQueries({
           queryKey: ContentKeys.contentBundleDetailsQuery(props.bundleId),
         }),
         queryClient.invalidateQueries({

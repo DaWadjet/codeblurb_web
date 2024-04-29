@@ -54,6 +54,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
           className="absolute border-muted size-9 p-2 top-0 right-1.5"
           onClick={(e) => {
             e.stopPropagation();
+            if (isAddPending || isRemovePending) return;
             if (isAlreadyInCart) {
               showAlertDialog({
                 title: "Remove Item",

@@ -32,7 +32,7 @@ const Ratings = ({ ...props }: RatingsProps) => {
 
   const [hover, setHover] = useState(0);
 
-  const fullStars = !!onRatingChange && hover > 0 ? hover : Math.floor(rating);
+  const fullStars = !!onRatingChange && hover > 0 ? hover : Math.round(rating);
 
   return (
     <div className={cn("flex items-center", className)} {...rest}>

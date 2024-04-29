@@ -14,7 +14,7 @@ const RatingSection: FC = () => {
     () => course.ratings.ratings?.find((r) => r.username === username),
     [course.ratings, username]
   );
-  //we should not get here before the first render
+
   const [rating, setRating] = useState<number>(ratingOfUser?.rating ?? 0);
   const [comment, setComment] = useState<string>(ratingOfUser?.comment ?? "");
   const { mutate, isPending } = useRatingMutation();
@@ -40,6 +40,7 @@ const RatingSection: FC = () => {
         <Button
           className="self-end"
           onClick={() =>
+            !isPending &&
             mutate({
               bundleId: Number(course.id),
               review: {

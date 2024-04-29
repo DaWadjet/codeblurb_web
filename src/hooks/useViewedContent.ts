@@ -18,7 +18,7 @@ export function useViewedContent() {
     contentId: string;
   }>();
 
-  const { contents, isPending, courseTitle } = useContentsOfBundle();
+  const { contents, isPending, courseTitle, courseId } = useContentsOfBundle();
 
   const viewedContent = useMemo(() => {
     const content = contents.find((item) => item.id === Number(contentId));
@@ -32,8 +32,9 @@ export function useViewedContent() {
       viewedContent,
       isPending,
       courseTitle,
+      courseId,
     }),
-    [viewedContent, isPending, courseTitle]
+    [viewedContent, isPending, courseTitle, courseId]
   );
 
   return returnValue;
