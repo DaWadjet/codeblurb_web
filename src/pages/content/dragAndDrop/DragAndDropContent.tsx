@@ -40,7 +40,7 @@ export interface ItemType {
 }
 
 const DragAndDropContent: FC = () => {
-  const { viewedContent } = useViewedContent();
+  const { viewedContent, courseId } = useViewedContent();
 
   if (
     !viewedContent?.contentType ||
@@ -63,7 +63,10 @@ const DragAndDropContent: FC = () => {
   );
 
   const { mutateAsync: submitSolution, isPending } =
-    useCodeQuizSolutionMutation(viewedContent.id!);
+    useCodeQuizSolutionMutation({
+      courseId,
+      contentId: viewedContent.id!,
+    });
   const [state, setState] = useImmer<{
     result: CodeQuizSolutionResponse | null;
     amountOfHintsShown: number;
@@ -150,6 +153,7 @@ const DragAndDropContent: FC = () => {
   };
 
   const submitResults = useCallback(async () => {
+    if (isPending) return;
     const solutionsInOrder = Object.entries(solutions).map(
       ([, value]) => value?.value ?? ""
     );
@@ -167,7 +171,7 @@ const DragAndDropContent: FC = () => {
     } else {
       toast.success("All answers are correct! Good job!");
     }
-  }, [solutions, setState, submitSolution]);
+  }, [solutions, setState, submitSolution, isPending]);
 
   const passed = useMemo(
     () => !state.result?.incorrectSolutions?.length,

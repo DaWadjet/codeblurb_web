@@ -17,14 +17,14 @@ import {
   BreadcrumbSeparator,
 } from "@/shadcn/ui/breadcrumb";
 import { FC, Fragment, useMemo } from "react";
-import { useParams } from "react-router-dom";
 
 const ContentPage: FC = () => {
-  const { courseId } = useParams<{
-    courseId: string;
-  }>();
-
-  const { viewedContent: content, isPending, courseTitle } = useViewedContent();
+  const {
+    viewedContent: content,
+    isPending,
+    courseTitle,
+    courseId,
+  } = useViewedContent();
 
   const contentType = useMemo<ContentType | null>(() => {
     if (!content) return null;

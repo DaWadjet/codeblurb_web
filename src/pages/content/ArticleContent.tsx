@@ -9,15 +9,10 @@ import remarkGfm from "remark-gfm";
 
 const ArticleContent: FC = () => {
   const { goToNextContent, hasNextContent } = useGoToNextContent();
-  const { viewedContent } = useViewedContent();
-
-  const { mutate: markAsSeen } = useSeenMutation();
-  const { mutate: markAsCompleted } = useCompletedMutation();
-
+  const { viewedContent, courseId } = useViewedContent();
   if (!viewedContent?.contentType || viewedContent.contentType !== "ARTICLE") {
     throw new Error("This component should only be used for Article content");
   }
-
   const [seen, setSeen] = useState<boolean>(
     viewedContent.status !== "NOT_SEEN"
   );
@@ -25,20 +20,29 @@ const ArticleContent: FC = () => {
     viewedContent.status === "COMPLETED"
   );
 
+  const { mutate: markAsSeen } = useSeenMutation({
+    courseId,
+    contentId: viewedContent.id!,
+  });
+  const { mutate: markAsCompleted } = useCompletedMutation({
+    courseId,
+    contentId: viewedContent.id!,
+  });
+
   useEffectOnce(() => {
     if (!seen) {
-      markAsSeen(viewedContent.id!);
+      markAsSeen();
       setSeen(true);
     }
   });
 
   const onCompleted = useCallback(() => {
     if (!completed) {
-      markAsCompleted(viewedContent.id!);
+      markAsCompleted();
       setCompleted(true);
     }
     goToNextContent();
-  }, [completed, markAsCompleted, viewedContent.id, goToNextContent]);
+  }, [completed, markAsCompleted, goToNextContent]);
 
   return (
     <div className="flex flex-col gap-10">

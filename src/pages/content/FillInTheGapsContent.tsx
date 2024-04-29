@@ -22,7 +22,7 @@ const hints = [
 ];
 
 const FillInTheGapsContent: FC = () => {
-  const { viewedContent } = useViewedContent();
+  const { viewedContent, courseId } = useViewedContent();
 
   if (
     !viewedContent?.contentType ||
@@ -35,7 +35,10 @@ const FillInTheGapsContent: FC = () => {
   }
   const { goToNextContent, hasNextContent } = useGoToNextContent();
   const { mutateAsync: submitSolution, isPending } =
-    useCodeQuizSolutionMutation(viewedContent.id!);
+    useCodeQuizSolutionMutation({
+      courseId,
+      contentId: viewedContent.id!,
+    });
 
   const [state, setState] = useImmer<{
     result: CodeQuizSolutionResponse | null;
@@ -51,6 +54,7 @@ const FillInTheGapsContent: FC = () => {
   });
 
   const submitResults = useCallback(async () => {
+    if (isPending) return;
     const results = await submitSolution({
       codeSolution: {
         solutionsInOrder: state.answers,
@@ -64,7 +68,7 @@ const FillInTheGapsContent: FC = () => {
     } else {
       toast.success("All answers are correct! Good job!");
     }
-  }, [state.answers, setState, submitSolution]);
+  }, [state.answers, setState, submitSolution, isPending]);
 
   const passed = useMemo(
     () => !state.result?.incorrectSolutions?.length,

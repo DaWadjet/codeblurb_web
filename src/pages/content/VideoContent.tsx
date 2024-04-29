@@ -26,12 +26,10 @@ facilis voluptate voluptates aut!\n\nQuas iusto ipsam soluta officia
 reprehenderit culpa dolorum vero aspernatur quam asperiores?`;
 
 const VideoContent: FC = () => {
-  const { viewedContent } = useViewedContent();
+  const { viewedContent, courseId } = useViewedContent();
   if (!viewedContent?.contentType || viewedContent.contentType !== "VIDEO") {
     throw new Error("This component should only be used for video content");
   }
-  const { mutate: markAsSeen } = useSeenMutation();
-  const { mutate: markAsCompleted } = useCompletedMutation();
 
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
@@ -44,17 +42,26 @@ const VideoContent: FC = () => {
     viewedContent.status === "COMPLETED"
   );
 
+  const { mutate: markAsSeen } = useSeenMutation({
+    courseId,
+    contentId: viewedContent.id!,
+  });
+  const { mutate: markAsCompleted } = useCompletedMutation({
+    courseId,
+    contentId: viewedContent.id!,
+  });
+
   const onSeen = useCallback(() => {
     if (seen) return;
-    markAsSeen(viewedContent.id!);
+    markAsSeen();
     setSeen(true);
-  }, [seen, markAsSeen, viewedContent.id]);
+  }, [seen, markAsSeen]);
 
   const onCompleted = useCallback(() => {
     if (completed) return;
-    markAsCompleted(viewedContent.id!);
+    markAsCompleted();
     setCompleted(true);
-  }, [completed, markAsCompleted, viewedContent.id]);
+  }, [completed, markAsCompleted]);
 
   const onProgress = useCallback(
     (state: OnProgressProps) => {

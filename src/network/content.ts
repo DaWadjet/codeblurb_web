@@ -115,7 +115,13 @@ export async function quizSolutionMutationFn({
   return response.data;
 }
 
-export const useQuizSolutionSubmissionMutation = (contentId: number) => {
+export const useQuizSolutionSubmissionMutation = ({
+  contentId,
+  courseId,
+}: {
+  contentId: number;
+  courseId: number;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ContentKeys.quizSolutionMutation(contentId),
@@ -129,7 +135,7 @@ export const useQuizSolutionSubmissionMutation = (contentId: number) => {
     }) => {
       const result = await quizSolutionMutationFn({ contentId, quizSolution });
       queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
       });
       queryClient.invalidateQueries({
         predicate: (query) =>
@@ -168,7 +174,13 @@ export async function codeQuizSolutionMutationFn({
   return response.data;
 }
 
-export const useCodeQuizSolutionMutation = (contentId: number) => {
+export const useCodeQuizSolutionMutation = ({
+  contentId,
+  courseId,
+}: {
+  contentId: number;
+  courseId: number;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ContentKeys.codeQuizSolutionMutation(contentId),
@@ -185,7 +197,7 @@ export const useCodeQuizSolutionMutation = (contentId: number) => {
         codeSolution,
       });
       queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
       });
       queryClient.invalidateQueries({
         predicate: (query) =>
@@ -197,7 +209,13 @@ export const useCodeQuizSolutionMutation = (contentId: number) => {
   });
 };
 
-export const useScratchSubmitMutation = (contentId: number) => {
+export const useScratchSubmitMutation = ({
+  contentId,
+  courseId,
+}: {
+  contentId: number;
+  courseId: number;
+}) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ContentKeys.codeSolutionMutation(contentId),
@@ -211,7 +229,7 @@ export const useScratchSubmitMutation = (contentId: number) => {
     }) => {
       const result = await codeSolutionMutationFn({ contentId, codeSolution });
       queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
+        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
       });
       queryClient.invalidateQueries({
         predicate: (query) =>

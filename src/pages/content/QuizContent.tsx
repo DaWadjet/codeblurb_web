@@ -28,12 +28,16 @@ import { CircleCheckIcon, Loader2Icon, Send, XCircleIcon } from "lucide-react";
 import { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 const QuizContent: FC = () => {
-  const { viewedContent } = useViewedContent();
+  const { viewedContent, courseId } = useViewedContent();
   if (!viewedContent?.contentType || viewedContent.contentType !== "QUIZ") {
     throw new Error("This component should only be used for quiz content");
   }
   const { mutateAsync: submitQuiz, isPending } =
-    useQuizSolutionSubmissionMutation(viewedContent.id!);
+    useQuizSolutionSubmissionMutation({
+      contentId: viewedContent.id!,
+      courseId,
+    });
+
   const [solution, setSolution] = useState<QuizSolutionResponse | null>(null);
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
@@ -76,6 +80,7 @@ const QuizContent: FC = () => {
   );
 
   const submitResults = useCallback(async () => {
+    if (isPending) return;
     const results = await submitQuiz({
       quizSolution: {
         solutions: viewedContent.questions!.map((question, index) => ({
@@ -85,7 +90,7 @@ const QuizContent: FC = () => {
       },
     });
     setSolution(results!);
-  }, [submitQuiz, viewedContent.questions, answerIndices]);
+  }, [submitQuiz, viewedContent.questions, answerIndices, isPending]);
 
   const correctlyAnswered = useMemo(
     () => solution?.correctAnswerQuestionIds?.length ?? 0,

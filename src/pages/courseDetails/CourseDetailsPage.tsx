@@ -62,7 +62,7 @@ const CourseDetailsPage: FC = () => {
           </div>
           <div className="flex gap-2 items-baseline leading-none">
             <div className="font-medium text-foreground text-xl flex gap-2 items-center">
-              {course.ratings.averageRating ?? 0}{" "}
+              {(course.ratings.averageRating ?? 0).toFixed(1)}{" "}
               <Rating rating={course.ratings.averageRating ?? 0} size={16} />
             </div>
             <p className="text-sm text-muted-foreground">
