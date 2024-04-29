@@ -240,20 +240,20 @@ export interface components {
       registeredAt?: string;
     };
     PageShoppingItemResponse: {
-      /** Format: int32 */
-      totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["ShoppingItemResponse"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"][];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
+      first?: boolean;
+      last?: boolean;
       pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
@@ -261,12 +261,12 @@ export interface components {
       /** Format: int64 */
       offset?: number;
       sort?: components["schemas"]["SortObject"][];
-      unpaged?: boolean;
       paged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
+      unpaged?: boolean;
     };
     SortObject: {
       direction?: string;
@@ -284,22 +284,37 @@ export interface components {
       previousPayments?: components["schemas"]["PaymentResponse"][];
     };
     PageMinimalContentBundleResponse: {
-      /** Format: int32 */
-      totalPages?: number;
       /** Format: int64 */
       totalElements?: number;
+      /** Format: int32 */
+      totalPages?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["MinimalContentBundleResponse"][];
       /** Format: int32 */
       number?: number;
       sort?: components["schemas"]["SortObject"][];
-      first?: boolean;
-      last?: boolean;
       /** Format: int32 */
       numberOfElements?: number;
+      first?: boolean;
+      last?: boolean;
       pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
+    };
+    ArticleContentResponse: {
+      /** Format: int32 */
+      id?: number;
+      name?: string;
+      /** @enum {string} */
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
+      markdownText?: string;
     };
     CodingContentResponse: {
       /** Format: int32 */
@@ -363,6 +378,7 @@ export interface components {
       includedVideos?: components["schemas"]["VideoContentResponse"][];
       includedCodings?: components["schemas"]["CodingContentResponse"][];
       includedQuizzes?: components["schemas"]["QuizContentResponse"][];
+      includedArticles?: components["schemas"]["ArticleContentResponse"][];
     };
     TestCaseResponse: {
       input?: string;
