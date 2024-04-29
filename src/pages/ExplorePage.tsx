@@ -94,7 +94,6 @@ const ExplorePage: FC = () => {
     sort: sortPossibilities[filterOptions.sortIndex].sortValue,
     skills: filterOptions.skillLevel,
     title: filterOptions.search,
-    size: 2,
   });
 
   useInViewWithQuery(loaderRef, query);

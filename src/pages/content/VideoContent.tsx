@@ -37,8 +37,12 @@ const VideoContent: FC = () => {
 
   const ref = useRef<ElementRef<typeof ReactPlayer>>(null);
   const [duration, setDuration] = useState<number>(0);
-  const [seen, setSeen] = useState<boolean>(false);
-  const [completed, setCompleted] = useState<boolean>(false);
+  const [seen, setSeen] = useState<boolean>(
+    viewedContent.status !== "NOT_SEEN"
+  );
+  const [completed, setCompleted] = useState<boolean>(
+    viewedContent.status === "COMPLETED"
+  );
 
   const onSeen = useCallback(() => {
     if (seen) return;

@@ -45,9 +45,10 @@ const CourseSummaryTab: FC = () => {
             value={section.id!.toString()}
             key={section.id}
             className={cn(
+              //TODO might need to change this back
               "border-border border rounded-lg hover:bg-accent transition-all",
-              section.status === "SEEN" && "bg-accent/50",
-              section.status === "COMPLETED" && "bg-accent/80"
+              section.status === "SEEN" && "bg-muted-foreground/5",
+              section.status === "COMPLETED" && "bg-muted-foreground/15"
             )}
           >
             <AccordionTrigger className="flex justify-between p-0 border-none py-2.5 px-4 ">
