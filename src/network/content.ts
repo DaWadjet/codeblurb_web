@@ -67,12 +67,7 @@ function contentBundlesQueryOptions(pageProps?: TPageProps) {
       }
       return lastResponse.number! + 1;
     },
-    getPreviousPageParam: (lastResponse) => {
-      if (lastResponse.first) {
-        return null;
-      }
-      return lastResponse.number! - 1;
-    },
+
     select: (data) => ({
       ...data,
       items: data.pages.flatMap((page) => page.content),
@@ -137,7 +132,8 @@ export const useQuizSolutionSubmissionMutation = (contentId: number) => {
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
       });
       queryClient.invalidateQueries({
-        queryKey: [ContentKeys.contentBundlesQuery()[0]],
+        predicate: (query) =>
+          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
       });
       return result;
     },
@@ -192,7 +188,8 @@ export const useCodeQuizSolutionMutation = (contentId: number) => {
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
       });
       queryClient.invalidateQueries({
-        queryKey: [ContentKeys.contentBundlesQuery()[0]],
+        predicate: (query) =>
+          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
       });
 
       return solution;
@@ -217,7 +214,8 @@ export const useScratchSubmitMutation = (contentId: number) => {
         queryKey: ContentKeys.contentBundleDetailsQuery(contentId),
       });
       queryClient.invalidateQueries({
-        queryKey: [ContentKeys.contentBundlesQuery()[0]],
+        predicate: (query) =>
+          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
       });
       return result;
     },

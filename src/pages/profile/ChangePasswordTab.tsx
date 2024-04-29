@@ -21,11 +21,11 @@ const resetPasswordSchema = z
     oldPassword: z.string().min(1, {
       message: "Old password is required",
     }),
-    newPassword: z.string().min(1, {
-      message: "Password is required",
+    newPassword: z.string().min(8, {
+      message: "Password must be at least 8 characters",
     }),
-    confirmNewPassword: z.string().min(1, {
-      message: "Password is required",
+    confirmNewPassword: z.string().min(8, {
+      message: "Password must be at least 8 characters",
     }),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {

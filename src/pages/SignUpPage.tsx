@@ -33,11 +33,11 @@ const signupSchema = z
     email: z.string().email({
       message: "Invalid email",
     }),
-    password: z.string().min(1, {
-      message: "Password is required",
+    password: z.string().min(8, {
+      message: "Password must be at least 8 characters",
     }),
-    confirmPassword: z.string().min(1, {
-      message: "Password is required",
+    confirmPassword: z.string().min(8, {
+      message: "Password must be at least 8 characters",
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -57,13 +57,13 @@ const SignUpPage: FC = () => {
     },
   });
 
-  const { mutate: login, isPending } = useRegistrationMutation();
+  const { mutate: register, isPending } = useRegistrationMutation();
 
   const onSubmit = useCallback(
     (values: z.infer<typeof signupSchema>) => {
-      login(values);
+      if (!isPending) register(values);
     },
-    [login]
+    [register, isPending]
   );
   return (
     <div className="mx-52 justify-center flex flex-col gap-2 items-center my-20">

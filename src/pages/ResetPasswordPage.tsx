@@ -56,12 +56,13 @@ const ResetPasswordPage: FC = () => {
 
   const onSubmit = useCallback(
     (values: z.infer<typeof resetPasswordSchema>) => {
-      mutate({
-        token,
-        newPassword: values.password,
-      });
+      if (!isPending)
+        mutate({
+          token,
+          newPassword: values.password,
+        });
     },
-    [mutate, token]
+    [mutate, token, isPending]
   );
 
   return (

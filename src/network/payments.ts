@@ -1,3 +1,4 @@
+import useLoggedIn from "@/hooks/useLoggedIn";
 import client from "@/network/axiosClient";
 import { PreviousPaymentsResponse } from "@/types/ApiTypes";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
@@ -18,7 +19,8 @@ function paymentsQueryOptions() {
 }
 
 export const usePaymentsQuery = () => {
-  return useQuery(paymentsQueryOptions());
+  const isLoggedIn = useLoggedIn();
+  return useQuery({ ...paymentsQueryOptions(), enabled: isLoggedIn });
 };
 
 export const checkoutMutationFn = async () => {

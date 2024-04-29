@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+
 export interface paths {
   "/shopping/add-item/{shoppingCartItem}": {
     post: operations["addItemToShoppingCart"];
@@ -108,7 +109,7 @@ export interface components {
       id?: number;
       name?: string;
       /** @enum {string} */
-      contentType?: "CODING" | "VIDEO" | "QUIZ";
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       /** Format: int32 */
@@ -251,9 +252,9 @@ export interface components {
       sort?: components["schemas"]["SortObject"][];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components["schemas"]["PageableObject"];
       first?: boolean;
       last?: boolean;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     PageableObject: {
@@ -261,11 +262,11 @@ export interface components {
       offset?: number;
       sort?: components["schemas"]["SortObject"][];
       paged?: boolean;
-      unpaged?: boolean;
       /** Format: int32 */
       pageNumber?: number;
       /** Format: int32 */
       pageSize?: number;
+      unpaged?: boolean;
     };
     SortObject: {
       direction?: string;
@@ -295,17 +296,32 @@ export interface components {
       sort?: components["schemas"]["SortObject"][];
       /** Format: int32 */
       numberOfElements?: number;
-      pageable?: components["schemas"]["PageableObject"];
       first?: boolean;
       last?: boolean;
+      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
+    };
+    ArticleContentResponse: {
+      /** Format: int32 */
+      id?: number;
+      name?: string;
+      /** @enum {string} */
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
+      /** @enum {string} */
+      status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
+      /** Format: int32 */
+      estimatedTime?: number;
+      shortDescription?: string;
+      /** Format: int32 */
+      order?: number;
+      markdownText?: string;
     };
     CodingContentResponse: {
       /** Format: int32 */
       id?: number;
       name?: string;
       /** @enum {string} */
-      contentType?: "CODING" | "VIDEO" | "QUIZ";
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       /** Format: int32 */
@@ -325,7 +341,7 @@ export interface components {
       id?: number;
       name?: string;
       /** @enum {string} */
-      contentType?: "CODING" | "VIDEO" | "QUIZ";
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       /** Format: int32 */
@@ -362,6 +378,7 @@ export interface components {
       includedVideos?: components["schemas"]["VideoContentResponse"][];
       includedCodings?: components["schemas"]["CodingContentResponse"][];
       includedQuizzes?: components["schemas"]["QuizContentResponse"][];
+      includedArticles?: components["schemas"]["ArticleContentResponse"][];
     };
     TestCaseResponse: {
       input?: string;
@@ -372,7 +389,7 @@ export interface components {
       id?: number;
       name?: string;
       /** @enum {string} */
-      contentType?: "CODING" | "VIDEO" | "QUIZ";
+      contentType?: "CODING" | "VIDEO" | "QUIZ" | "ARTICLE";
       /** @enum {string} */
       status?: "NOT_SEEN" | "SEEN" | "COMPLETED";
       /** Format: int32 */
@@ -396,6 +413,7 @@ export type $defs = Record<string, never>;
 export type external = Record<string, never>;
 
 export interface operations {
+
   addItemToShoppingCart: {
     parameters: {
       path: {
