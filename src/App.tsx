@@ -24,8 +24,8 @@ const App: FC = () => {
     <ThemeProvider defaultTheme="dark">
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<LandingPage />} />
           <Route element={<RedirectIfLoggedIn />}>
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<SignUpPage />} />
             <Route path="/forgot-password" element={<ResetPasswordPage />} />
@@ -45,7 +45,7 @@ const App: FC = () => {
               path="/course/:courseId/content/:contentId"
               element={<ContentPage />}
             />
-            <Route path="*" element={<Navigate to="/home" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Route>
       </Routes>

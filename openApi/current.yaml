@@ -285,7 +285,7 @@ paths:
           description: OK
       security:
         - bearerAuth: []
-  /seen/{contentId}:
+  /content/progress/seen/{contentId}:
     patch:
       tags:
         - progress-controller
@@ -302,7 +302,7 @@ paths:
           description: OK
       security:
         - bearerAuth: []
-  /completed/{contentId}:
+  /content/progress/completed/{contentId}:
     patch:
       tags:
         - progress-controller
@@ -885,12 +885,12 @@ components:
     PageShoppingItemResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -908,12 +908,12 @@ components:
         numberOfElements:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         first:
           type: boolean
         last:
           type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     PageableObject:
@@ -972,12 +972,12 @@ components:
     PageMinimalContentBundleResponse:
       type: object
       properties:
-        totalElements:
-          type: integer
-          format: int64
         totalPages:
           type: integer
           format: int32
+        totalElements:
+          type: integer
+          format: int64
         size:
           type: integer
           format: int32
@@ -995,12 +995,12 @@ components:
         numberOfElements:
           type: integer
           format: int32
+        pageable:
+          $ref: "#/components/schemas/PageableObject"
         first:
           type: boolean
         last:
           type: boolean
-        pageable:
-          $ref: "#/components/schemas/PageableObject"
         empty:
           type: boolean
     ArticleContentResponse:

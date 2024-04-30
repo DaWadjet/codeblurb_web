@@ -1,15 +1,13 @@
 import useGoToNextContent from "@/hooks/useGoToNextContent";
-import { Editor } from "@monaco-editor/react";
 
+import CodeEditor from "@/components/CodeEditor";
 import { useViewedContent } from "@/hooks/useViewedContent";
 import { useScratchSubmitMutation } from "@/network/content";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
-import { useTheme } from "@/shadcn/ui/theme-provider";
-import { cn } from "@/shadcnutils";
 import { CodeSolutionResponse } from "@/types/ApiTypes";
 import { BadgeInfo, Loader2Icon, Play, WandSparklesIcon } from "lucide-react";
-import { FC, useCallback, useRef } from "react";
+import { FC, useCallback } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 
@@ -24,9 +22,7 @@ const hints = [
 ];
 
 const ScratchContent: FC = () => {
-  const { theme } = useTheme();
   const { goToNextContent, hasNextContent } = useGoToNextContent();
-  const editorRef = useRef<unknown>(null);
 
   const { viewedContent, courseId } = useViewedContent();
   if (
@@ -131,49 +127,14 @@ const ScratchContent: FC = () => {
           </div>
         </div>
 
-        <div
-          className={cn(
-            "h-[350px] w-full overflow-hidden rounded-lg  py-2 border-border border",
-            theme === "dark" ? "bg-[#1e1e1e]" : "bg-background"
-          )}
-        >
-          <Editor
-            className="h-full"
-            defaultLanguage="java"
-            theme={theme === "dark" ? "vs-dark" : "vs-light"}
-            defaultValue={viewedContent.codeSkeleton![0]}
-            onChange={(value) => {
-              setState((draft) => {
-                draft.code = value ?? "";
-              });
-            }}
-            options={{
-              autoIndent: "brackets",
-              autoClosingBrackets: "always",
-              scrollbar: { vertical: "hidden", horizontal: "hidden" },
-              autoClosingQuotes: "always",
-              autoClosingOvertype: "always",
-              autoClosingDelete: "always",
-              fontLigatures: true,
-              matchBrackets: "always",
-              bracketPairColorization: {
-                enabled: true,
-                independentColorPoolPerBracketType: true,
-              },
-              formatOnPaste: true,
-              minimap: { enabled: false },
-            }}
-            onMount={(editor) => {
-              editorRef.current = editor;
-            }}
-            // onValidate={(markers) => {
-            //this does not seem to work for anyhing but typescript without a language server attached :(
-            //   markers.forEach((marker) =>
-            //     console.log("onValidate:", marker.message)
-            //   );
-            // }}
-          />
-        </div>
+        <CodeEditor
+          initialCode={viewedContent.codeSkeleton![0]}
+          onCodeChange={(value) =>
+            setState((draft) => {
+              draft.code = value;
+            })
+          }
+        />
       </div>
       <Button
         variant={

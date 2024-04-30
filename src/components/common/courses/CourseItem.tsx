@@ -24,8 +24,9 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
     [itemsInCart, course.id]
   );
   const { mutate: addToCart, isPending: isAddPending } = useAddItemMutation();
-  const { mutate: removeFromCart, isPending: isRemovePending } =
-    useDeleteItemMutation();
+  const {
+    mutation: { mutate: removeFromCart, isPending: isRemovePending },
+  } = useDeleteItemMutation();
 
   const technologies = ["Java"];
 

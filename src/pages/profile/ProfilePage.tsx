@@ -1,7 +1,6 @@
 import BigLoader from "@/components/common/BigLoader";
 import UserAvatar from "@/components/common/UserAvatar";
 import { useForceLogoutMutation, useLogoutMutation } from "@/network/auth";
-import { usePaymentsQuery } from "@/network/payments";
 import { useProfileQuery } from "@/network/profile";
 import ChangePasswordTab from "@/pages/profile/ChangePasswordTab";
 import {
@@ -18,19 +17,13 @@ import { Separator } from "@/shadcn/ui/separator";
 import { cn } from "@/shadcnutils";
 import dayjs from "dayjs";
 import { EyeIcon, SquareGanttChart } from "lucide-react";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 
 const ProfilePage: FC = () => {
   const { data: profile, isPending } = useProfileQuery();
   const [tab, setTab] = useState<"overview" | "resetPassword">("overview");
   const { mutate: logout } = useLogoutMutation();
   const { mutate: logoutFromAllDevices } = useForceLogoutMutation();
-
-  const paymentQuery = usePaymentsQuery();
-
-  useEffect(() => {
-    if (paymentQuery.data) console.log(paymentQuery.data);
-  }, [paymentQuery.data]);
 
   if (isPending) {
     return <BigLoader />;

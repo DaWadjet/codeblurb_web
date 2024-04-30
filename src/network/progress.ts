@@ -7,10 +7,10 @@ export const ProgressKeys = {
 } as const;
 
 const seenMutationFn = async (contentId: number) =>
-  await client.patch<void>("/seen/" + contentId);
+  await client.patch<void>("/content/progress/seen/" + contentId);
 
 const completedMutationFn = async (contentId: number) =>
-  client.patch<void>("/completed/" + contentId);
+  client.patch<void>("/content/progress/completed/" + contentId);
 
 export const useSeenMutation = ({
   contentId,
