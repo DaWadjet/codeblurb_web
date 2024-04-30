@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shadcn/ui/dropdown-menu";
+import { cn } from "@/shadcnutils";
 import { ShoppingCart } from "lucide-react";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
@@ -41,8 +42,13 @@ const NavbarLoggedIn: FC = () => {
       >
         <ShoppingCart className="text-foreground" />
         {itemsInCart.length > 0 && (
-          <div className="absolute -top-1.5 -right-1.5 shrink-0 rounded-full bg-foreground size-4 flex items-center justify-center text-xs leading-none text-background font-bold">
-            {itemsInCart.length}
+          <div
+            className={cn(
+              "absolute -top-1.5 -right-1.5 shrink-0 rounded-full bg-foreground size-4 flex items-center justify-center leading-none text-background font-bold",
+              itemsInCart.length > 9 ? "text-[10px]" : "text-xs"
+            )}
+          >
+            {itemsInCart.length > 9 ? "9+" : itemsInCart.length}
           </div>
         )}
       </Button>

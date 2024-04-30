@@ -14,6 +14,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import qs from "qs";
+import { useMemo, useState } from "react";
 
 export const ShoppingKeys = {
   addItemMutation: ["addItem"] as const,
@@ -150,17 +151,33 @@ export const useAddItemMutation = () => {
 };
 
 export const useDeleteItemMutation = () => {
+  const [isPendingId, setIsPendingId] = useState<number | null>(null);
   const queryClient = useQueryClient();
-  return useMutation({
+
+  const mutation = useMutation({
     mutationFn: async (id: number) => {
       await deleteItemMutationFn(id);
       await queryClient.refetchQueries({
         queryKey: ShoppingKeys.shoppingCartQuery,
       });
     },
+    onMutate: async (id: number) => {
+      setIsPendingId(id);
+    },
+    onSettled: () => {
+      setIsPendingId(null);
+    },
     mutationKey: ShoppingKeys.deleteItemMutation,
     meta: {
       successMessage: "Item removed from cart",
     },
   });
+
+  return useMemo(
+    () => ({
+      mutation,
+      isPendingId,
+    }),
+    [mutation, isPendingId]
+  );
 };

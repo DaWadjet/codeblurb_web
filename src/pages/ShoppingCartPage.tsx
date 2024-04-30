@@ -31,21 +31,25 @@ const ShoppingCartPage: FC = () => {
     useCheckoutMutation();
   const cartItems = useMemo(() => data?.shoppingItems ?? [], [data]);
 
-  const { mutate: removeItemFromCart } = useDeleteItemMutation();
+  const {
+    mutation: { mutate: removeItemFromCart },
+    isPendingId,
+  } = useDeleteItemMutation();
 
   const totalPrice = useMemo(
     () => cartItems.reduce((acc, item) => acc + item.price!, 0),
     [cartItems]
   );
 
-  const { data: newData, isPending } = useAvailableShoppingItemsQuery({
-    title: "",
-    skills: null,
-    sort: {
-      property: "releaseDate",
-      ascending: false,
-    },
-  });
+  const { data: availableShoppingItemData, isPending } =
+    useAvailableShoppingItemsQuery({
+      title: "",
+      skills: null,
+      sort: {
+        property: "releaseDate",
+        ascending: false,
+      },
+    });
   const showAlertDialog = useSetAtom(alertDialogAtom);
   const technologies = ["Java"];
 
@@ -83,7 +87,7 @@ const ShoppingCartPage: FC = () => {
                       variant="ghost"
                       className="rounded-full size-9 p-0"
                       onClick={() =>
-                        !isPending &&
+                        !isPendingId &&
                         showAlertDialog({
                           title: "Remove Item",
                           message:
@@ -92,13 +96,13 @@ const ShoppingCartPage: FC = () => {
                         })
                       }
                     >
-                      {!isPending ? (
-                        <X size={20} />
-                      ) : (
+                      {isPendingId === item.id ? (
                         <Loader2Icon
                           size={20}
                           className="text-foreground animate-spin"
                         />
+                      ) : (
+                        <X size={20} />
                       )}
                     </Button>
                   </div>
@@ -197,7 +201,7 @@ const ShoppingCartPage: FC = () => {
           )}
         </aside>
       </div>
-      {!!newData?.items?.length && !isPending && (
+      {
         <div className="flex flex-col gap-4">
           <h2 className="text-2xl font-semibold">You Might Also Like</h2>
           {isPending ? (
@@ -207,14 +211,14 @@ const ShoppingCartPage: FC = () => {
             />
           ) : (
             <CourseList
-              items={(newData?.items ?? []).map((item) => (
+              items={(availableShoppingItemData?.items ?? []).map((item) => (
                 <CourseItem course={item!} key={item!.id} />
               ))}
               autoplay
             />
           )}
         </div>
-      )}
+      }
     </div>
   );
 };
