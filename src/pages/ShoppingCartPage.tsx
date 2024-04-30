@@ -190,7 +190,9 @@ const ShoppingCartPage: FC = () => {
               <Button
                 className="w-full h-14 leading-none text-2xl font-semibold hover:bg-background"
                 variant="outline"
-                onClick={isPendingCheckout ? () => {} : () => checkout()}
+                onClick={() => {
+                  if (!isPendingCheckout) checkout();
+                }}
               >
                 {isPendingCheckout && (
                   <Loader2Icon size={28} className="animate-spin mr-3" />
