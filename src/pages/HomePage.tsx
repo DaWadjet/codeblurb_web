@@ -8,7 +8,14 @@ import { FC } from "react";
 
 const HomePage: FC = () => {
   const { data: purchasedCourses, isPending: isPending_Purchased } =
-    useContentBundlesQuery();
+    useContentBundlesQuery({
+      title: "",
+      skills: null,
+      sort: {
+        property: "lastInteractedAt",
+        ascending: false,
+      },
+    });
 
   const { data: mostPopularData, isPending: isPending_MostPopular } =
     useAvailableShoppingItemsQuery({

@@ -1,7 +1,7 @@
+import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
-import { ContentKeys } from "@/network/content";
 import { RatingRequest, RatingResponse } from "@/types/ApiTypes";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 type RatingProps = {
   review: RatingRequest;
   bundleId: number;
@@ -18,8 +18,8 @@ const ratingMutationFn = async ({ bundleId, review }: RatingProps) => {
   return response.data;
 };
 
-export const useRatingMutation = () => {
-  const queryClient = useQueryClient();
+export const useRatingMutation = (courseId: number) => {
+  const refetch = useRefetchOnCourseStatusChange(courseId);
   return useMutation({
     meta: {
       successMessage: "Rating submitted",
@@ -33,15 +33,7 @@ export const useRatingMutation = () => {
             props.review.comment || "Note: No review was provided by the user.",
         },
       });
-      await Promise.all([
-        queryClient.refetchQueries({
-          queryKey: ContentKeys.contentBundleDetailsQuery(props.bundleId),
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-        }),
-      ]);
+      await refetch();
     },
     mutationKey: RatingKeys.ratingMutation,
   });

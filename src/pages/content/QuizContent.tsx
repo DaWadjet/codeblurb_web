@@ -10,6 +10,8 @@ import {
   PaginationPrevious,
 } from "@/shadcn/ui/pagination";
 
+//TODO add back button from answer review screen to quiz screen
+
 import useGoToNextContent from "@/hooks/useGoToNextContent";
 import { useViewedContent } from "@/hooks/useViewedContent";
 import { useQuizSolutionSubmissionMutation } from "@/network/content";
@@ -131,7 +133,7 @@ const QuizContent: FC = () => {
 
               <p className="text-lg text-muted-foreground">
                 Answer the following questions to test your knowledge of the
-                section.
+                topic.
               </p>
 
               <Button

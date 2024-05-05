@@ -1,5 +1,6 @@
+import useTokenStore from "@/store/tokenStore";
 import "@tanstack/react-query";
-import { MutationCache, QueryClient } from "@tanstack/react-query";
+import { MutationCache, QueryCache, QueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 
@@ -52,6 +53,14 @@ const mutationCache = new MutationCache({
 
 export const queryClient = new QueryClient({
   mutationCache,
+  queryCache: new QueryCache({
+    onError(error) {
+      if (error.response?.status !== 401) {
+        window.location.pathname = "/login";
+        useTokenStore.getState().logout();
+      }
+    },
+  }),
   defaultOptions: {
     queries: {
       retry: false,

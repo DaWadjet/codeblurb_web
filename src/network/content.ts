@@ -1,3 +1,4 @@
+import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
 import {
   CodeQuizSolutionRequest,
@@ -16,7 +17,6 @@ import {
   useInfiniteQuery,
   useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
 import qs from "qs";
 
@@ -122,7 +122,7 @@ export const useQuizSolutionSubmissionMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
   return useMutation({
     mutationKey: ContentKeys.quizSolutionMutation(contentId),
     meta: {
@@ -134,13 +134,7 @@ export const useQuizSolutionSubmissionMutation = ({
       quizSolution: QuizSolutionRequest;
     }) => {
       const result = await quizSolutionMutationFn({ contentId, quizSolution });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
+      refetch();
       return result;
     },
   });
@@ -181,7 +175,8 @@ export const useCodeQuizSolutionMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
+
   return useMutation({
     mutationKey: ContentKeys.codeQuizSolutionMutation(contentId),
     meta: {
@@ -196,14 +191,7 @@ export const useCodeQuizSolutionMutation = ({
         contentId,
         codeSolution,
       });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
-
+      refetch();
       return solution;
     },
   });
@@ -216,7 +204,8 @@ export const useScratchSubmitMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
+
   return useMutation({
     mutationKey: ContentKeys.codeSolutionMutation(contentId),
     meta: {
@@ -228,13 +217,7 @@ export const useScratchSubmitMutation = ({
       codeSolution: CodeSolutionRequest;
     }) => {
       const result = await codeSolutionMutationFn({ contentId, codeSolution });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
+      refetch();
       return result;
     },
   });

@@ -17,7 +17,7 @@ const RatingSection: FC = () => {
 
   const [rating, setRating] = useState<number>(ratingOfUser?.rating ?? 0);
   const [comment, setComment] = useState<string>(ratingOfUser?.comment ?? "");
-  const { mutate, isPending } = useRatingMutation();
+  const { mutate, isPending } = useRatingMutation(course.id);
 
   return (
     <div className="flex flex-col gap-3">
