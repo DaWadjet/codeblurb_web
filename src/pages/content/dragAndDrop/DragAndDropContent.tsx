@@ -188,7 +188,7 @@ const DragAndDropContent: FC = () => {
           <h3 className="font-semibold text-xl">Hints</h3>
           <div className="grid place-items-center grid-cols-2 gap-4">
             {hints.slice(0, state.amountOfHintsShown).map((hint, index) => (
-              <Card key={index} className="flex gap-2 items-center p-4 w-full">
+              <Card key={index} className="flex gap-4 items-center p-4 w-full">
                 <WandSparklesIcon className="size-4 shrink-0" />
                 <p>{hint}</p>
               </Card>
