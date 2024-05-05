@@ -1,14 +1,15 @@
+import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
 import {
+  CodeExecutionResponse,
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,
   CodeSolutionRequest,
-  CodeSolutionResponse,
   PageMinimalContentBundleResponse,
   QuizSolutionRequest,
   QuizSolutionResponse,
   SeparatedContentBundleResponse,
-} from "@/types/ApiTypes";
+} from "@/types/exportedApiTypes";
 import { DEFAULT_PAGE_SIZE, TPageProps } from "@/utils/types";
 import {
   infiniteQueryOptions,
@@ -16,7 +17,6 @@ import {
   useInfiniteQuery,
   useMutation,
   useQuery,
-  useQueryClient,
 } from "@tanstack/react-query";
 import qs from "qs";
 
@@ -122,7 +122,7 @@ export const useQuizSolutionSubmissionMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
   return useMutation({
     mutationKey: ContentKeys.quizSolutionMutation(contentId),
     meta: {
@@ -134,13 +134,7 @@ export const useQuizSolutionSubmissionMutation = ({
       quizSolution: QuizSolutionRequest;
     }) => {
       const result = await quizSolutionMutationFn({ contentId, quizSolution });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
+      refetch();
       return result;
     },
   });
@@ -153,9 +147,12 @@ export async function codeSolutionMutationFn({
   contentId: number;
   codeSolution: CodeSolutionRequest;
 }) {
-  const response = await client.post<CodeSolutionResponse>(
+  const response = await client.post<CodeExecutionResponse>(
     `/content/code/scratch-solution/${contentId}`,
-    codeSolution
+    codeSolution,
+    {
+      timeout: 20_000,
+    }
   );
   return response.data;
 }
@@ -181,7 +178,8 @@ export const useCodeQuizSolutionMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
+
   return useMutation({
     mutationKey: ContentKeys.codeQuizSolutionMutation(contentId),
     meta: {
@@ -196,14 +194,7 @@ export const useCodeQuizSolutionMutation = ({
         contentId,
         codeSolution,
       });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
-
+      refetch();
       return solution;
     },
   });
@@ -216,7 +207,8 @@ export const useScratchSubmitMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
+
   return useMutation({
     mutationKey: ContentKeys.codeSolutionMutation(contentId),
     meta: {
@@ -228,13 +220,7 @@ export const useScratchSubmitMutation = ({
       codeSolution: CodeSolutionRequest;
     }) => {
       const result = await codeSolutionMutationFn({ contentId, codeSolution });
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          query.queryKey[0] === ContentKeys.contentBundlesQuery()[0],
-      });
+      refetch();
       return result;
     },
   });

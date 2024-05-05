@@ -6,25 +6,6 @@ import { ElementRef, FC, useCallback, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import { OnProgressProps } from "react-player/base";
 
-//TODO remove once testing is finished
-const description = `Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-Exercitationem non illum iste mollitia nihil at assumenda. Voluptatem
-dolorem, iusto molestias repudiandae ipsum fugit culpa dicta labore
-cum dolorum, ipsam asperiores id! Atque non rem, enim recusandae
-itaque sit! Quam deserunt velit illo in ipsum sed recusandae iste
-harum dolores! Dolores qui magni in, atque fuga quasi, vero magnam
-soluta asperiores eligendi natus alias nobis nemo.\n\nQuae consequatur
-praesentium, eos vero eveniet illum eligendi, totam architecto
-quisquam laborum possimus facilis repellendus? Commodi eveniet
-voluptatibus aliquid corrupti labore quod, ab sed consequuntur
-perferendis odit repellendus quis unde! At labore quasi quaerat ut!\n\n
-Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus,
-doloremque impedit? Incidunt aperiam enim, impedit itaque nostrum
-tenetur nesciunt cum quibusdam nobis quisquam ducimus autem libero
-ipsa, magni odio voluptatibus consequatur ipsum mollitia, harum
-facilis voluptate voluptates aut!\n\nQuas iusto ipsam soluta officia
-reprehenderit culpa dolorum vero aspernatur quam asperiores?`;
-
 const VideoContent: FC = () => {
   const { viewedContent, courseId } = useViewedContent();
   if (!viewedContent?.contentType || viewedContent.contentType !== "VIDEO") {
@@ -104,13 +85,9 @@ const VideoContent: FC = () => {
             {hasNextContent ? "Next Section" : "Back To Course"}
           </Button>
         </div>
-        {(viewedContent.description ?? description)
-          .split("\n\n")
-          .map((text, index) => (
-            <p key={index} className="font-medium">
-              {text}
-            </p>
-          ))}
+        <p className="font-medium">
+          {viewedContent.description ?? "No description available"}
+        </p>
       </div>
     </div>
   );

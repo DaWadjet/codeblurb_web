@@ -73,14 +73,19 @@ const CourseDetailsPage: FC = () => {
           </div>
         </CardContent>
         <CardHeader className="w-80 min-h-56 p-0 shrink-0 grow">
-          <img
-            src={
-              course.imageUrl ??
-              "https://fireship.io/courses/js/img/featured.webp"
-            }
-            alt={course.title}
-            className="h-full w-full object-cover"
-          />
+          {course.imageUrl ? (
+            <img
+              src={course.imageUrl}
+              alt={course.title}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-accent flex items-center justify-center">
+              <p className="text-base text-muted-foreground">
+                No image available
+              </p>
+            </div>
+          )}
         </CardHeader>
       </Card>
       <div className="flex gap-8">

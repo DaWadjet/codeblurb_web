@@ -50,10 +50,10 @@ export interface paths {
   "/auth/change-password": {
     post: operations["changePassword"];
   };
-  "/seen/{contentId}": {
+  "/content/progress/seen/{contentId}": {
     patch: operations["contentSeen"];
   };
-  "/completed/{contentId}": {
+  "/content/progress/completed/{contentId}": {
     patch: operations["contentCompleted"];
   };
   "/": {
@@ -178,17 +178,23 @@ export interface components {
     CodeSolutionRequest: {
       code: string;
     };
-    CodeSolutionResponse: {
+    CodeExecutionResponse: {
+      /** Format: int32 */
+      codingContentId?: number;
+      runId?: string;
       results?: components["schemas"]["TestCaseOutcomeResponse"][];
-      /** @enum {string} */
-      overallResult?: "ALL_PASSED" | "TESTCASES_FAILED";
-    };
-    TestCaseOutcomeResponse: {
-      expected?: string;
-      actual?: string;
+      compilationErrors?: string;
       /** @enum {string} */
       outcome?: "PASSED" | "FAILED";
-      hints?: string[];
+    };
+    TestCaseOutcomeResponse: {
+      /** Format: int32 */
+      testCaseId?: number;
+      actual?: string;
+      expected?: string;
+      /** @enum {string} */
+      outcome?: "PASSED" | "FAILED";
+      errors?: string;
     };
     CodeQuizSolutionRequest: {
       solutionsInOrder: string[];
@@ -240,10 +246,10 @@ export interface components {
       registeredAt?: string;
     };
     PageShoppingItemResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["ShoppingItemResponse"][];
@@ -252,9 +258,9 @@ export interface components {
       sort?: components["schemas"]["SortObject"][];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       first?: boolean;
       last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     PageableObject: {
@@ -284,10 +290,10 @@ export interface components {
       previousPayments?: components["schemas"]["PaymentResponse"][];
     };
     PageMinimalContentBundleResponse: {
-      /** Format: int64 */
-      totalElements?: number;
       /** Format: int32 */
       totalPages?: number;
+      /** Format: int64 */
+      totalElements?: number;
       /** Format: int32 */
       size?: number;
       content?: components["schemas"]["MinimalContentBundleResponse"][];
@@ -296,9 +302,9 @@ export interface components {
       sort?: components["schemas"]["SortObject"][];
       /** Format: int32 */
       numberOfElements?: number;
+      pageable?: components["schemas"]["PageableObject"];
       first?: boolean;
       last?: boolean;
-      pageable?: components["schemas"]["PageableObject"];
       empty?: boolean;
     };
     ArticleContentResponse: {
@@ -332,6 +338,7 @@ export interface components {
       description?: string;
       codeSkeleton?: string[];
       codeSnippets?: string[];
+      hints?: string[];
       testCases?: components["schemas"]["TestCaseResponse"][];
       /** @enum {string} */
       codingContentType?: "SCRATCH" | "DRAG_AND_DROP" | "FILL_THE_GAP";
@@ -515,7 +522,7 @@ export interface operations {
       /** @description OK */
       200: {
         content: {
-          "*/*": components["schemas"]["CodeSolutionResponse"];
+          "*/*": components["schemas"]["CodeExecutionResponse"];
         };
       };
     };

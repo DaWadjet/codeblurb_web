@@ -7,9 +7,7 @@ const SyntaxHighlighter: FC<{
   language?: string;
   className?: string;
 }> = ({ code = "", language = "java", className }) => {
-  console.log("SyntaxHighlighter", code, language);
   const monaco = useMonaco();
-  monaco?.editor;
   const codeRef = useRef<ElementRef<"code">>(null);
 
   useEffect(() => {

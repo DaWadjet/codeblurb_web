@@ -17,6 +17,7 @@ import {
   BreadcrumbSeparator,
 } from "@/shadcn/ui/breadcrumb";
 import { FC, Fragment, useMemo } from "react";
+import { Navigate } from "react-router-dom";
 
 const ContentPage: FC = () => {
   const {
@@ -33,7 +34,7 @@ const ContentPage: FC = () => {
   }, [content]);
 
   if (isPending) return <BigLoader />;
-  if (!contentType || !content) return null; //should not happen
+  if (!contentType || !content) return <Navigate to={`/course/${courseId}`} />;
 
   return (
     <div className="flex flex-col gap-8 ">

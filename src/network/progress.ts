@@ -1,3 +1,4 @@
+import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
 import { ContentKeys } from "@/network/content";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -42,14 +43,12 @@ export const useCompletedMutation = ({
   contentId: number;
   courseId: number;
 }) => {
-  const queryClient = useQueryClient();
+  const refetch = useRefetchOnCourseStatusChange(courseId);
   return useMutation({
     mutationKey: ProgressKeys.completedMutation,
     mutationFn: async () => {
       await completedMutationFn(contentId);
-      queryClient.refetchQueries({
-        queryKey: ContentKeys.contentBundleDetailsQuery(courseId),
-      });
+      refetch();
     },
     meta: {
       showToast: false,

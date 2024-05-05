@@ -8,7 +8,14 @@ import { FC } from "react";
 
 const HomePage: FC = () => {
   const { data: purchasedCourses, isPending: isPending_Purchased } =
-    useContentBundlesQuery();
+    useContentBundlesQuery({
+      title: "",
+      skills: null,
+      sort: {
+        property: "lastInteractedAt",
+        ascending: false,
+      },
+    });
 
   const { data: mostPopularData, isPending: isPending_MostPopular } =
     useAvailableShoppingItemsQuery({
@@ -50,13 +57,9 @@ const HomePage: FC = () => {
       )}
       {Boolean(mostPopularData?.items?.length) && (
         <div className="flex flex-col gap-4">
-          {/* TODO remove duplicates */}
           <h2 className="text-3xl font-semibold">Top Rated Courses</h2>
           <CourseList
-            items={[
-              ...(mostPopularData?.items ?? []),
-              ...(mostPopularData?.items ?? []),
-            ].map((item, index) => (
+            items={(mostPopularData?.items ?? []).map((item, index) => (
               <CourseItem course={item!} key={index} />
             ))}
           />
@@ -64,13 +67,9 @@ const HomePage: FC = () => {
       )}
       {Boolean(topRatedData?.items?.length) && (
         <div className="flex flex-col gap-4">
-          {/* TODO remove duplicates */}
           <h2 className="text-3xl font-semibold">Most Popular</h2>
           <CourseList
-            items={[
-              ...(topRatedData?.items ?? []),
-              ...(topRatedData?.items ?? []),
-            ].map((item, index) => (
+            items={(topRatedData?.items ?? []).map((item, index) => (
               <CourseItem course={item!} key={index} />
             ))}
             autoplay

@@ -65,14 +65,22 @@ const ShoppingCartPage: FC = () => {
             <div key={item.id + "_" + index} className="w-full">
               <Separator className="mb-5" />
               <div className="flex gap-4">
-                <img
-                  src={
-                    item.contentBundle?.imageUrl ??
-                    "https://fireship.io/courses/js/img/featured.webp"
-                  }
-                  className="object-cover h-36 rounded-lg"
-                  style={{ aspectRatio: "14/9" }}
-                />
+                {item.contentBundle?.imageUrl ? (
+                  <img
+                    src={item.contentBundle?.imageUrl}
+                    className="object-cover h-36 rounded-lg"
+                    style={{ aspectRatio: "14/9" }}
+                  />
+                ) : (
+                  <div
+                    className=" bg-accent flex items-center justify-center h-36"
+                    style={{ aspectRatio: "14/9" }}
+                  >
+                    <p className="text-base text-muted-foreground">
+                      No image available
+                    </p>
+                  </div>
+                )}
                 <div className="flex flex-col gap-1 items-stretch justify-between w-full py-1">
                   <div className="flex justify-between gap-2 items-start">
                     <Button variant="link" className="p-0">

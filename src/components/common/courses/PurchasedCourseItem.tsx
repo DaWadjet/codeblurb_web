@@ -11,7 +11,7 @@ import {
 } from "@/shadcn/ui/card";
 import { Progress } from "@/shadcn/ui/progress";
 import { Rating } from "@/shadcn/ui/rating";
-import { MinimalContentBundleResponse } from "@/types/ApiTypes";
+import { MinimalContentBundleResponse } from "@/types/exportedApiTypes";
 import capitalize from "lodash/capitalize";
 import { useNavigate } from "react-router-dom";
 
@@ -34,14 +34,19 @@ const PurchasedCourseItem: FC<{ course: MinimalContentBundleResponse }> = ({
     >
       <CardHeader className="p-0">
         <AspectRatio ratio={18 / 9}>
-          <img
-            src={
-              course?.imageUrl ??
-              "https://fireship.io/courses/js/img/featured.webp"
-            }
-            alt={course.title}
-            className="object-cover w-full h-full"
-          />
+          {course?.imageUrl ? (
+            <img
+              src={course?.imageUrl}
+              alt={course.title}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full bg-accent flex items-center justify-center">
+              <p className="text-base text-muted-foreground">
+                No image available
+              </p>
+            </div>
+          )}
         </AspectRatio>
         <div className="p-3">
           <CardTitle className="text-xl">{course.title}</CardTitle>

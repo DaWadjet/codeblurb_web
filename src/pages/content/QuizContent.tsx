@@ -23,7 +23,7 @@ import { Progress } from "@/shadcn/ui/progress";
 import { ScrollArea } from "@/shadcn/ui/scroll-area";
 import { Separator } from "@/shadcn/ui/separator";
 import { cn } from "@/shadcnutils";
-import { QuizSolutionResponse } from "@/types/ApiTypes";
+import { QuizSolutionResponse } from "@/types/exportedApiTypes";
 import { CircleCheckIcon, Loader2Icon, Send, XCircleIcon } from "lucide-react";
 import { FC, Fragment, useCallback, useMemo, useState } from "react";
 
@@ -131,7 +131,7 @@ const QuizContent: FC = () => {
 
               <p className="text-lg text-muted-foreground">
                 Answer the following questions to test your knowledge of the
-                section.
+                topic.
               </p>
 
               <Button
@@ -197,48 +197,69 @@ const QuizContent: FC = () => {
                     )}
                     <div className="flex items-center justify-center gap-1">
                       {indicesAnswered.length < 4
-                        ? [...indicesAnswered, "current"].map((_, index) => (
-                            <PaginationItem key={index}>
-                              <PaginationLink
-                                isActive={index === shownQuestionIndex}
-                                onClick={() => setShownQuestionIndex(index)}
-                              >
-                                {index + 1}
-                              </PaginationLink>
-                            </PaginationItem>
-                          ))
+                        ? [...indicesAnswered, "current"]
+                            .filter(
+                              (i) =>
+                                i !== "current" ||
+                                indicesAnswered.length !==
+                                  viewedContent.questions?.length
+                            )
+                            .map((_, index) => (
+                              <PaginationItem key={index}>
+                                <PaginationLink
+                                  isActive={index === shownQuestionIndex}
+                                  onClick={() => setShownQuestionIndex(index)}
+                                >
+                                  {index + 1}
+                                </PaginationLink>
+                              </PaginationItem>
+                            ))
                         : [
                             ...indicesAnswered.slice(0, 2),
                             "ellipsis",
                             ...indicesAnswered.slice(-1),
                             "current",
-                          ].map((item, index) => (
-                            <PaginationItem key={index}>
-                              {item !== "ellipsis" ? (
-                                <PaginationLink
-                                  isActive={item === "current"}
-                                  onClick={() => setShownQuestionIndex(index)}
-                                >
-                                  {index +
-                                    1 +
-                                    (shownQuestionIndex >= 4 && index > 2
-                                      ? shownQuestionIndex - 4
-                                      : 0)}
-                                </PaginationLink>
-                              ) : (
-                                <PaginationEllipsis />
-                              )}
-                            </PaginationItem>
-                          ))}
+                          ]
+                            .filter(
+                              (i) =>
+                                i !== "current" ||
+                                indicesAnswered.length !==
+                                  viewedContent.questions?.length
+                            )
+                            .map((item, index) => (
+                              <PaginationItem key={index}>
+                                {item !== "ellipsis" ? (
+                                  <PaginationLink
+                                    isActive={item === "current"}
+                                    onClick={() => setShownQuestionIndex(index)}
+                                  >
+                                    {index +
+                                      1 +
+                                      (shownQuestionIndex >= 4 && index > 2
+                                        ? shownQuestionIndex - 4
+                                        : 0)}
+                                  </PaginationLink>
+                                ) : (
+                                  <PaginationEllipsis />
+                                )}
+                              </PaginationItem>
+                            ))}
                     </div>
 
                     {shownQuestionIndex < answerIndices.length ? (
                       <PaginationItem>
                         <PaginationNext
                           className="w-28"
-                          onClick={() =>
-                            setShownQuestionIndex(shownQuestionIndex + 1)
-                          }
+                          onClick={() => {
+                            if (
+                              shownQuestionIndex <
+                              viewedContent.questions!.length - 1
+                            )
+                              setShownQuestionIndex(shownQuestionIndex + 1);
+                            else {
+                              setShownQuestionIndex("BEFORE_SUBMIT");
+                            }
+                          }}
                         />
                       </PaginationItem>
                     ) : (
@@ -251,8 +272,15 @@ const QuizContent: FC = () => {
           )}
         {shownQuestionIndex === "BEFORE_SUBMIT" && !solution && (
           <>
-            <CardHeader className="text-2xl font-medium pb-2 pt-4">
-              Your Answers
+            <CardHeader className="py-2 flex flex-row  items-start justify-between gap-2">
+              <h2 className="text-2xl font-medium pt-2">Your Answers</h2>
+              <Button
+                variant="ghost"
+                className="w-fit"
+                onClick={() => setShownQuestionIndex(0)}
+              >
+                Edit answers
+              </Button>
             </CardHeader>
             <Separator />
             <ScrollArea>
@@ -383,7 +411,11 @@ const QuizContent: FC = () => {
           </Button>
         )}
         <Button
-          variant={!solution?.incorrectSolutions?.length ? "ghost" : "default"}
+          variant={
+            solution?.incorrectSolutions?.length || !solution
+              ? "ghost"
+              : "default"
+          }
           className="w-32"
           onClick={goToNextContent}
         >

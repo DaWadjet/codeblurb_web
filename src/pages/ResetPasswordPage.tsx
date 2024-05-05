@@ -22,7 +22,7 @@ import { Loader2Icon } from "lucide-react";
 import qs from "qs";
 import { FC, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 const resetPasswordSchema = z
@@ -40,6 +40,7 @@ const resetPasswordSchema = z
   });
 
 const ResetPasswordPage: FC = () => {
+  const navigate = useNavigate();
   const { token } = qs.parse(useLocation().search, {
     ignoreQueryPrefix: true,
   }) as { token: string };
@@ -102,7 +103,14 @@ const ResetPasswordPage: FC = () => {
                 )}
               />
             </CardContent>
-            <CardFooter className="flex justify-end">
+            <CardFooter className="flex justify-between">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => navigate(-1)}
+              >
+                Back
+              </Button>
               <Button type="submit">
                 {isPending && (
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />

@@ -1,6 +1,6 @@
 import useLoggedIn from "@/hooks/useLoggedIn";
 import client from "@/network/axiosClient";
-import { PreviousPaymentsResponse } from "@/types/ApiTypes";
+import { PreviousPaymentsResponse } from "@/types/exportedApiTypes";
 import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
 export const PaymentKeys = {
