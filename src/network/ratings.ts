@@ -1,6 +1,6 @@
 import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
-import { RatingRequest, RatingResponse } from "@/types/ApiTypes";
+import { RatingRequest, RatingResponse } from "@/types/exportedApiTypes";
 import { useMutation } from "@tanstack/react-query";
 type RatingProps = {
   review: RatingRequest;

@@ -9,7 +9,7 @@ import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shadcn/ui/card";
 import { Rating } from "@/shadcn/ui/rating";
 import { alertDialogAtom } from "@/store/jotaiAtoms";
-import { ShoppingItemResponse } from "@/types/ApiTypes";
+import { ShoppingItemResponse } from "@/types/exportedApiTypes";
 import { useSetAtom } from "jotai";
 import capitalize from "lodash/capitalize";
 import { Loader2Icon, X } from "lucide-react";
@@ -37,15 +37,19 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
     >
       <CardHeader className="p-0 relative">
         <AspectRatio ratio={18 / 9}>
-          {/* TODO remove hardcoded image urls across project */}
-          <img
-            src={
-              course.contentBundle?.imageUrl ??
-              "https://fireship.io/courses/js/img/featured.webp"
-            }
-            alt={course.title}
-            className="object-cover w-full h-full"
-          />
+          {course.contentBundle?.imageUrl ? (
+            <img
+              src={course.contentBundle!.imageUrl}
+              alt={course.title}
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            <div className="w-full h-full bg-accent flex items-center justify-center">
+              <p className="text-base text-muted-foreground">
+                No image available
+              </p>
+            </div>
+          )}
         </AspectRatio>
         <div className="p-3">
           <CardTitle className="text-xl">{course.title}</CardTitle>
@@ -99,10 +103,7 @@ const CourseItem: FC<{ course: ShoppingItemResponse }> = ({ course }) => {
             </p>
           </div>
 
-          <PriceTag
-            originalPrice={course.price!}
-            discount={course.id! % 2 === 0}
-          />
+          <PriceTag originalPrice={course.price!} />
         </div>
       </CardContent>
     </Card>

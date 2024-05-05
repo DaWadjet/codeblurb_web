@@ -1,5 +1,5 @@
 import client from "@/network/axiosClient";
-import { ProfileResponse } from "@/types/ApiTypes";
+import { ProfileResponse } from "@/types/exportedApiTypes";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 
 export const ProfileKeys = {

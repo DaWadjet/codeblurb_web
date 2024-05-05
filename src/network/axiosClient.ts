@@ -1,6 +1,6 @@
 import { refresh } from "@/network/auth";
 import useTokenStore from "@/store/tokenStore";
-import { RefreshTokenResponse } from "@/types/ApiTypes";
+import { RefreshTokenResponse } from "@/types/exportedApiTypes";
 import axios, { AxiosRequestHeaders } from "axios";
 
 import createAuthRefreshInterceptor from "axios-auth-refresh";

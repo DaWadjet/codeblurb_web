@@ -1,15 +1,15 @@
 import useRefetchOnCourseStatusChange from "@/hooks/useRefetchOnCourseStatusChange";
 import client from "@/network/axiosClient";
 import {
+  CodeExecutionResponse,
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,
   CodeSolutionRequest,
-  CodeSolutionResponse,
   PageMinimalContentBundleResponse,
   QuizSolutionRequest,
   QuizSolutionResponse,
   SeparatedContentBundleResponse,
-} from "@/types/ApiTypes";
+} from "@/types/exportedApiTypes";
 import { DEFAULT_PAGE_SIZE, TPageProps } from "@/utils/types";
 import {
   infiniteQueryOptions,
@@ -147,9 +147,12 @@ export async function codeSolutionMutationFn({
   contentId: number;
   codeSolution: CodeSolutionRequest;
 }) {
-  const response = await client.post<CodeSolutionResponse>(
+  const response = await client.post<CodeExecutionResponse>(
     `/content/code/scratch-solution/${contentId}`,
-    codeSolution
+    codeSolution,
+    {
+      timeout: 20_000,
+    }
   );
   return response.data;
 }

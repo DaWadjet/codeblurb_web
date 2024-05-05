@@ -8,7 +8,7 @@ import { UnusedItems } from "@/pages/content/dragAndDrop/UnusedItems";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
 import { cn } from "@/shadcnutils";
-import { CodeQuizSolutionResponse } from "@/types/ApiTypes";
+import { CodeQuizSolutionResponse } from "@/types/exportedApiTypes";
 import {
   DndContext,
   DragEndEvent,
@@ -23,16 +23,6 @@ import { BadgeInfo, Loader2Icon, Send, WandSparklesIcon } from "lucide-react";
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
-
-//TODO replace with response
-const hints = [
-  "Hello, World!",
-  'Use double quotes for strings, like "abc"',
-
-  "It is simpler than you think",
-  "Type 'world' without a capital letter",
-  "OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX",
-];
 
 export interface ItemType {
   id: UniqueIdentifier;
@@ -177,6 +167,8 @@ const DragAndDropContent: FC = () => {
     () => !state.result?.incorrectSolutions?.length,
     [state.result?.incorrectSolutions?.length]
   );
+
+  const hints = viewedContent.hints ?? [];
 
   return (
     <div className="flex flex-col gap-6">

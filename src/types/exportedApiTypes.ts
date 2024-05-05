@@ -19,7 +19,7 @@ type QuizSolutionRequest = API["QuizSolutionRequest"];
 type IncorrectQuizSolutionResponse = API["IncorrectQuizSolutionResponse"];
 type QuizSolutionResponse = API["QuizSolutionResponse"];
 type CodeSolutionRequest = API["CodeSolutionRequest"];
-type CodeSolutionResponse = API["CodeSolutionResponse"];
+type CodeExecutionResponse = API["CodeExecutionResponse"];
 type TestCaseOutcomeResponse = API["TestCaseOutcomeResponse"];
 type CodeQuizSolutionRequest = API["CodeQuizSolutionRequest"];
 type CodeQuizSolutionResponse = API["CodeQuizSolutionResponse"];
@@ -71,10 +71,10 @@ type ArticleContent = API["ArticleContentResponse"] & {
 export type {
   ArticleContent,
   ChangePasswordRequest,
+  CodeExecutionResponse,
   CodeQuizSolutionRequest,
   CodeQuizSolutionResponse,
   CodeSolutionRequest,
-  CodeSolutionResponse,
   CodingContentResponse,
   DragAndDropContent,
   FillInTheGapsContent,
@@ -111,5 +111,6 @@ export type {
   TestCaseOutcomeResponse,
   TestCaseResponse,
   VideoContent,
-  VideoContentResponse,
+  VideoContentResponse
 };
+

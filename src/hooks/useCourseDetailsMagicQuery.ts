@@ -8,7 +8,7 @@ import {
   QuizContent,
   ScratchContent,
   VideoContent,
-} from "@/types/ApiTypes";
+} from "@/types/exportedApiTypes";
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 

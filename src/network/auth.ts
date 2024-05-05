@@ -4,10 +4,10 @@ import {
   LoginResponse,
   RefreshTokenResponse,
   RegisterRequest,
-} from "@/types/ApiTypes";
+} from "@/types/exportedApiTypes";
 
 import useTokenStore from "@/store/tokenStore";
-import { LoginRequest } from "@/types/ApiTypes";
+import { LoginRequest } from "@/types/exportedApiTypes";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosAuthRefreshRequestConfig } from "axios-auth-refresh";
 import { useCallback } from "react";

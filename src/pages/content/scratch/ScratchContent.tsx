@@ -5,21 +5,11 @@ import { useViewedContent } from "@/hooks/useViewedContent";
 import { useScratchSubmitMutation } from "@/network/content";
 import { Button } from "@/shadcn/ui/button";
 import { Card, CardContent, CardHeader } from "@/shadcn/ui/card";
-import { CodeSolutionResponse } from "@/types/ApiTypes";
+import { CodeExecutionResponse } from "@/types/exportedApiTypes";
 import { BadgeInfo, Loader2Icon, Play, WandSparklesIcon } from "lucide-react";
 import { FC, useCallback } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
-
-//TODO replace with response
-const hints = [
-  "Hello, World!",
-  'Use double quotes for strings, like "abc"',
-
-  "It is simpler than you think",
-  "Type 'world' without a capital letter",
-  "OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX OMG VERY LONG HINT IT WONT FIT IN THE BOX",
-];
 
 const ScratchContent: FC = () => {
   const { goToNextContent, hasNextContent } = useGoToNextContent();
@@ -36,9 +26,9 @@ const ScratchContent: FC = () => {
   const [state, setState] = useImmer<{
     code: string;
     amountOfHintsShown: number;
-    result: CodeSolutionResponse | null;
+    result: CodeExecutionResponse | null;
   }>({
-    code: viewedContent.codeSkeleton![0],
+    code: viewedContent.codeSkeleton?.join("\n") ?? "",
     result: null,
     amountOfHintsShown: 0,
   });
@@ -58,12 +48,18 @@ const ScratchContent: FC = () => {
     setState((draft) => {
       draft.result = results;
     });
-    if (results.overallResult !== "ALL_PASSED") {
-      toast.error("Your code did not pass all tests. Please try again!");
+    if (results.outcome !== "PASSED") {
+      toast.error(
+        results.compilationErrors ||
+          "Your code did not pass all tests. Please try again!",
+        { duration: 5000 }
+      );
     } else {
       toast.success("Your code passed all tests! Good job!");
     }
   }, [state.code, setState, submitSolution, isPending]);
+
+  const hints = viewedContent.hints ?? [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -99,9 +95,7 @@ const ScratchContent: FC = () => {
               <Button
                 disabled={state.amountOfHintsShown >= hints.length}
                 variant={
-                  state.result?.overallResult !== "ALL_PASSED"
-                    ? "default"
-                    : "outline"
+                  state.result?.outcome !== "PASSED" ? "default" : "outline"
                 }
                 onClick={() =>
                   setState((draft) => {
@@ -128,7 +122,7 @@ const ScratchContent: FC = () => {
         </div>
 
         <CodeEditor
-          initialCode={viewedContent.codeSkeleton![0]}
+          initialCode={viewedContent.codeSkeleton!.join("\n")}
           onCodeChange={(value) =>
             setState((draft) => {
               draft.code = value;
@@ -137,9 +131,7 @@ const ScratchContent: FC = () => {
         />
       </div>
       <Button
-        variant={
-          state.result?.overallResult === "ALL_PASSED" ? "default" : "ghost"
-        }
+        variant={state.result?.outcome === "PASSED" ? "default" : "ghost"}
         className="w-32 self-end"
         onClick={goToNextContent}
       >

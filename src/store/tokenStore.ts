@@ -32,6 +32,7 @@ export const useTokenStore = create<TState>()(
           set(
             (state) => {
               state.access = accessToken;
+              //TODO remove once testing is done
               console.log(accessToken);
 
               const customerId =

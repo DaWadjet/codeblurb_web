@@ -3,7 +3,7 @@ import {
   PageShoppingItemResponse,
   ShoppingCartResponse,
   ShoppingItemResponse,
-} from "@/types/ApiTypes";
+} from "@/types/exportedApiTypes";
 import { DEFAULT_PAGE_SIZE, TPageProps } from "@/utils/types";
 import {
   infiniteQueryOptions,

@@ -18,6 +18,7 @@ import { cn } from "@/shadcnutils";
 import dayjs from "dayjs";
 import { EyeIcon, SquareGanttChart } from "lucide-react";
 import { FC, useState } from "react";
+import { toast } from "sonner";
 
 const ProfilePage: FC = () => {
   const { data: profile, isPending } = useProfileQuery();
@@ -80,7 +81,7 @@ const ProfilePage: FC = () => {
             variant="ghost"
             className="flex gap-2 items-center mt-auto text-muted-foreground"
             onClick={() => {
-              //TODO
+              toast.info("This feature is not available yet.");
             }}
           >
             Get the app

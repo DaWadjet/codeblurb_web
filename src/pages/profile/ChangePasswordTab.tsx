@@ -10,6 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/shadcn/ui/form";
+import { ScrollArea } from "@/shadcn/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2Icon } from "lucide-react";
 import { FC, useCallback } from "react";
@@ -62,60 +63,62 @@ const ChangePasswordTab: FC = () => {
   );
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="gap-6 flex flex-col w-full overflow-y-auto p-1 h-full"
-      >
-        <h3 className="font-semibold text-3xl mb-6">Change Password</h3>
-        <FormField
-          control={form.control}
-          name="oldPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Old Password</FormLabel>
-              <FormControl>
-                <PasswordField {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="newPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>New Password</FormLabel>
-              <FormControl>
-                <PasswordField {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="confirmNewPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Confirm New Password</FormLabel>
-              <FormControl>
-                <PasswordField {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grow" />
-        <CardFooter className="flex justify-end p-0">
-          <Button type="submit">
-            {isPending && <Loader2Icon className="h-4 w-4 animate-spin" />}
-            Change Password
-          </Button>
-        </CardFooter>
-      </form>
-    </Form>
+    <ScrollArea className="overflow-y-auto h-full">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="gap-6 flex flex-col w-full overflow-y-auto p-1 h-full"
+        >
+          <h3 className="font-semibold text-3xl mb-6">Change Password</h3>
+          <FormField
+            control={form.control}
+            name="oldPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Old Password</FormLabel>
+                <FormControl>
+                  <PasswordField {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="newPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>New Password</FormLabel>
+                <FormControl>
+                  <PasswordField {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmNewPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm New Password</FormLabel>
+                <FormControl>
+                  <PasswordField {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grow" />
+          <CardFooter className="flex justify-end p-0">
+            <Button type="submit">
+              {isPending && <Loader2Icon className="h-4 w-4 animate-spin" />}
+              Change Password
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
+    </ScrollArea>
   );
 };
 

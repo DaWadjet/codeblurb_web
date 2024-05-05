@@ -141,7 +141,7 @@ paths:
           content:
             "*/*":
               schema:
-                $ref: "#/components/schemas/CodeSolutionResponse"
+                $ref: "#/components/schemas/CodeExecutionResponse"
       security:
         - bearerAuth: []
   /content/code/code-quiz-solution/{contentId}:
@@ -727,34 +727,42 @@ components:
           maxLength: 32768
           minLength: 0
           type: string
-    CodeSolutionResponse:
+    CodeExecutionResponse:
       type: object
       properties:
+        codingContentId:
+          type: integer
+          format: int32
+        runId:
+          type: string
         results:
           type: array
           items:
             $ref: "#/components/schemas/TestCaseOutcomeResponse"
-        overallResult:
-          type: string
-          enum:
-            - ALL_PASSED
-            - TESTCASES_FAILED
-    TestCaseOutcomeResponse:
-      type: object
-      properties:
-        expected:
-          type: string
-        actual:
+        compilationErrors:
           type: string
         outcome:
           type: string
           enum:
             - PASSED
             - FAILED
-        hints:
-          type: array
-          items:
-            type: string
+    TestCaseOutcomeResponse:
+      type: object
+      properties:
+        testCaseId:
+          type: integer
+          format: int32
+        actual:
+          type: string
+        expected:
+          type: string
+        outcome:
+          type: string
+          enum:
+            - PASSED
+            - FAILED
+        errors:
+          type: string
     CodeQuizSolutionRequest:
       required:
         - solutionsInOrder
@@ -1070,6 +1078,10 @@ components:
           items:
             type: string
         codeSnippets:
+          type: array
+          items:
+            type: string
+        hints:
           type: array
           items:
             type: string
