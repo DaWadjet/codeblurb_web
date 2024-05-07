@@ -102,9 +102,11 @@ const ScratchContent: FC = () => {
         <div className="flex flex-col gap-4">
           <h3 className="font-semibold text-xl">Compilation Errors</h3>
           <div className="grid place-items-center grid-cols-2 gap-4">
-            <Card className="flex gap-4 items-center p-4 w-full border-destructive">
+            <Card className="flex gap-4 p-4 w-full border-destructive items-start">
               <XCircleIcon className="shrink-0 size-6 text-destructive" />
-              <p>{state.result?.compilationErrors}</p>
+              <pre className="whitespace-pre-wrap">
+                {state.result?.compilationErrors}
+              </pre>
             </Card>
           </div>
         </div>
@@ -119,7 +121,9 @@ const ScratchContent: FC = () => {
                 key={result.testCaseId}
                 className="flex gap-4 items-start p-4 w-full"
               >
-                {result.outcome === "FAILED" ? (
+                {isPending ? (
+                  <Loader2Icon className="size-5 mt-0.5 shrink-0 animate-spin" />
+                ) : result.outcome === "FAILED" ? (
                   <CircleXIcon className="size-5 mt-0.5 shrink-0 text-destructive" />
                 ) : (
                   <CircleCheckIcon className="text-green-600 size-5 mt-0.5 shrink-0" />
@@ -166,7 +170,13 @@ const ScratchContent: FC = () => {
             {(viewedContent.testCases ?? []).map((testCase, index) => (
               <Card key={index} className="flex gap-4 items-start p-4 w-full">
                 <div className="flex flex-col gap-3 w-full">
-                  <h3 className="font-semibold">Test Case {index + 1}</h3>
+                  <div className="flex gap-4 items-start">
+                    {isPending && (
+                      <Loader2Icon className="size-5 mt-0.5 shrink-0 animate-spin" />
+                    )}
+                    <h3 className="font-semibold">Test Case {index + 1}</h3>
+                  </div>
+
                   <div className="font-medium flex w-full gap-3 text-right items-start justify-between pr-6">
                     <span className="text-muted-foreground text-sm font-normal">
                       Input:
