@@ -39,6 +39,7 @@ const RatingSection: FC = () => {
       {!ratingOfUser && (
         <Button
           className="self-end"
+          disabled={rating === 0}
           onClick={() =>
             !isPending &&
             mutate({
