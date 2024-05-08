@@ -35,6 +35,7 @@ const CodeEditor: FC<{
           autoClosingDelete: "always",
           fontLigatures: true,
           matchBrackets: "always",
+          scrollBeyondLastLine: false,
           bracketPairColorization: {
             enabled: true,
             independentColorPoolPerBracketType: true,

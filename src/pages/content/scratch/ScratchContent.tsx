@@ -16,11 +16,12 @@ import {
   WandSparklesIcon,
   XCircleIcon,
 } from "lucide-react";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 
 const ScratchContent: FC = () => {
+  const ref = useRef<HTMLDivElement>(null);
   const { goToNextContent, hasNextContent } = useGoToNextContent();
 
   const { viewedContent, courseId } = useViewedContent();
@@ -58,12 +59,13 @@ const ScratchContent: FC = () => {
       draft.result = results;
     });
     if (results.outcome !== "PASSED") {
-      if (results.compilationErrors)
+      if (results.compilationErrors) {
         toast.error(
           "Your code did not compile! Please fix the errors and try again.",
           { duration: 5000 }
         );
-      else {
+        ref.current?.scrollIntoView({ behavior: "smooth" });
+      } else {
         toast.error("Your code did not pass all tests. Please try again.");
       }
     } else {
@@ -78,7 +80,7 @@ const ScratchContent: FC = () => {
       <h1 className="font-semibold text-3xl ">
         Scratch - {viewedContent.name}
       </h1>
-      <Card>
+      <Card ref={ref}>
         <CardHeader className="text-xl font-semibold">
           Task Description
         </CardHeader>
@@ -233,7 +235,7 @@ const ScratchContent: FC = () => {
         </div>
 
         <CodeEditor
-          initialCode={viewedContent.codeSkeleton!.join("\n")}
+          initialCode={state.code.replace(new RegExp("^\\s{10}", "gm"), "")}
           onCodeChange={(value) =>
             setState((draft) => {
               draft.code = value;
