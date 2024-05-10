@@ -21,7 +21,7 @@ const NextUpSection: FC = () => {
       <HoverBorderGradient
         as="button"
         containerClassName="rounded-lg w-full"
-        className="rounded-lg w-full hover:bg-accent bg-accent/80 transition-all"
+        className="rounded-lg w-full transition-all"
         onClick={() => navigate(`/course/${course.id}/content/${nextUp.id}`)}
       >
         <div className="flex justify-between p-0 border-none">
