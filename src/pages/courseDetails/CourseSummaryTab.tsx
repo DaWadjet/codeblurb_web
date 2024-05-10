@@ -8,13 +8,19 @@ import {
   AccordionTrigger,
 } from "@/shadcn/ui/accordion";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/shadcn/ui/tooltip";
+
 import useCourseDetailsMagicQuery from "@/hooks/useCourseDetailsMagicQuery";
 import NextUpSection from "@/pages/courseDetails/NextUpSection";
 
 import ContentTypeIcon from "@/pages/courseDetails/ContentTypeIcon";
 import { HoverBorderGradient } from "@/shadcn/ui/hover-border-gradient";
-import { cn } from "@/shadcnutils";
-import { Play } from "lucide-react";
+import { Eye, Play, SquareCheckBig } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const CourseSummaryTab: FC = () => {
@@ -44,15 +50,40 @@ const CourseSummaryTab: FC = () => {
           <AccordionItem
             value={section.id!.toString()}
             key={section.id}
-            className={cn(
-              //TODO might need to change this back
-              "border-border border rounded-lg hover:bg-accent transition-all",
-              section.status === "SEEN" && "bg-muted-foreground/5",
-              section.status === "COMPLETED" && "bg-muted-foreground/15"
-            )}
+            className="border-border border rounded-lg hover:bg-accent transition-all"
           >
-            <AccordionTrigger className="flex justify-between p-0 border-none py-2.5 px-4 ">
-              <h4 className="font-medium w-full text-left">{section.name}</h4>
+            <AccordionTrigger className="flex justify-between p-0 border-none py-2.5 px-4">
+              <div className="flex items-center gap-4 w-full justify-start">
+                <h4 className="font-medium text-left">{section.name}</h4>
+                {section.status === "COMPLETED" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SquareCheckBig className="size-5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent align="center">
+                        <p>You have completed this section!</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+                {section.status === "SEEN" && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Eye className="size-5 text-muted-foreground" />
+                      </TooltipTrigger>
+                      <TooltipContent align="center">
+                        <p>
+                          You have visited this section, but haven't completed
+                          it.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
+
               <div className="pb-1 mr-2 text-muted-foreground">
                 <ContentTypeIcon type={section.contentType} />
               </div>

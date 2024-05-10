@@ -36,7 +36,7 @@ const PurchasedCourseItem: FC<{ course: MinimalContentBundleResponse }> = ({
         <AspectRatio ratio={18 / 9}>
           {course?.imageUrl ? (
             <img
-              src={course?.imageUrl}
+              src={course.imageUrl}
               alt={course.title}
               className="object-cover w-full h-full"
             />
