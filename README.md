@@ -1,27 +1,21 @@
-# React + TypeScript + Vite
+# University Thesis Project - CodeBlurb Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Developing a Multiplatform Software Engineer Interview Preparation Platform With Flutter And React
 
-Currently, two official plugins are available:
+This repository hosts the web client implementation of my Master's thesis at BME-VIK. The thesis documentation is available [here](https://www.youtube.com/watch?v=dQw4w9WgXcQ).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The mobile client's code is also accessible under [codeblurb_mobile](https://github.com/DaWadjet/codeblurb_mobile).
 
-## Expanding the ESLint configuration
+This application - at least at the time of writing - is accessible at https://codeblurb-492f1.web.app/
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Core packages
 
-- Configure the top-level `parserOptions` property like this:
+- [React](https://react.dev/) & [Vite](https://vitejs.dev/)
+- [Tailwind CSS](https://tailwindcss.com/) along with [shadcn/ui](https://ui.shadcn.com/) for rapid UI development
+- [Firebase](https://firebase.google.com/) for hosting
+- [TanStack Query](https://tanstack.com/query/latest) for async state management, almost covering all my state management needs when combined with custom hooks
+- [Zustand](https://zustand-demo.pmnd.rs/), [Jotai](https://jotai.org/) and [Immer](https://github.com/immerjs/immer#readme) for everything else, but could be simplified
+- [Cypress](https://www.cypress.io/) for E2E testing
+- [Aceternity UI](https://ui.aceternity.com/) for fancy components
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+...and various others for diverse content types.
