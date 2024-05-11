@@ -84,7 +84,11 @@ const SignUpPage: FC = () => {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="john_doe" {...field} />
+                      <Input
+                        placeholder="john_doe"
+                        {...field}
+                        data-test="register-username-field"
+                      />
                     </FormControl>
 
                     <FormMessage />
@@ -98,7 +102,7 @@ const SignUpPage: FC = () => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} data-test="register-email-field" />
                     </FormControl>
 
                     <FormMessage />
@@ -112,7 +116,10 @@ const SignUpPage: FC = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <PasswordField {...field} />
+                      <PasswordField
+                        {...field}
+                        data-test="register-password-field"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -125,7 +132,10 @@ const SignUpPage: FC = () => {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <PasswordField {...field} />
+                      <PasswordField
+                        {...field}
+                        data-test="register-confirm-password-field"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -140,7 +150,7 @@ const SignUpPage: FC = () => {
               >
                 Back
               </Button>
-              <Button type="submit">
+              <Button type="submit" data-test="register-submit-button">
                 {isPending && (
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
                 )}
@@ -153,6 +163,7 @@ const SignUpPage: FC = () => {
       <p className="text-muted-foreground">
         Already have an account?{" "}
         <Button
+          data-test="register-already-have-account-button"
           disabled={isPending}
           variant="link"
           className="text-muted-foreground hover:text-primary text-base"

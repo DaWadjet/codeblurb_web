@@ -59,7 +59,7 @@ const ShoppingCartPage: FC = () => {
       style={{ minHeight: "calc(100vh - 140px)" }}
     >
       <h1 className="text-3xl font-semibold">Shopping Cart</h1>
-      <div className="flex gap-10 grow">
+      <div className="flex gap-10 grow" data-test="cart">
         <div className="flex flex-col gap-5 w-2/3 shrink-0">
           {cartItems.map((item, index) => (
             <div key={item.id + "_" + index} className="w-full">
@@ -83,7 +83,11 @@ const ShoppingCartPage: FC = () => {
                 )}
                 <div className="flex flex-col gap-1 items-stretch justify-between w-full py-1">
                   <div className="flex justify-between gap-2 items-start">
-                    <Button variant="link" className="p-0">
+                    <Button
+                      variant="link"
+                      className="p-0"
+                      data-test="course-card"
+                    >
                       <Link
                         to={`/course/${item.id}`}
                         className="text-2xl font-semibold"
@@ -94,6 +98,8 @@ const ShoppingCartPage: FC = () => {
                     <Button
                       variant="ghost"
                       className="rounded-full size-9 p-0"
+                      data-test="cart-toggle-button"
+                      data-in-cart="true"
                       onClick={() =>
                         !isPendingId &&
                         showAlertDialog({
@@ -196,6 +202,7 @@ const ShoppingCartPage: FC = () => {
           ) : (
             <BackgroundGradient effectClassName="blur-sm rounded-lg">
               <Button
+                data-test="checkout-button"
                 className="w-full h-14 leading-none text-2xl font-semibold hover:bg-background"
                 variant="outline"
                 onClick={() => {

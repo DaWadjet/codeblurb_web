@@ -30,6 +30,7 @@ const PurchasedCourseItem: FC<{ course: MinimalContentBundleResponse }> = ({
   return (
     <Card
       onClick={() => navigate(`/course/${course.id}`)}
+      data-test="course-card"
       className="overflow-clip hover:border-card-foreground/40 transition-all duration-150 h-full w-full cursor-pointer justify-between flex flex-col"
     >
       <CardHeader className="p-0">

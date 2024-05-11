@@ -115,12 +115,13 @@ export const useLoginMutation = () => {
 
 export const refresh = async (refreshToken: string) =>
   client.post<RefreshTokenResponse>(
-    "/auth/refresh-token",
+    "/auth/refresh",
     {
       refreshToken,
     },
     {
       skipAuthRefresh: true,
+      cancelToken: undefined,
     } as AxiosAuthRefreshRequestConfig
   );
 

@@ -83,6 +83,7 @@ const LandingPage: FC = () => {
         <div className="flex justify-center text-center mt-12">
           <BackgroundGradient effectClassName="blur-sm rounded-lg">
             <Button
+              data-test="landing-get-started-button"
               className="w-full p-5 h-16 leading-none text-3xl font-semibold hover:bg-background"
               variant="outline"
               onClick={() => navigate("/register")}
