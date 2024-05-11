@@ -55,6 +55,8 @@ const CourseDetailsAside: FC = () => {
         <BackgroundGradient effectClassName="blur-sm rounded-lg">
           {isCourseInCart ? (
             <Button
+              data-test="checkout-button"
+              data-in-cart="true"
               className="w-full h-16 text-2xl font-semibold hover:bg-background"
               variant="outline"
               onClick={() => navigate("/shopping-cart")}
@@ -63,7 +65,9 @@ const CourseDetailsAside: FC = () => {
             </Button>
           ) : (
             <Button
-              className="w-full h-16 text-2xl font-semibold "
+              className="w-full h-16 text-2xl font-semibold"
+              data-test="cart-toggle-button"
+              data-in-cart="false"
               onClick={() => !isPending && addToCart(course.id)}
             >
               {isPending ? (

@@ -72,7 +72,11 @@ const LoginPage: FC = () => {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="john_doe" {...field} />
+                      <Input
+                        placeholder="john_doe"
+                        {...field}
+                        data-test="login-username-field"
+                      />
                     </FormControl>
 
                     <FormMessage />
@@ -86,7 +90,10 @@ const LoginPage: FC = () => {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <PasswordField {...field} />
+                      <PasswordField
+                        {...field}
+                        data-test="login-password-field"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -101,7 +108,7 @@ const LoginPage: FC = () => {
               >
                 Back
               </Button>
-              <Button type="submit">
+              <Button type="submit" data-test="login-submit-button">
                 {isPending && (
                   <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
                 )}
@@ -116,6 +123,7 @@ const LoginPage: FC = () => {
           Don't have an account?{" "}
           <Button
             variant="link"
+            data-test="login-register-button"
             className="text-muted-foreground hover:text-primary text-base"
             onClick={() => navigate("/register")}
           >
@@ -124,6 +132,7 @@ const LoginPage: FC = () => {
         </p>
         <Button
           variant="link"
+          data-test="login-forgot-password-button"
           className="text-muted-foreground hover:text-primary text-xs"
           onClick={() => navigate("/reset-password")}
         >

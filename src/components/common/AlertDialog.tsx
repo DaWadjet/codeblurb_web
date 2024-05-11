@@ -38,8 +38,13 @@ const Dialog: FC = () => {
           <AlertDialogDescription>{dialog?.message}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={dialog?.onConfirm}>
+          <AlertDialogCancel data-test="modal-cancel-button">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            data-test="modal-confirm-button"
+            onClick={dialog?.onConfirm}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -25,13 +25,25 @@ const NavbarLoggedIn: FC = () => {
 
   return (
     <div className="flex gap-6 items-center">
-      <Button variant="link" onClick={() => navigate("/home")}>
+      <Button
+        variant="link"
+        onClick={() => navigate("/home")}
+        data-test="navbar-home-button"
+      >
         Home
       </Button>
-      <Button variant="link" onClick={() => navigate("/explore")}>
+      <Button
+        variant="link"
+        onClick={() => navigate("/explore")}
+        data-test="navbar-explore-button"
+      >
         Explore
       </Button>
-      <Button variant="link" onClick={() => navigate("/my-courses")}>
+      <Button
+        variant="link"
+        onClick={() => navigate("/my-courses")}
+        data-test="navbar-my-courses-button"
+      >
         My Courses
       </Button>
 
@@ -39,6 +51,7 @@ const NavbarLoggedIn: FC = () => {
         variant="outline"
         className="rounded-full relative size-9 p-2"
         onClick={() => navigate("/shopping-cart")}
+        data-test="navbar-shopping-cart-button"
       >
         <ShoppingCart className="text-foreground" />
         {itemsInCart.length > 0 && (
@@ -53,7 +66,7 @@ const NavbarLoggedIn: FC = () => {
         )}
       </Button>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild data-test="navbar-profile-dropdown">
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <UserAvatar />
           </Button>
@@ -69,12 +82,20 @@ const NavbarLoggedIn: FC = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => navigate("/profile")}>
+            <DropdownMenuItem
+              onClick={() => navigate("/profile")}
+              data-test="navbar-profile-button"
+            >
               Profile
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => logout()}>Log out</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => logout()}
+            data-test="navbar-logout-button"
+          >
+            Log out
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

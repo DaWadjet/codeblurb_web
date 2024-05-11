@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const Logo: FC = () => {
   return (
     <Link
+      data-test="navbar-logo"
       to="/"
       className="flex gap-1 items-center hover:text-muted-foreground transition-colors duration-200"
     >
