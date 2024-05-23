@@ -27,8 +27,8 @@ import { z } from "zod";
 
 const signupSchema = z
   .object({
-    username: z.string().min(1, {
-      message: "Username is required",
+    username: z.string().min(4, {
+      message: "Username must be at least 4 characters",
     }),
     email: z.string().email({
       message: "Invalid email",

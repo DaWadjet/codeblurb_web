@@ -139,11 +139,21 @@ const LandingPage: FC = () => {
             </h2>
             <p>Watch videos, read articles or write code on the go!</p>
           </div>
-
-          {/* TODO add mockups  of the app */}
-          <img src="/mobileapp.png" alt="Mobile App" className="w-1/3 h-auto" />
         </div>
+        <div className="flex gap-10 justify-around items-center px-20">
+          <img src="/splash.png" alt="Splash" className="w-1/4 h-auto" />
 
+          <img
+            src="/whitemodecoursedemo.png"
+            alt="Course Demo"
+            className="w-1/4 h-auto"
+          />
+          <img
+            src="/scratchdemo.png"
+            alt="Scratch Demo"
+            className="w-1/4 h-auto"
+          />
+        </div>
         <h2 className="text-xl font-semibold">
           ... and wide range of courses to choose from!
         </h2>
