@@ -46,7 +46,7 @@ const DragAndDropContent: FC = () => {
   const dropZones = useMemo(
     () =>
       Array.from(
-        { length: viewedContent.codeSnippets!.length },
+        { length: viewedContent.codeSkeleton!.length - 1 },
         (_, index) => `dropZone${index}`
       ),
     [viewedContent.codeSnippets]
@@ -258,7 +258,7 @@ const DragAndDropContent: FC = () => {
                 <p className="text-base h-8 flex items-end pb-0.5">
                   {viewedContent.codeSkeleton![index]}
                 </p>
-                {index < codeSnippetItems.length && (
+                {index < dropZones.length && (
                   <DropZone
                     className={cn(
                       "min-h-8",
